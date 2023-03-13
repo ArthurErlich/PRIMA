@@ -1,2 +1,2 @@
 # PRIMA
-Making, Breaking, Destroying, Trying creating prototypes!
+## Making, Breaking, Destroying, Trying creating -> prototypes!
