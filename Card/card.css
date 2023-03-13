@@ -3,6 +3,7 @@ body {
     font-size: small;
     background: #eeeeee;
     padding: 10px;
+    background-image: url("./backgound.svg");
 
 }
 
