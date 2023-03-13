@@ -3,6 +3,7 @@ body {
     font-size: small;
     background: #eeeeee;
     padding: 10px;
+
 }
 
 a {
@@ -28,4 +29,9 @@ a:hover {
 
 .link {
     padding: 10px;
+}
+
+.pixel {
+    width: 20px;
+    height: 20px;
 }
