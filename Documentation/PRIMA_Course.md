@@ -36,4 +36,16 @@
   * Node is on the origin, mesh is somwhere else.
 * Use a Transform Component to move the Mesh!
 
-> * [ ] **TASK: Create a Level for FUDGE!**
+> * [X] **TASK: Create a Level for FUDGE!**
+>
+> ---
+
+Fudge Level:
+
+![Graph](assets/20230320_193625_image.png)
+
+![Platform Transform](assets/20230320_193658_image.png)
+
+![FloorTile Transform](assets/20230320_193732_image.png)
+
+![Level](assets/20230320_193829_image.png)
