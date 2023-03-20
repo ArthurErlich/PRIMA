@@ -1,0 +1,56 @@
+{
+  "Graph|2023-03-20T15:45:04.679Z|54593": {
+    "ƒ.Graph": {
+      "name": "Game",
+      "active": true,
+      "components": {},
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "Tarrain",
+            "active": true,
+            "components": {},
+            "children": [
+              {
+                "ƒ.Node": {
+                  "name": "Floor",
+                  "active": true,
+                  "components": {},
+                  "children": []
+                }
+              }
+            ]
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Collectables",
+            "active": true,
+            "components": {},
+            "children": []
+          }
+        }
+      ],
+      "idResource": "Graph|2023-03-20T15:45:04.679Z|54593",
+      "type": "Graph"
+    }
+  },
+  "MeshQuad|2023-03-20T15:50:09.508Z|73441": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2023-03-20T15:50:09.508Z|73441",
+      "name": "Sp_Floor"
+    }
+  },
+  "Material|2023-03-20T16:02:02.088Z|40961": {
+    "ƒ.Material": {
+      "name": "Ma_Floor",
+      "idResource": "Material|2023-03-20T16:02:02.088Z|40961",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]"
+        }
+      }
+    }
+  }
+}
