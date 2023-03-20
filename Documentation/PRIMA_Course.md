@@ -27,6 +27,13 @@
 
 ### External resources
 
-* dose not work in the current version!
+* **dose not work in the current version!**
 * External resources -> to internal -> than it will become an textureImage
-* [ ] **TASK: Create a Level for FUDGE!**
+
+### Transforming GameObjects
+
+* Moving the Mesh on the TransformMatrix will cause problem
+  * Node is on the origin, mesh is somwhere else.
+* Use a Transform Component to move the Mesh!
+
+> * [ ] **TASK: Create a Level for FUDGE!**
