@@ -49,3 +49,24 @@ Fudge Level:
 ![FloorTile Transform](assets/20230320_193732_image.png)
 
 ![Level](assets/20230320_193829_image.png)
+
+# 23.03.23 :date:
+
+* Z-Fighting => Z-BufferError Means that two faces/meshes overlaping each other on the same plane and the Tile Texture flickers.
+
+## The Camera
+
+* The camerer has an FOV/Opening angle. Problem, in which angle is the Fov? Diagonal/Horizontal/Vertical :Standard is the **diagonal Angle**
+* Usualy you have a far Plane for the for the distacne and a Plane for the near distance.
+  * Performence boost :Rendering onliy inside the Piramide. Between Far and Near plane.
+* -> Render to a cube! Squiching the far end of the Plane and streching the near Plane.
+  * FievSpace!
+* Deph buffer and Z buffer is the same
+  * 16 bit -> 65Thousend slices! Not that precission.
+  * The Z-Buffer resuolution is not linier its is more dense near the Camera.
+
+### Nodes
+
+* What are Nodes?
+  * Pivot Point -> Rotate on the spot!
+  * MTX stands for Matrix
