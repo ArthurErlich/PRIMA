@@ -44,7 +44,12 @@ var Script;
     let myHumanoid = null;
     let jumpCountdwon = 0;
     let jumped = false;
+    let mausePos = new ƒ.Vector2(0, 0);
     document.addEventListener("interactiveViewportStarted", start); // interactiveViewportStarted AutoCamara setup
+    document.addEventListener("mousemove", onMauseUpdate, false);
+    function onMauseUpdate(e) {
+        mausePos = new ƒ.Vector2(e.pageX, e.pageY);
+    }
     function start(_event) {
         viewport = _event.detail; //What is a Viewpoert?  
         myHumanoid = viewport.getBranch().getChildrenByName("Charackter")[0];
@@ -65,6 +70,9 @@ var Script;
         // ƒ.Physics.simulate();  // if physics is included and used
         //FrameTime???
         myHumanoid.mtxLocal.translateX(ƒ.Loop.timeFrameGame / 10000);
+        //dose not work properly
+        //viewport.camera.mtxWorld.translate(ƒ.Vector3.SUM(myHumanoid.mtxWorld.translation , new ƒ.Vector3(0, 0, 5)));
+        //Just a test
         //myHumanoid.mtxLocal.translateX(-(ƒ.Loop.timeFrameReal/100));
         // jumps the cube after 5 seconds up
         if (jumpCountdwon >= 2.0) {
@@ -78,6 +86,11 @@ var Script;
             }
             jumpCountdwon = 0;
         }
+        let pickNodes = ƒ.Picker.pickViewport(viewport, mausePos);
+        for (let i = 0; i < pickNodes.length; i++) {
+            console.info(pickNodes[i].node.name);
+        }
+        //console.log(viewport.getRayFromClient(mausePos) +"");
         jumpCountdwon += ƒ.Loop.timeFrameGame / 1000;
         viewport.draw();
         ƒ.AudioManager.default.update();
