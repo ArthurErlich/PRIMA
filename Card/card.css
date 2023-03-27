@@ -22,7 +22,6 @@ a {
 a:hover {
     box-shadow: 3px 3px 3px 3px rgba(33, 33, 33, 0.4);
     transition: all 0.2s;
-    rgba(255, 255, 255, 0.18);
     background: #5d5d5d;
 }
 
