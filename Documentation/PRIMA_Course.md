@@ -70,3 +70,43 @@ Fudge Level:
 * What are Nodes?
   * Pivot Point -> Rotate on the spot!
   * MTX stands for Matrix
+
+# Fudge Disable AutoCam
+
+* anotate types with javascript
+  * autoview.js
+* eventListener ("load", init) calls the init function
+* Fudge has an Build in Events system.
+  * Fudge implements the invent trough the Graph (Node can send masseges to other Nodes)
+* User interaction needs to start the audio.
+  * That is why the weclom massegs is there.
+  * zeile 28
+* Fusge.Project -> all resaursces are in that.
+* Camera is a component
+* 49->52 are the think we need
+* fAid has advance function for Autoview (e.g MauspointerLook)
+* the audio manager is also there
+* dispach event -> get rid of event
+
+Task: Remove the Camera and Audio
+
+* You can drop stuff from the Component window to Rendered Game window.
+* looking to the Backside. You need to rotate the Camera around 180° again! and than move +Z
+* Dont to mtxWorld! This will not be used! Use the mtxPivot
+* Rotation is in degreess nor Rad.
+
+# Fudge Event System
+
+[Eventsystem · JirkaDellOro/FUDGE Wiki (github.com)](https://github.com/JirkaDellOro/FUDGE/wiki/Eventsystem)
+
+![](assets/20230327_164759_image.png)
+
+* Wich object is the last Event object?
+* Iv nobody handels the element, the Event will bubble to the Parent Capture the event on the Documet!! maybe xD BRUTE FORCE
+
+## Implementation of Gravity
+
+* adding velocyte to my veloity
+  * on the ground every frame the velocity is 0
+  * Jumping add Velocity upword!
+* Make someting fall! Velocity
