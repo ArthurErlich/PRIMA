@@ -6,9 +6,20 @@ namespace Script {
 
 
   let myHumanoid: ƒ.Node = null;
-  let jumpCountdwon: number = 0;
-  let jumped: boolean = false;
+  // let jumpCountdwon: number = 0;
+  //let jumped: boolean = false;
   let mausePos: ƒ.Vector2 = new ƒ.Vector2(0, 0);
+
+  //Velocety of Player
+  let gravity = -0.008;
+  let playerFallingSpeed = 0;
+  let hight = 0;
+
+  /*
+  let playerVelocety: ƒ.Vector3 = new ƒ.Vector3(0, 0, 0);
+  let gravity: ƒ.Vector3 = new ƒ.Vector3(0, -0.000001, 0);
+  */
+
 
   //document.addEventListener("keydown", handKyboard); this is not the right way!
 
@@ -26,13 +37,14 @@ namespace Script {
   function start(_event: CustomEvent): void {
     viewport = _event.detail; //What is a Viewpoert?  
 
-
+    //move the Cam to the right position
     viewport.camera.mtxPivot.translateZ(9);
     viewport.camera.mtxPivot.rotateY(180);
-
+    
+    //get the player node
     myHumanoid = viewport.getBranch().getChildrenByName("Charackter")[0]; // Charakter = Charakter!!!
-
-    //adding node and ataching node
+    
+    //atach the camera to the player node
     let cNode = new ƒ.Node("Camera");
     cNode.addComponent(viewport.camera);
     myHumanoid.addChild(cNode);
@@ -56,80 +68,77 @@ namespace Script {
 
   function update(_event: Event): void {
     // ƒ.Physics.simulate();  // if physics is included and used
-
-    //FrameTime???
-    //myHumanoid.mtxLocal.translateX(ƒ.Loop.timeFrameGame / 10000);
-    //how to set vector3 to vector3
-    // myHumanoid.mtxLocal
-    // viewport.camera.mtxPivot.translateX();
-    // viewport.camera.mtxPivot.translateY();
-
-
-    //dose not work properly
-    // viewport.camera.mtxPivot.translate(ƒ.Vector3.SUM(myHumanoid.mtxWorld.translation , new ƒ.Vector3(0, 0, 5)));
-
-    //Just a test
-    //myHumanoid.mtxLocal.translateX(-(ƒ.Loop.timeFrameReal/100));
-
-    /*
-    // jumps the cube after 5 seconds up
-    if (jumpCountdwon >= 2.0) {
-      if (jumped) {
-        jumped = false;
-        myHumanoid.mtxLocal.translateY(-1);
-      }
-      else {
-        jumped = true;
-        myHumanoid.mtxLocal.translateY(1);
-      }
-      jumpCountdwon = 0;
-    }
-
-
-    let pickNodes:ƒ.Pick[] = ƒ.Picker.pickViewport(viewport,mausePos); 
-    for (let i : number = 0; i<pickNodes.length; i++){
-     // console.info(pickNodes[i].node.name);
-    }
-    //console.log(viewport.getRayFromClient(mausePos) +"");
- 
-    jumpCountdwon += ƒ.Loop.timeFrameGame / 1000;
-   
-   */
-    //let movement:ƒ.Vector3 = new ƒ.Vector3(0,0,0); 
-
-    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D])) {
-      myHumanoid.mtxLocal.translateX(0.01 * ƒ.Loop.timeFrameGame);
-      //movement = ƒ.Vector3.SUM(movement,new ƒ.Vector3(0.01))
-    }
-
-    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A])) {
-      myHumanoid.mtxLocal.translateX(-0.01 * ƒ.Loop.timeFrameReal);
-    }
-    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W])) {
-      myHumanoid.mtxLocal.translateY(0.01 * ƒ.Loop.timeFrameGame);
-    }
-    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S])) {
-      myHumanoid.mtxLocal.translateY(-0.01 * ƒ.Loop.timeFrameGame);
-    }
-
-
-    /* Movment Vector
-    movement.normalize;
-    movement = movement * ƒ.Loop.timeFrameGame;
-    myHumanoid.mtxLocal.translate(movement);
-    /*
+    
+    movementInput();
+    //movementUpdate();
 
     viewport.draw();
     // ƒ.AudioManager.default.update();
 
   }
+  function movementInput() {
+    hight = myHumanoid.mtxLocal.translation.y + 0.5 ;//<-- because i have the wrong mtx matrix!
+    let isGrounded = true;
 
-  //Basic doom programming this is event driven other option Polling-> Asking if this is pressed!
-  function handKyboard(ev: KeyboardEvent) {
-    if (ev.code == ƒ.KEYBOARD_CODE.D || ev.code == ƒ.KEYBOARD_CODE.ARROW_RIGHT) {
-      myHumanoid.mtxLocal.translateX(0.01)
+    if (hight > 1) {
+      isGrounded = false;
+    }else{
+      isGrounded = true;
+    }
+
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D])) {
+      myHumanoid.mtxLocal.translateX(0.01 * ƒ.Loop.timeFrameGame);
+      /*
+      let right: ƒ.Vector3 = new ƒ.Vector3(0.001, 0, 0);
+      right.scale(ƒ.Loop.timeFrameGame/100);
+      playerVelocety.add(right);
+      */
 
     }
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A])) {
+      myHumanoid.mtxLocal.translateX(-0.01 * ƒ.Loop.timeFrameReal);
+      /*
+      let left: ƒ.Vector3 = new ƒ.Vector3(-0.001, 0, 0);
+      left.scale(ƒ.Loop.timeFrameGame/100);
+      playerVelocety.add(left);
+      */
+    }
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
+       //myHumanoid.mtxLocal.translateY(0.01 * ƒ.Loop.timeFrameGame);
+       playerFallingSpeed = 0.2;
+       isGrounded = false;
+      /*
+      let jumpVelocity: ƒ.Vector3 = new ƒ.Vector3(0, 100, 0);
+      playerVelocety.add(jumpVelocity);
+      */
+    }
+
+    if (!isGrounded) {
+      playerFallingSpeed += gravity;
+      myHumanoid.mtxLocal.translateY(playerFallingSpeed* ƒ.Loop.timeFrameGame/10);
+      /*
+      let deltaGravity: ƒ.Vector3 = gravity;
+      deltaGravity.scale(ƒ.Loop.timeFrameGame);
+
+      playerVelocety = ƒ.Vector3.SUM(playerVelocety, gravity);
+      */
+
+    } else {
+      playerFallingSpeed = 0;
+      myHumanoid.mtxLocal.translation.y = 0;
+
+      /*
+      playerVelocety = new ƒ.Vector3(playerVelocety.x, 0, playerVelocety.z);
+      */
+    }
+  }
+  function movementUpdate() {
+    /*
+    let deltaVelocity: ƒ.Vector3 = playerVelocety;
+    deltaVelocity.scale(ƒ.Loop.timeFrameGame);
+ 
+     myHumanoid.mtxLocal.translate(playerVelocety);
+    */
   }
 }
 
