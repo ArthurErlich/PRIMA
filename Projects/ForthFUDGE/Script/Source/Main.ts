@@ -96,7 +96,7 @@ namespace Script {
 
     }
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A])) {
-      myHumanoid.mtxLocal.translateX(-0.01 * ƒ.Loop.timeFrameReal);
+      myHumanoid.mtxLocal.translateX(-0.01 * ƒ.Loop.timeFrameGame);
       /*
       let left: ƒ.Vector3 = new ƒ.Vector3(-0.001, 0, 0);
       left.scale(ƒ.Loop.timeFrameGame/100);
