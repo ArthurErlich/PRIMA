@@ -41,7 +41,7 @@ async function startInteractiveViewport(_graphId)/* : void */ {
   let graph/* : ƒ.Graph */ = ƒ.Project.resources[_graphId];
   ƒ.Debug.log("Graph:", graph);
   if (!graph) {
-    alert("Nothing to render. Create a graph with at least a mesh, material and probably some light");
+    alert("🏃🏃Nothing to render. Create a graph with at least a mesh, material and probably some light 🏃🏃");
     return;
   }
 
