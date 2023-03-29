@@ -1,0 +1,579 @@
+{
+  "MeshSprite|2023-03-29T16:49:43.639Z|77441": {
+    "ƒ.MeshSprite": {
+      "idResource": "MeshSprite|2023-03-29T16:49:43.639Z|77441",
+      "name": "M_PlayerSprite",
+      "type": "MeshSprite"
+    }
+  },
+  "Material|2023-03-29T16:49:22.830Z|31520": {
+    "ƒ.Material": {
+      "name": "Ma_PlayerCharacter",
+      "idResource": "Material|2023-03-29T16:49:22.830Z|31520",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-03-29T17:28:25.576Z|40103"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-03-29T17:28:25.576Z|40103": {
+    "ƒ.TextureImage": {
+      "url": "Texture\\SourceSpriteMap\\Alucard\\Alucard-Walk-Right.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-03-29T17:28:25.576Z|40103",
+        "name": "Texture\\SourceSpriteMap\\Alucard\\Alucard-Walk-Right.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Graph|2023-03-29T16:28:46.133Z|95456": {
+    "ƒ.Graph": {
+      "name": "Game",
+      "active": true,
+      "components": {},
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "Floor",
+            "active": true,
+            "components": {},
+            "children": [
+              {
+                "ƒ.GraphInstance": {
+                  "deserializeFromSource": true,
+                  "name": "Platform_4x1",
+                  "idSource": "Graph|2023-03-29T16:36:07.667Z|90887"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Character",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshSprite|2023-03-29T16:49:43.639Z|77441",
+                    "pivot": {
+                      "translation": "[0, -0.5, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0.10999999195337296, 0]",
+                      "rotation": 0,
+                      "scaling": "[0.07000000029802322, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-03-29T16:49:22.830Z|31520"
+                  }
+                }
+              ],
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, 0.5, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        }
+      ],
+      "idResource": "Graph|2023-03-29T16:28:46.133Z|95456",
+      "type": "Graph"
+    }
+  },
+  "MeshQuad|2023-03-29T16:35:14.448Z|97024": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2023-03-29T16:35:14.448Z|97024",
+      "name": "M_FoorTile_1"
+    }
+  },
+  "MeshQuad|2023-03-29T16:35:31.467Z|29021": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2023-03-29T16:35:31.467Z|29021",
+      "name": "M_FoorTile_2"
+    }
+  },
+  "Graph|2023-03-29T16:36:07.667Z|90887": {
+    "ƒ.Graph": {
+      "name": "Platform_4x1",
+      "active": true,
+      "components": {
+        "ComponentTransform": [
+          {
+            "ƒ.ComponentTransform": {
+              "local": {
+                "translation": "[0, -1, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ]
+      },
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "Tile",
+            "active": true,
+            "components": {
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-03-29T16:42:17.213Z|47073"
+                  }
+                }
+              ],
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshQuad|2023-03-29T16:35:14.448Z|97024",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Tile",
+            "active": true,
+            "components": {
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-03-29T16:42:17.213Z|47073"
+                  }
+                }
+              ],
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshQuad|2023-03-29T16:35:14.448Z|97024",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[1, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Tile",
+            "active": true,
+            "components": {
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-03-29T16:42:17.213Z|47073"
+                  }
+                }
+              ],
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshQuad|2023-03-29T16:35:14.448Z|97024",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[2, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Tile",
+            "active": true,
+            "components": {
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-03-29T16:42:17.213Z|47073"
+                  }
+                }
+              ],
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshQuad|2023-03-29T16:35:14.448Z|97024",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[3, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        }
+      ],
+      "idResource": "Graph|2023-03-29T16:36:07.667Z|90887",
+      "type": "Graph"
+    }
+  },
+  "Graph|2023-03-29T16:36:28.747Z|39004": {
+    "ƒ.Graph": {
+      "name": "Platform_2x1",
+      "active": true,
+      "components": {},
+      "children": [],
+      "idResource": "Graph|2023-03-29T16:36:28.747Z|39004",
+      "type": "Graph"
+    }
+  },
+  "Graph|2023-03-29T16:38:18.198Z|74297": {
+    "ƒ.Graph": {
+      "name": "Background",
+      "active": true,
+      "components": {},
+      "children": [],
+      "idResource": "Graph|2023-03-29T16:38:18.198Z|74297",
+      "type": "Graph"
+    }
+  },
+  "MeshQuad|2023-03-29T16:39:20.328Z|19974": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2023-03-29T16:39:20.328Z|19974",
+      "name": "M_Background"
+    }
+  },
+  "Material|2023-03-29T16:42:17.213Z|47073": {
+    "ƒ.Material": {
+      "name": "Ma_Floor_1",
+      "idResource": "Material|2023-03-29T16:42:17.213Z|47073",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-03-29T16:45:19.470Z|41017"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-03-29T16:45:19.470Z|41017": {
+    "ƒ.TextureImage": {
+      "url": "Texture\\Tex_Floor_1.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-03-29T16:45:19.470Z|41017",
+        "name": "Texture\\Tex_Floor_1.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Graph|2023-03-29T16:40:35.501Z|52373": {
+    "ƒ.Graph": {
+      "name": "Floor_1",
+      "active": true,
+      "components": {
+        "ComponentTransform": [
+          {
+            "ƒ.ComponentTransform": {
+              "local": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "ComponentMesh": [
+          {
+            "ƒ.ComponentMesh": {
+              "idMesh": "MeshQuad|2023-03-29T16:35:14.448Z|97024",
+              "pivot": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "ComponentMaterial": [
+          {
+            "ƒ.ComponentMaterial": {
+              "sortForAlpha": false,
+              "clrPrimary": "[1, 1, 1, 1]",
+              "clrSecondary": "[1, 1, 1, 1]",
+              "pivot": {
+                "translation": "[0, 0]",
+                "rotation": 0,
+                "scaling": "[1, 1.0000001192092896]"
+              },
+              "Component": {
+                "active": true
+              },
+              "idMaterial": "Material|2023-03-29T16:42:17.213Z|47073"
+            }
+          }
+        ]
+      },
+      "children": [],
+      "idResource": "Graph|2023-03-29T16:40:35.501Z|52373",
+      "type": "Graph"
+    }
+  },
+  "Material|2023-03-29T16:46:26.677Z|14751": {
+    "ƒ.Material": {
+      "name": "Ma_Floor_2",
+      "idResource": "Material|2023-03-29T16:46:26.677Z|14751",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-03-29T16:45:21.020Z|57648"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-03-29T16:45:21.020Z|57648": {
+    "ƒ.TextureImage": {
+      "url": "Texture\\Tex_Floor_2.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-03-29T16:45:21.020Z|57648",
+        "name": "Texture\\Tex_Floor_2.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Graph|2023-03-29T16:41:09.824Z|22349": {
+    "ƒ.Graph": {
+      "name": "Floor_2",
+      "active": true,
+      "components": {
+        "ComponentTransform": [
+          {
+            "ƒ.ComponentTransform": {
+              "local": {
+                "translation": "[2, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "ComponentMesh": [
+          {
+            "ƒ.ComponentMesh": {
+              "idMesh": "MeshQuad|2023-03-29T16:35:31.467Z|29021",
+              "pivot": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "ComponentMaterial": [
+          {
+            "ƒ.ComponentMaterial": {
+              "sortForAlpha": false,
+              "clrPrimary": "[1, 1, 1, 1]",
+              "clrSecondary": "[1, 1, 1, 1]",
+              "pivot": {
+                "translation": "[0, 0]",
+                "rotation": 0,
+                "scaling": "[1, 1]"
+              },
+              "Component": {
+                "active": true
+              },
+              "idMaterial": "Material|2023-03-29T16:46:26.677Z|14751"
+            }
+          }
+        ]
+      },
+      "children": [],
+      "idResource": "Graph|2023-03-29T16:41:09.824Z|22349",
+      "type": "Graph"
+    }
+  },
+  "TextureImage|2023-03-29T16:42:52.771Z|97880": {
+    "ƒ.TextureImage": {
+      "url": "Texture\\SourceSpriteMap\\PlayStation - Castlevania Symphony of the Night.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-03-29T16:42:52.771Z|97880",
+        "name": "Texture\\SourceSpriteMap\\PlayStation - Castlevania Symphony of the Night.png",
+        "mipmap": "CRISP"
+      }
+    }
+  }
+}

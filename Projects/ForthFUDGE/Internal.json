@@ -80,7 +80,7 @@
       "children": [
         {
           "ƒ.Node": {
-            "name": "Tarrain",
+            "name": "Terrain",
             "active": true,
             "components": {},
             "children": [
