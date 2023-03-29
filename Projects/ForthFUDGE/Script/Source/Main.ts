@@ -38,6 +38,7 @@ namespace Script {
     viewport = _event.detail; //What is a Viewpoert?  
 
     //move the Cam to the right position
+    console.log("moved cam");
     viewport.camera.mtxPivot.translateZ(9);
     viewport.camera.mtxPivot.rotateY(180);
     
@@ -87,7 +88,7 @@ namespace Script {
     }
 
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D])) {
-      myHumanoid.mtxLocal.translateX(0.01 * ƒ.Loop.timeFrameGame);
+      myHumanoid.mtxLocal.translateX(0.01 *);
       /*
       let right: ƒ.Vector3 = new ƒ.Vector3(0.001, 0, 0);
       right.scale(ƒ.Loop.timeFrameGame/100);
@@ -96,7 +97,7 @@ namespace Script {
 
     }
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A])) {
-      myHumanoid.mtxLocal.translateX(-0.01 * ƒ.Loop.timeFrameGame);
+      myHumanoid.mtxLocal.translateX(-0.01);
       /*
       let left: ƒ.Vector3 = new ƒ.Vector3(-0.001, 0, 0);
       left.scale(ƒ.Loop.timeFrameGame/100);
@@ -104,7 +105,7 @@ namespace Script {
       */
     }
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
-       //myHumanoid.mtxLocal.translateY(0.01 * ƒ.Loop.timeFrameGame);
+       //myHumanoid.mtxLocal.translateY(0.01 * ƒ.Loop.timeFrameGame);a
        playerFallingSpeed = 0.2;
        isGrounded = false;
       /*

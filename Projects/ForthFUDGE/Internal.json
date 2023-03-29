@@ -53,6 +53,25 @@
       }
     }
   },
+  "MeshSprite|2023-03-23T13:57:49.228Z|90390": {
+    "ƒ.MeshSprite": {
+      "idResource": "MeshSprite|2023-03-23T13:57:49.228Z|90390",
+      "name": "M_Humanoid",
+      "type": "MeshSprite"
+    }
+  },
+  "Material|2023-03-23T13:57:25.205Z|37254": {
+    "ƒ.Material": {
+      "name": "M_Humanoid",
+      "idResource": "Material|2023-03-23T13:57:25.205Z|37254",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]"
+        }
+      }
+    }
+  },
   "Graph|2023-03-20T18:24:46.002Z|06651": {
     "ƒ.Graph": {
       "name": "Game",
@@ -1024,25 +1043,6 @@
       ],
       "idResource": "Graph|2023-03-20T18:24:46.002Z|06651",
       "type": "Graph"
-    }
-  },
-  "Material|2023-03-23T13:57:25.205Z|37254": {
-    "ƒ.Material": {
-      "name": "M_Humanoid",
-      "idResource": "Material|2023-03-23T13:57:25.205Z|37254",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]"
-        }
-      }
-    }
-  },
-  "MeshSprite|2023-03-23T13:57:49.228Z|90390": {
-    "ƒ.MeshSprite": {
-      "idResource": "MeshSprite|2023-03-23T13:57:49.228Z|90390",
-      "name": "M_Humanoid",
-      "type": "MeshSprite"
     }
   }
 }
