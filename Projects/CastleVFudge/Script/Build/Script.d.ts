@@ -1,11 +1,3 @@
-declare namespace Alucard {
-    class Alucard {
-        maxSpeed: number;
-        fallSpeed: number;
-        gravity: number;
-        update(): void;
-    }
-}
 declare namespace Script {
     import ƒ = FudgeCore;
     class CustomComponentScript extends ƒ.ComponentScript {
@@ -15,5 +7,24 @@ declare namespace Script {
         hndEvent: (_event: Event) => void;
     }
 }
-declare namespace Script {
+declare namespace CastleV {
+}
+declare namespace CastleV {
+    import ƒ = FudgeCore;
+    class Player {
+        alucard: ƒ.Node;
+        private gravity;
+        private playerSpeed;
+        private fallingSpeed;
+        private maySpeed;
+        private maxFallSpeed;
+        private material;
+        private deltaTimeSeconds;
+        private elapsedTimeAnim;
+        constructor(viewport: ƒ.Viewport);
+        update(deltaTimeSeconds: number): void;
+        private input;
+        private movement;
+        private updatePlayerAnim;
+    }
 }
