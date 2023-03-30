@@ -1,4 +1,15 @@
 "use strict";
+var Alucard;
+(function (Alucard_1) {
+    class Alucard {
+        maxSpeed = 0;
+        fallSpeed = 0;
+        gravity = 0;
+        update() {
+        }
+    }
+    Alucard_1.Alucard = Alucard;
+})(Alucard || (Alucard = {}));
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
@@ -42,6 +53,8 @@ var Script;
     ƒ.Debug.info("Main Program Template running!");
     //elapsedTime
     let elapsedTimeAnim = 0;
+    //detlaTimeSeconds
+    let detlaTimeSeconds = ƒ.Loop.timeFrameGame;
     //ƒ Node and Viewport
     let viewport;
     let alucard = null;
@@ -49,13 +62,13 @@ var Script;
     let floorTile_1 = null;
     //Velocety of Player
     let gravity = -0.008;
-    let playerFallingSpeed = 0;
+    let playerSpeed = new ƒ.Vector3(0, 0, 0);
+    let height = 1.5;
     let maxPlayerSpeed = 10;
-    let hight = 0;
     //Keyboard input! Bubble Hirachie... Fudge Docu
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
-        viewport = _event.detail; //What is a Viewpoert?  
+        viewport = _event.detail;
         //move the Cam to the right position
         console.log("moved cam");
         viewport.camera.mtxPivot.translateZ(9);
@@ -63,8 +76,8 @@ var Script;
         //get nodes
         alucard = viewport.getBranch().getChildrenByName("Character")[0]; // Character = Charakter!!!
         floor = viewport.getBranch().getChildrenByName("Floor")[0];
-        // how to access other Graphs?
-        floorTile_1 = viewport.getBranch().getChildrenByName("Platform_4x1")[0];
+        // how to access other Graphs? -> reacuurses
+        //floorTile_1 = ƒ.Resurses.getBranch().getChildrenByName("Platform_4x1")[0];
         console.log(floorTile_1);
         //attach the camera to the player node
         let cNode = new ƒ.Node("Camera");
@@ -76,22 +89,27 @@ var Script;
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
         movementInput();
-        //movementUpdate();
+        movementUpdate();
         viewport.draw();
         // ƒ.AudioManager.default.update();
     }
     function movementInput() {
-        hight = alucard.mtxLocal.translation.y + 0.5; //<-- because i have the wrong mtx matrix!
         let isGrounded = true;
-        if (hight > 1) {
+        if (height > 1) {
             isGrounded = false;
         }
         else {
             isGrounded = true;
+            //Better test bevor changing!
+            /*
+            playerFallingSpeed = 0;
+            alucard.mtxLocal.translation = new ƒ.Vector3(alucard.mtxLocal.translation.x,0.5,alucard.mtxLocal.translation.z);
+            */
         }
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D])) {
-            alucard.mtxLocal.translateX(0.005 * ƒ.Loop.timeFrameGame);
+            playerSpeed = new ƒ.Vector3(5 * detlaTimeSeconds, playerSpeed.y, playerSpeed.z);
             updatePlayerAnim(WalkDirection.RIGHT);
+            //alucard.mtxLocal.translateX(0.005*ƒ.Loop.timeFrameGame);
             /*
             let right: ƒ.Vector3 = new ƒ.Vector3(0.001, 0, 0);
             right.scale(ƒ.Loop.timeFrameGame/100);
@@ -99,8 +117,9 @@ var Script;
             */
         }
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A])) {
-            alucard.mtxLocal.translateX(-0.005 * ƒ.Loop.timeFrameGame);
+            playerSpeed = new ƒ.Vector3(-5 * detlaTimeSeconds, playerSpeed.y, playerSpeed.z);
             updatePlayerAnim(WalkDirection.LEFT);
+            //alucard.mtxLocal.translateX(-5*ƒ.Loop.timeFrameGame/1000);
             /*
             let left: ƒ.Vector3 = new ƒ.Vector3(-0.001, 0, 0);
             left.scale(ƒ.Loop.timeFrameGame/100);
@@ -108,39 +127,36 @@ var Script;
             */
         }
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
-            //alucard.mtxLocal.translateY(0.01 * ƒ.Loop.timeFrameGame);a
-            playerFallingSpeed = 0.2;
+            playerSpeed = new ƒ.Vector3(playerSpeed.x, 0.2, playerSpeed.z);
             isGrounded = false;
             /*
+            //alucard.mtxLocal.translateY(0.01 * ƒ.Loop.timeFrameGame);
+            playerFallingSpeed = 0.2;
             let jumpVelocity: ƒ.Vector3 = new ƒ.Vector3(0, 100, 0);
             playerVelocety.add(jumpVelocity);
             */
         }
         if (!isGrounded) {
-            playerFallingSpeed += gravity;
-            alucard.mtxLocal.translateY(playerFallingSpeed * ƒ.Loop.timeFrameGame / 10);
+            playerSpeed = new ƒ.Vector3(playerSpeed.x, (gravity + gravity) * detlaTimeSeconds, playerSpeed.z);
             /*
+            alucard.mtxLocal.translateY(playerFallingSpeed * ƒ.Loop.timeFrameGame / 10);
             let deltaGravity: ƒ.Vector3 = gravity;
             deltaGravity.scale(ƒ.Loop.timeFrameGame);
       
             playerVelocety = ƒ.Vector3.SUM(playerVelocety, gravity);
             */
         }
-        else {
-            playerFallingSpeed = 0;
-            alucard.mtxLocal.translation.y = 0; // wont work??
-            /*
-            playerVelocety = new ƒ.Vector3(playerVelocety.x, 0, playerVelocety.z);
-            */
-        }
     }
     function movementUpdate() {
-        /*
-        let deltaVelocity: ƒ.Vector3 = playerVelocety;
-        deltaVelocity.scale(ƒ.Loop.timeFrameGame);
-     
-         alucard.mtxLocal.translate(playerVelocety);
-        */
+        //grab the movment vector and add it to the mtx of the player
+        //alucard.mtxLocal.translation = new ƒ.Vector3()
+        if (height > 1) {
+            playerSpeed = new ƒ.Vector3(playerSpeed.y, 0, playerSpeed.z);
+            alucard.mtxLocal.translation = new ƒ.Vector3(playerSpeed.y, 0, playerSpeed.z);
+        }
+        else {
+            alucard.mtxLocal.translation = playerSpeed;
+        }
     }
     function updatePlayerAnim(direction) {
         let updateTime = 0.06;

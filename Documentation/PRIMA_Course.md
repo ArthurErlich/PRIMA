@@ -110,3 +110,41 @@ Task: Remove the Camera and Audio
   * on the ground every frame the velocity is 0
   * Jumping add Velocity upword!
 * Make someting fall! Velocity
+* Get postion than check and et least make the change!
+
+# Next Prima 30.03.2023
+
+## Transfromation Matrix in Games
+
+* 2D Transform Matrix
+
+  * |1 0|
+  * |0 1| <- Identity matrix / no change
+  *
+  * |1 1|
+  * |0 1| x' = x+y, y'= y
+* 3D Transform Matrix
+
+  * |
+  * |
+  * |
+* RealTime is the system time
+* GameTime is the game time, can be set diffrently  like slow motion
+
+  * Both are in Miliseconds to adjust it to one second just devide it by 1000
+
+## Collisions!!
+
+* Collisions are allways on the world coordinates
+* Collision detection with boundingboxes
+  * Simplest = Boundning circle -> checking = (r1+r2)
+    * Collision when the distance of the origin of both of the object are smaller
+    * Sqr is a difficutl calculation on the PC
+    * (p1- p2 < (r1+r2)^2 <- is a form of "culling" easy to check if objects are in reache
+* Better Collision bounds for the pc is ->
+  * Character know the mtxWorld
+  * Tile know his mtxWolrdInverse <-- (makes it backwardss)
+    * Calculate mtxWorld to the Tile.mtxWorldInverse()
+    * Then check inside if the player is inside the bounderys of 0.5 ....
+
+TASK make the Collision!!!
