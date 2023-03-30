@@ -36,7 +36,7 @@ namespace Script {
     floor = viewport.getBranch().getChildrenByName("Floor")[0];
 
     // how to access other Graphs?
-    floorTile_1 =viewport.getBranch().getChildrenByName("Platform_4x1")[0];
+    floorTile_1 = viewport.getBranch().getChildrenByName("Platform_4x1")[0];
     console.log(floorTile_1);
     
     //attach the camera to the player node
@@ -44,10 +44,8 @@ namespace Script {
     cNode.addComponent(viewport.camera);
     alucard.addChild(cNode);
 
-
-    // ther is a simpler version to get all this
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-    ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    ƒ.Loop.start();  // start the game loop to continuously draw the viewport, update the audio system and drive the physics i/a
   }
 
   function update(_event: Event): void {
