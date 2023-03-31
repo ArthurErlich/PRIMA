@@ -6,7 +6,7 @@ namespace CastleV {
         public pivot: ƒ.Node = null;
 
         private maxWalkSpeed: number = 3;
-        private gravity: number = -0.8;
+        private gravity: number = -0.6;
         private fallingSpeed: number = 0;
         private maxFallSpeed: number = 0.2;
 
@@ -66,7 +66,7 @@ namespace CastleV {
                 this.updatePlayerAnim(WalkDirection.LEFT);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
-                this.fallingSpeed = 0.15;
+                this.fallingSpeed = 0.13;
                 isGrounded = false;
 
                 //fixes unlimited upwards speed
@@ -91,6 +91,7 @@ namespace CastleV {
                 //playerSpeed = new ƒ.Vector3(playerSpeed.y, 0, playerSpeed.z);
                 this.fallingSpeed = 0;
                 this.alucard.mtxLocal.translate(new ƒ.Vector3(this.playerSpeed.x, 0, this.playerSpeed.z));
+                //Rounding is ok for now, grid is 1x1 so player wont be walking on air/ground
                 this.alucard.mtxLocal.translation = new ƒ.Vector3(this.alucard.mtxLocal.translation.x, Math.round(CollisionDetection.lastCollision.y), this.alucard.mtxLocal.translation.z);
 
             } else {
@@ -104,10 +105,13 @@ namespace CastleV {
             if (this.elapsedTimeAnim >= this.updateTime && direction == WalkDirection.RIGHT) {
 
                 this.material.mtxPivot.translateX(0.0625);
+
                 this.elapsedTimeAnim = 0;
+
             } else if (this.elapsedTimeAnim >= this.updateTime && direction == WalkDirection.LEFT) {
 
                 this.material.mtxPivot.translateX(-0.0625);
+                //TODO:Rotate Alucards TexturedMesh
                 this.elapsedTimeAnim = 0;
             }
         }

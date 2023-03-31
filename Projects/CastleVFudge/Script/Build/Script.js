@@ -30,10 +30,17 @@ var CastleV;
                         playerWorldPos.multiply(tile.mtxWorld);
                         this.lastCollision = playerWorldPos.translation.clone;
                     }
-                    if ((distanceX >= -1 && distanceX <= 0.2) && (distanceY <= 0.8 && distanceY >= 0)) {
+                    //TODO: Check upper Collision -> prevent drive through walls
+                    if ((distanceY <= 1 && distanceY >= 0) && (distanceX >= -0.8 && distanceX <= 0)) {
+                        //collision.push(Collision.UP);
+                        let playerWorldPos = transformPlayerPos.clone;
+                        playerWorldPos.multiply(tile.mtxWorld);
+                        this.lastCollision = playerWorldPos.translation.clone;
+                    }
+                    if ((distanceX >= -0.7 && distanceX <= 0.1) && (distanceY <= 0.8 && distanceY >= 0)) {
                         collision.push(Collision.RIGHT);
                     }
-                    if ((distanceX <= 1 && distanceX >= 0.2) && (distanceY <= 0.8 && distanceY >= 0)) {
+                    if ((distanceX <= 0.8 && distanceX >= 0.1) && (distanceY <= 0.8 && distanceY >= 0)) {
                         collision.push(Collision.LEFT);
                     }
                 }
@@ -197,7 +204,7 @@ var CastleV;
         alucard = null;
         pivot = null;
         maxWalkSpeed = 3;
-        gravity = -0.8;
+        gravity = -0.6;
         fallingSpeed = 0;
         maxFallSpeed = 0.2;
         playerSpeed = new ƒ.Vector3(0, 0, 0);
@@ -243,7 +250,7 @@ var CastleV;
                 this.updatePlayerAnim(WalkDirection.LEFT);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
-                this.fallingSpeed = 0.15;
+                this.fallingSpeed = 0.13;
                 isGrounded = false;
                 //fixes unlimited upwards speed
                 if (this.maxFallSpeed <= this.fallingSpeed) {
@@ -264,6 +271,7 @@ var CastleV;
                 //playerSpeed = new ƒ.Vector3(playerSpeed.y, 0, playerSpeed.z);
                 this.fallingSpeed = 0;
                 this.alucard.mtxLocal.translate(new ƒ.Vector3(this.playerSpeed.x, 0, this.playerSpeed.z));
+                //Rounding is ok for now, grid is 1x1 so player wont be walking on air/ground
                 this.alucard.mtxLocal.translation = new ƒ.Vector3(this.alucard.mtxLocal.translation.x, Math.round(CastleV.CollisionDetection.lastCollision.y), this.alucard.mtxLocal.translation.z);
             }
             else {
@@ -278,6 +286,7 @@ var CastleV;
             }
             else if (this.elapsedTimeAnim >= this.updateTime && direction == WalkDirection.LEFT) {
                 this.material.mtxPivot.translateX(-0.0625);
+                //TODO:Rotate Alucards TexturedMesh
                 this.elapsedTimeAnim = 0;
             }
         }

@@ -38,13 +38,22 @@ namespace CastleV {
                         let playerWorldPos: ƒ.Matrix4x4 = transformPlayerPos.clone;
                         playerWorldPos.multiply(tile.mtxWorld);
                         this.lastCollision = playerWorldPos.translation.clone;
-
-
                     }
-                    if ((distanceX >= -1 && distanceX <= 0.2) && (distanceY <= 0.8 && distanceY >= 0)) {
+                    
+                    //TODO: Check upper Collision -> prevent drive through walls
+                    if ((distanceY <= 1 && distanceY >= 0) && (distanceX >= -0.8 && distanceX <= 0)) {
+                        //collision.push(Collision.UP);
+
+
+                        let playerWorldPos: ƒ.Matrix4x4 = transformPlayerPos.clone;
+                        playerWorldPos.multiply(tile.mtxWorld);
+                        this.lastCollision = playerWorldPos.translation.clone;
+                    }
+
+                    if ((distanceX >= -0.7 && distanceX <= 0.1) && (distanceY <= 0.8 && distanceY >= 0)) {
                         collision.push(Collision.RIGHT);
                     }
-                    if ((distanceX <= 1 && distanceX >= 0.2) && (distanceY <= 0.8 && distanceY >= 0)) {
+                    if ((distanceX <= 0.8 && distanceX >= 0.1) && (distanceY <= 0.8 && distanceY >= 0)) {
                         collision.push(Collision.LEFT);
                     }
                 }
