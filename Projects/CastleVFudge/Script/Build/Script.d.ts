@@ -2,16 +2,17 @@ declare namespace CastleV {
     import ƒ = FudgeCore;
     class CollisionDetection {
         static tiles: ƒ.Node[];
-        static lastCollisionY: number;
+        static lastCollision: ƒ.Vector3;
         static updateTiles(tiles: ƒ.Node[]): void;
-        static check(playerMtxWorld: ƒ.Matrix4x4): Collision;
+        static check(playerMtxWorld: ƒ.Matrix4x4): Collision[];
         private static getDistance;
     }
     enum Collision {
         NONE = 0,
         LEFT = 1,
         RIGHT = 2,
-        DOWN = 3
+        UP = 3,
+        DOWN = 4
     }
 }
 declare namespace Script {
@@ -34,7 +35,6 @@ declare namespace CastleV {
         private gravity;
         private fallingSpeed;
         private maxFallSpeed;
-        private TEMPgroundLevel;
         private playerSpeed;
         private material;
         private deltaTimeSeconds;
@@ -42,6 +42,7 @@ declare namespace CastleV {
         private elapsedTimeAnim;
         constructor(viewport: ƒ.Viewport);
         update(deltaTimeSeconds: number): void;
+        resetPlayer(): void;
         private input;
         private movement;
         private updatePlayerAnim;

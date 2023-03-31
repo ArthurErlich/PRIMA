@@ -2,65 +2,69 @@ namespace CastleV {
     import ƒ = FudgeCore;
     export class CollisionDetection {
         public static tiles: ƒ.Node[] = [];
-        public static lastCollisionY: number = 0;
+        public static lastCollision: ƒ.Vector3 = new ƒ.Vector3(0, 0, 0);
 
         public static updateTiles(tiles: ƒ.Node[]): void {
             this.tiles = tiles;
         }
 
-        public static check(playerMtxWorld: ƒ.Matrix4x4): Collision {
-            let collision: Collision = Collision.NONE;
+        public static check(playerMtxWorld: ƒ.Matrix4x4): Collision[] {
+            let collision: Collision[] = [Collision.NONE];
 
-            for (let tile of CollisionDetection.tiles) {
+
+            for (let tile of this.tiles) {
+
                 //Check if the player is in range of the tile
                 let distance: number = this.getDistance(tile.mtxWorld.translation, playerMtxWorld.translation)
-                if (distance <= 1) {
+                if (distance <= 2) {
 
                     //transform player position to tile local position/scale/rotation
-                    let transformPlayerPos: ƒ.Matrix4x4 = playerMtxWorld;
+                    let transformPlayerPos: ƒ.Matrix4x4 = playerMtxWorld.clone; // clone the matrix so it doesn't change the original
                     transformPlayerPos.multiply(tile.mtxWorldInverse);
 
-                    //get collision
+                    // console.log("PlayerY: " + playerMtxWorld.translation.y);
+                    // console.log("PlayerRelativeY: " + transformPlayerPos.translation.y);
+
+                    //get position of tiles
                     let distanceX: number = transformPlayerPos.translation.x;
                     let distanceY: number = transformPlayerPos.translation.y;
-                    //console.log("Y: " + distanceY);
-
-                    let tileOffset: number = 0.5;
-
 
                     //TODO: REWORK COLLISION DETECTION!
-                    if (distanceX >= -tileOffset && distanceX <= 0) {
-                        // console.warn("right");
-                        // player.alucard.mtxLocal.translateX(-0.05);
-                        collision = Collision.RIGHT;
+                    //TODO: GET HIGHT AND WIDTH OF TILE 
+                    if ((distanceY <= 1 && distanceY >= 0) && (distanceX >= -0.8 && distanceX <= 0.8)) {
+                        collision.push(Collision.DOWN);
+
+
+                        let playerWorldPos: ƒ.Matrix4x4 = transformPlayerPos.clone;
+                        playerWorldPos.multiply(tile.mtxWorld);
+                        this.lastCollision = playerWorldPos.translation.clone;
+
+
                     }
-                    if (distanceX <= tileOffset && distanceX >= 0) {
-                        // console.warn("left");
-                        // player.alucard.mtxLocal.translateX(0.05);
-                        collision = Collision.LEFT;
+                    if ((distanceX >= -1 && distanceX <= 0.2) && (distanceY <= 0.8 && distanceY >= 0)) {
+                        collision.push(Collision.RIGHT);
                     }
-                    if (distanceY <= 1 && distanceX >= 0) {
-                        // console.warn("up");
-                        // player.alucard.mtxLocal.translateY(0.1);
-                        collision = Collision.DOWN;
-                        this.lastCollisionY = tile.mtxWorld.translation.y+1;
+                    if ((distanceX <= 1 && distanceX >= 0.2) && (distanceY <= 0.8 && distanceY >= 0)) {
+                        collision.push(Collision.LEFT);
                     }
-                //}
+                }
+
             }
             return collision;
         }
-        //Pythagoras
+
         private static getDistance(_pos1: ƒ.Vector3, _pos2: ƒ.Vector3): number {
             let distance: number = Math.sqrt(Math.pow(_pos1.x - _pos2.x, 2) + Math.pow(_pos1.y - _pos2.y, 2) + Math.pow(_pos1.z - _pos2.z, 2));
             return distance;
         }
-
     }
+    //Pythagoras
     export enum Collision {
         NONE = 0,
         LEFT = 1,
         RIGHT = 2,
-        DOWN = 3,
+        UP = 3,
+        DOWN = 4,
     }
 }
 

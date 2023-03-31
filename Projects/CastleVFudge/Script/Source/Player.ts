@@ -3,14 +3,12 @@ namespace CastleV {
 
     export class Player {
         public alucard: ƒ.Node = null;
-        public pivot : ƒ.Node = null;
+        public pivot: ƒ.Node = null;
 
         private maxWalkSpeed: number = 3;
         private gravity: number = -0.8;
         private fallingSpeed: number = 0;
         private maxFallSpeed: number = 0.2;
-
-        private TEMPgroundLevel: number = 0;//TODO: get the ground level from the tilemap
 
         private playerSpeed: ƒ.Vector3 = new ƒ.Vector3(0, 0, 0);
         private material: ƒ.ComponentMaterial = null;
@@ -35,39 +33,44 @@ namespace CastleV {
             this.input();
         }
 
+        public resetPlayer(): void {
+            this.playerSpeed = new ƒ.Vector3(0, 0, 0);
+            this.fallingSpeed = 0;
+
+            this.alucard.mtxLocal.translation = new ƒ.Vector3(0, 1, 0);//TODO: Change to spawnpoint
+        }
+
         private input(): void {
             let isGrounded = true;
             this.playerSpeed = new ƒ.Vector3(0, 0, 0);
 
-            //TODO: check collision with all tiles
-            if (CollisionDetection.check(this.pivot.mtxWorld) != Collision.DOWN)/*(this.TEMPgroundLevel < this.alucard.mtxLocal.translation.y + this.fallingSpeed)*/ { //CollisionDetection.checkCollisionHight(this.alucard)
+
+            if (CollisionDetection.check(this.alucard.mtxWorld).find(e => e == Collision.DOWN) != Collision.DOWN) {
                 isGrounded = false;
             } else {
                 isGrounded = true;
             }
-            console.log(CollisionDetection.check(this.alucard.mtxWorld) != Collision.DOWN);
-            console.log(this.alucard.mtxWorld.translation +"");
-            console.log(CollisionDetection.lastCollisionY);
-            
-            
-            
+            // console.log(CollisionDetection.check(this.alucard.mtxWorld) != Collision.DOWN);
+            // console.log(this.alucard.mtxWorld.translation +"");
+            // console.log(CollisionDetection.lastCollisionY);
 
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D])) {
+
+
+
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]) && !(CollisionDetection.check(this.alucard.mtxWorld).find(e => e == Collision.RIGHT) == Collision.RIGHT)) {
                 this.playerSpeed = new ƒ.Vector3(this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);
                 this.updatePlayerAnim(WalkDirection.RIGHT);
             }
-            else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A])) {
+            else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]) && !(CollisionDetection.check(this.alucard.mtxWorld).find(e => e == Collision.LEFT) == Collision.LEFT)) {
                 this.playerSpeed = new ƒ.Vector3(-this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);
                 this.updatePlayerAnim(WalkDirection.LEFT);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
-                this.fallingSpeed = 0.17;
-                // this.alucard.mtxLocal.translateY(0);//old way of doing it
-                this.alucard.mtxLocal.translateY(CollisionDetection.lastCollisionY);
+                this.fallingSpeed = 0.15;
                 isGrounded = false;
 
                 //fixes unlimited upwards speed
-                if(this.maxFallSpeed <= this.fallingSpeed){
+                if (this.maxFallSpeed <= this.fallingSpeed) {
                     this.maxFallSpeed = this.fallingSpeed + 0.1;
                 }
             }
@@ -87,10 +90,11 @@ namespace CastleV {
             if (isGrounded) {
                 //playerSpeed = new ƒ.Vector3(playerSpeed.y, 0, playerSpeed.z);
                 this.fallingSpeed = 0;
-                this.pivot.mtxLocal.translate(new ƒ.Vector3(this.playerSpeed.x, CollisionDetection.lastCollisionY, this.playerSpeed.z));
-                this.pivot.mtxLocal.translation = new ƒ.Vector3(this.alucard.mtxLocal.translation.x, this.TEMPgroundLevel, this.alucard.mtxLocal.translation.z);
+                this.alucard.mtxLocal.translate(new ƒ.Vector3(this.playerSpeed.x, 0, this.playerSpeed.z));
+                this.alucard.mtxLocal.translation = new ƒ.Vector3(this.alucard.mtxLocal.translation.x, Math.round(CollisionDetection.lastCollision.y), this.alucard.mtxLocal.translation.z);
+
             } else {
-                this.pivot.mtxLocal.translate(this.playerSpeed);
+                this.alucard.mtxLocal.translate(this.playerSpeed);
             }
         }
 

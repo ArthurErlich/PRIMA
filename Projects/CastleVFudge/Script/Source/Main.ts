@@ -2,10 +2,10 @@ namespace CastleV {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Main Program Template running!");
 
-  //deltaTimeSeconds
+  ///deltaTimeSeconds\\\
   let deltaTimeSeconds: number;
 
-  //ƒ Viewport
+  ///ƒ Viewport\\\
   let viewport: ƒ.Viewport;
 
   let floor: ƒ.Node = null;
@@ -24,8 +24,6 @@ namespace CastleV {
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
-
-
 
     ///Create Player\\\
     player = new Player(viewport);
@@ -59,7 +57,7 @@ namespace CastleV {
         tiles.push(tileChild);
       }
     }
-    CollisionDetection.updateTiles(tiles);
+    CollisionDetection.updateTiles(tiles.map(x => x));
     console.log(CollisionDetection.tiles);
 
     //---------------------------------------S-T-A-R-T---L-O-O-P-----------------------------------------------------------\\
@@ -83,11 +81,10 @@ namespace CastleV {
 
     //------------------T-E-S-T-------------------------------------------------------T-E-S-T--------------------------------\\
 
-    let position: ƒ.Vector3 = new ƒ.Vector3(player.pivot.mtxLocal.translation.x, player.pivot.mtxLocal.translation.y - 0.5, 0.1);
-    collisionNode.mtxLocal.translation = position;
-
-    if(player.pivot.mtxLocal.translation.x <= -1){
-      player.pivot.mtxLocal.translation = new ƒ.Vector3( player.pivot.mtxLocal.translation.x, 1.2, player.pivot.mtxLocal.translation.z);
+    //Respawn Player if he falls down
+    if (player.alucard.mtxLocal.translation.y <= -10) {
+      player.alucard.mtxLocal.translation = new ƒ.Vector3(player.pivot.mtxWorld.translation.x, 2, player.pivot.mtxWorld.translation.z);
+      player.resetPlayer();
     }
 
     //-------------------------------------------------------------------------------------------------------------------------\\
@@ -97,7 +94,7 @@ namespace CastleV {
     // ƒ.AudioManager.default.update();
   }
 
-  
+
 }
 
 

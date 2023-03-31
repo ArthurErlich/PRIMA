@@ -1,62 +1,59 @@
 "use strict";
 var CastleV;
 (function (CastleV) {
+    var ƒ = FudgeCore;
     class CollisionDetection {
         static tiles = [];
-        static lastCollisionY = 0;
+        static lastCollision = new ƒ.Vector3(0, 0, 0);
         static updateTiles(tiles) {
             this.tiles = tiles;
         }
         static check(playerMtxWorld) {
-            let collision = Collision.NONE;
-            for (let tile of CollisionDetection.tiles) {
+            let collision = [Collision.NONE];
+            for (let tile of this.tiles) {
                 //Check if the player is in range of the tile
                 let distance = this.getDistance(tile.mtxWorld.translation, playerMtxWorld.translation);
-                if (distance <= 1) {
+                if (distance <= 2) {
                     //transform player position to tile local position/scale/rotation
-                    let transformPlayerPos = playerMtxWorld;
+                    let transformPlayerPos = playerMtxWorld.clone; // clone the matrix so it doesn't change the original
                     transformPlayerPos.multiply(tile.mtxWorldInverse);
-                    //get collision
+                    // console.log("PlayerY: " + playerMtxWorld.translation.y);
+                    // console.log("PlayerRelativeY: " + transformPlayerPos.translation.y);
+                    //get position of tiles
                     let distanceX = transformPlayerPos.translation.x;
                     let distanceY = transformPlayerPos.translation.y;
-                    //console.log("Y: " + distanceY);
-                    let tileOffset = 0.5;
                     //TODO: REWORK COLLISION DETECTION!
-                    if (distanceX >= -tileOffset && distanceX <= 0) {
-                        // console.warn("right");
-                        // player.alucard.mtxLocal.translateX(-0.05);
-                        collision = Collision.RIGHT;
+                    //TODO: GET HIGHT AND WIDTH OF TILE 
+                    if ((distanceY <= 1 && distanceY >= 0) && (distanceX >= -0.8 && distanceX <= 0.8)) {
+                        collision.push(Collision.DOWN);
+                        let playerWorldPos = transformPlayerPos.clone;
+                        playerWorldPos.multiply(tile.mtxWorld);
+                        this.lastCollision = playerWorldPos.translation.clone;
                     }
-                    if (distanceX <= tileOffset && distanceX >= 0) {
-                        // console.warn("left");
-                        // player.alucard.mtxLocal.translateX(0.05);
-                        collision = Collision.LEFT;
+                    if ((distanceX >= -1 && distanceX <= 0.2) && (distanceY <= 0.8 && distanceY >= 0)) {
+                        collision.push(Collision.RIGHT);
                     }
-                    if (distanceY <= 1 && distanceX >= 0) {
-                        // console.warn("up");
-                        // player.alucard.mtxLocal.translateY(0.1);
-                        collision = Collision.DOWN;
-                        this.lastCollisionY = tile.mtxWorld.translation.y + 1;
+                    if ((distanceX <= 1 && distanceX >= 0.2) && (distanceY <= 0.8 && distanceY >= 0)) {
+                        collision.push(Collision.LEFT);
                     }
-                    //}
                 }
-                return collision;
             }
-            //Pythagoras
+            return collision;
         }
-        //Pythagoras
         static getDistance(_pos1, _pos2) {
             let distance = Math.sqrt(Math.pow(_pos1.x - _pos2.x, 2) + Math.pow(_pos1.y - _pos2.y, 2) + Math.pow(_pos1.z - _pos2.z, 2));
             return distance;
         }
     }
     CastleV.CollisionDetection = CollisionDetection;
+    //Pythagoras
     let Collision;
     (function (Collision) {
         Collision[Collision["NONE"] = 0] = "NONE";
         Collision[Collision["LEFT"] = 1] = "LEFT";
         Collision[Collision["RIGHT"] = 2] = "RIGHT";
-        Collision[Collision["DOWN"] = 3] = "DOWN";
+        Collision[Collision["UP"] = 3] = "UP";
+        Collision[Collision["DOWN"] = 4] = "DOWN";
     })(Collision = CastleV.Collision || (CastleV.Collision = {}));
 })(CastleV || (CastleV = {}));
 /*
@@ -130,9 +127,9 @@ var CastleV;
 (function (CastleV) {
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
-    //deltaTimeSeconds
+    ///deltaTimeSeconds\\\
     let deltaTimeSeconds;
-    //ƒ Viewport
+    ///ƒ Viewport\\\
     let viewport;
     let floor = null;
     let floorTile_1 = null;
@@ -167,7 +164,7 @@ var CastleV;
                 tiles.push(tileChild);
             }
         }
-        CastleV.CollisionDetection.updateTiles(tiles);
+        CastleV.CollisionDetection.updateTiles(tiles.map(x => x));
         console.log(CastleV.CollisionDetection.tiles);
         //---------------------------------------S-T-A-R-T---L-O-O-P-----------------------------------------------------------\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
@@ -183,10 +180,10 @@ var CastleV;
         ///Update Player\\\
         player.update(deltaTimeSeconds); // moved player to player.ts (its own Class)
         //------------------T-E-S-T-------------------------------------------------------T-E-S-T--------------------------------\\
-        let position = new ƒ.Vector3(player.pivot.mtxLocal.translation.x, player.pivot.mtxLocal.translation.y - 0.5, 0.1);
-        collisionNode.mtxLocal.translation = position;
-        if (player.pivot.mtxLocal.translation.x <= -1) {
-            player.pivot.mtxLocal.translation = new ƒ.Vector3(player.pivot.mtxLocal.translation.x, 1.2, player.pivot.mtxLocal.translation.z);
+        //Respawn Player if he falls down
+        if (player.alucard.mtxLocal.translation.y <= -10) {
+            player.alucard.mtxLocal.translation = new ƒ.Vector3(player.pivot.mtxWorld.translation.x, 2, player.pivot.mtxWorld.translation.z);
+            player.resetPlayer();
         }
         //-------------------------------------------------------------------------------------------------------------------------\\
         viewport.draw();
@@ -203,7 +200,6 @@ var CastleV;
         gravity = -0.8;
         fallingSpeed = 0;
         maxFallSpeed = 0.2;
-        TEMPgroundLevel = 0; //TODO: get the ground level from the tilemap
         playerSpeed = new ƒ.Vector3(0, 0, 0);
         material = null;
         //deltaTime
@@ -221,31 +217,33 @@ var CastleV;
             this.deltaTimeSeconds = deltaTimeSeconds;
             this.input();
         }
+        resetPlayer() {
+            this.playerSpeed = new ƒ.Vector3(0, 0, 0);
+            this.fallingSpeed = 0;
+            this.alucard.mtxLocal.translation = new ƒ.Vector3(0, 1, 0); //TODO: Change to spawnpoint
+        }
         input() {
             let isGrounded = true;
             this.playerSpeed = new ƒ.Vector3(0, 0, 0);
-            //TODO: check collision with all tiles
-            if (CastleV.CollisionDetection.check(this.pivot.mtxWorld) != CastleV.Collision.DOWN) /*(this.TEMPgroundLevel < this.alucard.mtxLocal.translation.y + this.fallingSpeed)*/ { //CollisionDetection.checkCollisionHight(this.alucard)
+            if (CastleV.CollisionDetection.check(this.alucard.mtxWorld).find(e => e == CastleV.Collision.DOWN) != CastleV.Collision.DOWN) {
                 isGrounded = false;
             }
             else {
                 isGrounded = true;
             }
-            console.log(CastleV.CollisionDetection.check(this.alucard.mtxWorld) != CastleV.Collision.DOWN);
-            console.log(this.alucard.mtxWorld.translation + "");
-            console.log(CastleV.CollisionDetection.lastCollisionY);
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D])) {
+            // console.log(CollisionDetection.check(this.alucard.mtxWorld) != Collision.DOWN);
+            // console.log(this.alucard.mtxWorld.translation +"");
+            // console.log(CollisionDetection.lastCollisionY);
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]) && !(CastleV.CollisionDetection.check(this.alucard.mtxWorld).find(e => e == CastleV.Collision.RIGHT) == CastleV.Collision.RIGHT)) {
                 this.playerSpeed = new ƒ.Vector3(this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);
                 this.updatePlayerAnim(WalkDirection.RIGHT);
             }
-            else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A])) {
+            else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]) && !(CastleV.CollisionDetection.check(this.alucard.mtxWorld).find(e => e == CastleV.Collision.LEFT) == CastleV.Collision.LEFT)) {
                 this.playerSpeed = new ƒ.Vector3(-this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);
                 this.updatePlayerAnim(WalkDirection.LEFT);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
-                this.fallingSpeed = 0.17;
-                // this.alucard.mtxLocal.translateY(0);//old way of doing it
-                this.alucard.mtxLocal.translateY(CastleV.CollisionDetection.lastCollisionY);
+                this.fallingSpeed = 0.15;
                 isGrounded = false;
                 //fixes unlimited upwards speed
                 if (this.maxFallSpeed <= this.fallingSpeed) {
@@ -265,11 +263,11 @@ var CastleV;
             if (isGrounded) {
                 //playerSpeed = new ƒ.Vector3(playerSpeed.y, 0, playerSpeed.z);
                 this.fallingSpeed = 0;
-                this.pivot.mtxLocal.translate(new ƒ.Vector3(this.playerSpeed.x, CastleV.CollisionDetection.lastCollisionY, this.playerSpeed.z));
-                this.pivot.mtxLocal.translation = new ƒ.Vector3(this.alucard.mtxLocal.translation.x, this.TEMPgroundLevel, this.alucard.mtxLocal.translation.z);
+                this.alucard.mtxLocal.translate(new ƒ.Vector3(this.playerSpeed.x, 0, this.playerSpeed.z));
+                this.alucard.mtxLocal.translation = new ƒ.Vector3(this.alucard.mtxLocal.translation.x, Math.round(CastleV.CollisionDetection.lastCollision.y), this.alucard.mtxLocal.translation.z);
             }
             else {
-                this.pivot.mtxLocal.translate(this.playerSpeed);
+                this.alucard.mtxLocal.translate(this.playerSpeed);
             }
         }
         updatePlayerAnim(direction) {
