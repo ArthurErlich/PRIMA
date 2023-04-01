@@ -146,5 +146,6 @@ Task: Remove the Camera and Audio
   * Tile know his mtxWolrdInverse <-- (makes it backwardss)
     * Calculate mtxWorld to the Tile.mtxWorldInverse()
     * Then check inside if the player is inside the bounderys of 0.5 ....
+* Best look up video to inverse Matrix:[Inverse Matrizen, Lösungsraum und Nullraum | Essenz der Linearen Algebra, Kapitel 6 - YouTube](https://www.youtube.com/watch?v=uQhTuRlWMxw&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab&index=7)
 
 TASK make the Collision!!!
