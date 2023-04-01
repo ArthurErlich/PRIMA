@@ -69,9 +69,10 @@ namespace CastleV {
 
   ///--------------------------------------U-P-D-A-T-E---------------------------------------------------------------------\\\
   //------------------------------------------------------------------------------------------------------------------------\\
-
   function update(_event: Event): void {
+
     // ƒ.Physics.simulate();  // if physics is included and used
+    
     ///Update deltaTimeSeconds\\\
     deltaTimeSeconds = ƒ.Loop.timeFrameGame / 1000;
 
