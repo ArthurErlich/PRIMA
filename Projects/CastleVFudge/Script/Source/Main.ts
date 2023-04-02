@@ -77,7 +77,7 @@ namespace CastleV {
     deltaTimeSeconds = ƒ.Loop.timeFrameGame / 1000;
 
     ///Update Player\\\
-    player.update(deltaTimeSeconds); // moved player to player.ts (its own Class)
+    player.update(deltaTimeSeconds); // moved player to player.ts (its own Class) to make code more clear
 
 
     //------------------T-E-S-T-------------------------------------------------------T-E-S-T--------------------------------\\
@@ -89,7 +89,6 @@ namespace CastleV {
     }
 
     //-------------------------------------------------------------------------------------------------------------------------\\
-
 
     viewport.draw();
     // ƒ.AudioManager.default.update();
