@@ -34,7 +34,6 @@ declare namespace CastleV {
         private maxWalkSpeed;
         private gravity;
         private fallingSpeed;
-        private maxFallSpeed;
         private playerSpeed;
         private material;
         private deltaTimeSeconds;

@@ -207,7 +207,7 @@ var CastleV;
         gravity = -30;
         fallingSpeed = 0;
         //--> maxFallSpeed is used below, //TODO: check implementation of fall speed
-        maxFallSpeed = 0.2;
+        //private maxFallSpeed: number = 0.2;
         playerSpeed = new ƒ.Vector3(0, 0, 0);
         material = null;
         //deltaTime
@@ -233,6 +233,7 @@ var CastleV;
         input() {
             let isGrounded = true;
             this.playerSpeed = new ƒ.Vector3(0, 0, 0);
+            //CollisionDetection.check(this.alucard.mtxWorld) <- make that with vector 3 instand of matrix
             if (CastleV.CollisionDetection.check(this.alucard.mtxWorld).find(e => e == CastleV.Collision.DOWN) != CastleV.Collision.DOWN) {
                 isGrounded = false;
             }

@@ -150,9 +150,26 @@ Task: Remove the Camera and Audio
 
 TASK make the Collision!!!
 
-# LoopModes
+# LoopModes 📅 03.04.2023
 
 f.Loop.start() <-- LOOP_MODE -> man kann vom Loop auskoppeln und etwas anderes einstellen
 
 * zb. Time Frame .set ...
-* Matrix * Vector(Position)
+* Matrix * Vector(Position) (let v3:f.vector3 = f.Vector3.TRANSFORMATION(Vector3, Matrix,Ausrichtung!-> True))
+* Code im github von Jirka
+* Steigung von eine Tile
+  * mtxLocal.getX.geo (das sind cardinalachsen) geo gibt dir den winkel raus
+  * mtxLocal.rotation = f.Vector3; setzt den winkel
+  * f.Vector3.Y() erstell einen Vector Richtung Y, kann man auch so nutzen f.Vector3.Y(50) [50° dreheung bei y]
+* Im editor kann man F2 drücken damit man werte direkt ändern kann!
+
+### **Aufgabe?!**
+
+* Sprite animation!!
+* Fudge hat eine Animationsystem
+
+[20230403_171451_image.png](assets/20230403_171451_image.png)
+
+Leider ist im Fudge ein Problem mit diesen AnimationsFrame auswhal
+
+* Animations Ediotor läuft leider auch noch nicht

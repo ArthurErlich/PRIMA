@@ -9,7 +9,7 @@ namespace CastleV {
         private gravity: number = -30;
         private fallingSpeed: number = 0;
         //--> maxFallSpeed is used below, //TODO: check implementation of fall speed
-        private maxFallSpeed: number = 0.2;
+        //private maxFallSpeed: number = 0.2;
 
         private playerSpeed: ƒ.Vector3 = new ƒ.Vector3(0, 0, 0);
         private material: ƒ.ComponentMaterial = null;
@@ -45,7 +45,7 @@ namespace CastleV {
             let isGrounded = true;
             this.playerSpeed = new ƒ.Vector3(0, 0, 0);
 
-
+            //CollisionDetection.check(this.alucard.mtxWorld) <- make that with vector 3 instand of matrix
             if (CollisionDetection.check(this.alucard.mtxWorld).find(e => e == Collision.DOWN) != Collision.DOWN) {
                 isGrounded = false;
             } else {
