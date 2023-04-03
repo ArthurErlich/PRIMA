@@ -1,4 +1,4 @@
-namespace GameState{
+namespace LocoFudge{
     export enum State{
         "MainMenu" = 0,
         "Playing" = 1,
