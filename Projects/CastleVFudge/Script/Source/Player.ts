@@ -6,8 +6,9 @@ namespace CastleV {
         public pivot: ƒ.Node = null;
 
         private maxWalkSpeed: number = 3;
-        private gravity: number = -0.6;
+        private gravity: number = -30;
         private fallingSpeed: number = 0;
+        //--> maxFallSpeed is used below, //TODO: check implementation of fall speed
         private maxFallSpeed: number = 0.2;
 
         private playerSpeed: ƒ.Vector3 = new ƒ.Vector3(0, 0, 0);
@@ -66,21 +67,25 @@ namespace CastleV {
                 this.updatePlayerAnim(WalkDirection.LEFT);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
-                this.fallingSpeed = 0.13;
+                this.fallingSpeed = 10;
                 isGrounded = false;
-
-                //fixes unlimited upwards speed
+                /*
+                //fixes unlimited upwards speed 
                 if (this.maxFallSpeed <= this.fallingSpeed) {
                     this.maxFallSpeed = this.fallingSpeed + 0.1;
                 }
+                */
             }
 
             if (!isGrounded) {
                 //limits the speed of falling
+                /*
                 if (Math.abs(this.fallingSpeed) <= this.maxFallSpeed) {
-                    this.fallingSpeed += this.gravity * this.deltaTimeSeconds;
+                    this.fallingSpeed += this.gravity;
                 }
-                this.playerSpeed = new ƒ.Vector3(this.playerSpeed.x, this.fallingSpeed, this.playerSpeed.z);
+                */
+                this.fallingSpeed += this.gravity * this.deltaTimeSeconds;
+                this.playerSpeed = new ƒ.Vector3(this.playerSpeed.x, this.fallingSpeed * this.deltaTimeSeconds, this.playerSpeed.z);
             }
 
             this.movement(isGrounded);

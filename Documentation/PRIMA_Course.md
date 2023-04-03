@@ -149,3 +149,10 @@ Task: Remove the Camera and Audio
 * Best look up video to inverse Matrix:[Inverse Matrizen, Lösungsraum und Nullraum | Essenz der Linearen Algebra, Kapitel 6 - YouTube](https://www.youtube.com/watch?v=uQhTuRlWMxw&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab&index=7)
 
 TASK make the Collision!!!
+
+# LoopModes
+
+f.Loop.start() <-- LOOP_MODE -> man kann vom Loop auskoppeln und etwas anderes einstellen
+
+* zb. Time Frame .set ...
+* Matrix * Vector(Position)

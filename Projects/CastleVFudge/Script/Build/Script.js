@@ -143,7 +143,7 @@ var CastleV;
     ///Player\\\
     let player;
     ///Tile Test\\\
-    let collisionNode = null;
+    // let collisionNode: ƒ.Node = null;
     //Keyboard input! Bubble Hirachie... Fudge Docu
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
@@ -156,7 +156,7 @@ var CastleV;
         viewport.camera.mtxPivot.rotateY(180);
         //get nodes
         floor = viewport.getBranch().getChildrenByName("Floor")[0];
-        collisionNode = viewport.getBranch().getChildrenByName("Test")[0];
+        // collisionNode = viewport.getBranch().getChildrenByName("Test")[0];
         // how to access other Graphs? -> recurses
         //floorTile_1 = ƒ.Project.getBranch().getChildrenByName("Platform_4x1")[0];
         console.log(floorTile_1);
@@ -185,7 +185,7 @@ var CastleV;
         ///Update deltaTimeSeconds\\\
         deltaTimeSeconds = ƒ.Loop.timeFrameGame / 1000;
         ///Update Player\\\
-        player.update(deltaTimeSeconds); // moved player to player.ts (its own Class)
+        player.update(deltaTimeSeconds); // moved player to player.ts (its own Class) to make code more clear
         //------------------T-E-S-T-------------------------------------------------------T-E-S-T--------------------------------\\
         //Respawn Player if he falls down
         if (player.alucard.mtxLocal.translation.y <= -10) {
@@ -204,8 +204,9 @@ var CastleV;
         alucard = null;
         pivot = null;
         maxWalkSpeed = 3;
-        gravity = -0.6;
+        gravity = -30;
         fallingSpeed = 0;
+        //--> maxFallSpeed is used below, //TODO: check implementation of fall speed
         maxFallSpeed = 0.2;
         playerSpeed = new ƒ.Vector3(0, 0, 0);
         material = null;
@@ -250,19 +251,24 @@ var CastleV;
                 this.updatePlayerAnim(WalkDirection.LEFT);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
-                this.fallingSpeed = 0.13;
+                this.fallingSpeed = 10;
                 isGrounded = false;
+                /*
                 //fixes unlimited upwards speed
                 if (this.maxFallSpeed <= this.fallingSpeed) {
                     this.maxFallSpeed = this.fallingSpeed + 0.1;
                 }
+                */
             }
             if (!isGrounded) {
                 //limits the speed of falling
+                /*
                 if (Math.abs(this.fallingSpeed) <= this.maxFallSpeed) {
-                    this.fallingSpeed += this.gravity * this.deltaTimeSeconds;
+                    this.fallingSpeed += this.gravity;
                 }
-                this.playerSpeed = new ƒ.Vector3(this.playerSpeed.x, this.fallingSpeed, this.playerSpeed.z);
+                */
+                this.fallingSpeed += this.gravity * this.deltaTimeSeconds;
+                this.playerSpeed = new ƒ.Vector3(this.playerSpeed.x, this.fallingSpeed * this.deltaTimeSeconds, this.playerSpeed.z);
             }
             this.movement(isGrounded);
         }

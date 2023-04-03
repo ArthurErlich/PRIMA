@@ -15,7 +15,7 @@ namespace CastleV {
   let player: Player;
 
   ///Tile Test\\\
-  let collisionNode: ƒ.Node = null;
+  // let collisionNode: ƒ.Node = null;
 
 
   //Keyboard input! Bubble Hirachie... Fudge Docu
@@ -36,7 +36,7 @@ namespace CastleV {
 
     //get nodes
     floor = viewport.getBranch().getChildrenByName("Floor")[0];
-    collisionNode = viewport.getBranch().getChildrenByName("Test")[0];
+    // collisionNode = viewport.getBranch().getChildrenByName("Test")[0];
 
 
     // how to access other Graphs? -> recurses
