@@ -52,10 +52,10 @@ declare namespace LocoFudge {
         private node;
         private worldSize;
         private tiles;
-        generateWorld(worldSize: WorldSize): void;
+        generateWorld(worldSize: WORLDSIZE): void;
         getNode(): ƒ.Node;
     }
-    enum WorldSize {
+    enum WORLDSIZE {
         "Tiny" = 4,
         "Small" = 16,
         "Medium" = 32,
@@ -65,16 +65,22 @@ declare namespace LocoFudge {
 declare namespace LocoFudge {
     import ƒ = FudgeCore;
     class GameManager {
-        static viewport: ƒ.Viewport;
-        static canvas: HTMLCanvasElement;
-        static camera: Camera;
-        static graph: ƒ.Graph;
-        static tileGraph: ƒ.Graph[];
-        static world: World;
-        static mouse: Mouse;
+        private static viewport;
+        private static canvas;
+        private static camera;
+        private static graph;
+        private static tileGraph;
+        private static world;
+        private static mouse;
         static initiate(viewport: ƒ.Viewport): void;
-        static startWorld(): void;
+        static getViewport(): ƒ.Viewport;
+        static getCanvas(): HTMLCanvasElement;
+        static getCamera(): Camera;
+        static getGraph(): ƒ.Graph;
         static getTileGraph(): ƒ.Graph[];
+        static getWorld(): World;
+        static getMouse(): Mouse;
+        static startWorld(): void;
     }
 }
 declare namespace LocoFudge {

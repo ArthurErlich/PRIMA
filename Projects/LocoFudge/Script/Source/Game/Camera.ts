@@ -4,6 +4,7 @@ namespace LocoFudge {
 
         private canvas: HTMLCanvasElement;
 
+        //TODO: Fix public attributes!
         public root: ƒ.Node;
         //multiply cameras? -> than array. + Active cam
         public componentCamera: ƒ.ComponentCamera;
@@ -12,7 +13,7 @@ namespace LocoFudge {
         public endClipping: number = 10000;
 
         public init(): void {
-            this.canvas = GameManager.canvas;
+            this.canvas = GameManager.getCanvas();
 
 
             //create the camera and add it to the viewport

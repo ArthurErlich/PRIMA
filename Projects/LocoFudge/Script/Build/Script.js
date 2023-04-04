@@ -41,6 +41,7 @@ var LocoFudge;
     var ƒ = FudgeCore;
     class Camera {
         canvas;
+        //TODO: Fix public attributes!
         root;
         //multiply cameras? -> than array. + Active cam
         componentCamera;
@@ -48,7 +49,7 @@ var LocoFudge;
         startClipping = 0.2;
         endClipping = 10000;
         init() {
-            this.canvas = LocoFudge.GameManager.canvas;
+            this.canvas = LocoFudge.GameManager.getCanvas();
             //create the camera and add it to the viewport
             this.root = new ƒ.Node("CameraRoot");
             this.root.addComponent(new ƒ.ComponentTransform());
@@ -115,8 +116,8 @@ var LocoFudge;
             return this.mousePos;
         }
         pickNode() {
-            let pickedNodes = ƒ.Picker.pickViewport(LocoFudge.GameManager.viewport, this.mousePos);
-            let selectionNode = LocoFudge.GameManager.graph.getChild(0).getChildrenByName("Selection")[0];
+            let pickedNodes = ƒ.Picker.pickViewport(LocoFudge.GameManager.getViewport(), this.mousePos);
+            let selectionNode = LocoFudge.GameManager.getGraph().getChild(0).getChildrenByName("Selection")[0];
             for (let i = 0; i < pickedNodes.length; i++) {
                 //TODO: make a selection add stuff to do ..... etc
                 if (pickedNodes[i].node.name.includes("Tile")) {
@@ -125,7 +126,7 @@ var LocoFudge;
                         selectionNode.mtxLocal.translateZ(-0.1); //TODO: remove Temp fix
                         selectionNode.mtxLocal.translateY(0.05); //TODO: remove Temp fix
                         selectionNode.mtxLocal.translateX(0.05); //TODO: remove Temp fix
-                        LocoFudge.GameManager.graph.getChild(0).addChild(selectionNode);
+                        LocoFudge.GameManager.getGraph().getChild(0).addChild(selectionNode);
                     }
                     this.selectedTile = pickedNodes[i].node;
                     this.selectedTile.addChild(selectionNode);
@@ -148,7 +149,7 @@ var LocoFudge;
             //TODO: tiles are not generated
             this.node = new ƒ.Node("Tile" + index);
             //TODO: make Tiles with Material and Mesh as references
-            let node = LocoFudge.GameManager.graph.getChild(0).getChildrenByName("GrassTile")[0];
+            let node = LocoFudge.GameManager.getGraph().getChild(0).getChildrenByName("GrassTile")[0];
             this.node.addComponent(new ƒ.ComponentTransform());
             this.node.addComponent(new ƒ.ComponentMaterial(node.getComponent(ƒ.ComponentMaterial).material));
             this.node.addComponent(new ƒ.ComponentMesh(node.getComponent(ƒ.ComponentMesh).mesh));
@@ -191,13 +192,13 @@ var LocoFudge;
         }
     }
     LocoFudge.World = World;
-    let WorldSize;
-    (function (WorldSize) {
-        WorldSize[WorldSize["Tiny"] = 4] = "Tiny";
-        WorldSize[WorldSize["Small"] = 16] = "Small";
-        WorldSize[WorldSize["Medium"] = 32] = "Medium";
-        WorldSize[WorldSize["Large"] = 64] = "Large";
-    })(WorldSize = LocoFudge.WorldSize || (LocoFudge.WorldSize = {}));
+    let WORLDSIZE;
+    (function (WORLDSIZE) {
+        WORLDSIZE[WORLDSIZE["Tiny"] = 4] = "Tiny";
+        WORLDSIZE[WORLDSIZE["Small"] = 16] = "Small";
+        WORLDSIZE[WORLDSIZE["Medium"] = 32] = "Medium";
+        WORLDSIZE[WORLDSIZE["Large"] = 64] = "Large";
+    })(WORLDSIZE = LocoFudge.WORLDSIZE || (LocoFudge.WORLDSIZE = {}));
 })(LocoFudge || (LocoFudge = {}));
 var LocoFudge;
 (function (LocoFudge) {
@@ -228,17 +229,36 @@ var LocoFudge;
             }
             this.startWorld();
         }
+        ///Getter\\\
+        static getViewport() {
+            return this.viewport;
+        }
+        static getCanvas() {
+            return this.canvas;
+        }
+        static getCamera() {
+            return this.camera;
+        }
+        static getGraph() {
+            return this.graph;
+        }
+        static getTileGraph() {
+            return this.tileGraph;
+        }
+        static getWorld() {
+            return this.world;
+        }
+        static getMouse() {
+            return this.mouse;
+        }
         static startWorld() {
             let world = new LocoFudge.World();
             //Generate World size is selectable
-            world.generateWorld(LocoFudge.WorldSize.Medium);
+            world.generateWorld(LocoFudge.WORLDSIZE.Medium);
             this.world = world;
             this.viewport.getBranch().addChild(world.getNode());
             console.log("World generated");
             console.log(world.getNode());
-        }
-        static getTileGraph() {
-            return this.tileGraph;
         }
     }
     LocoFudge.GameManager = GameManager;
@@ -253,12 +273,12 @@ var LocoFudge;
     document.addEventListener("mousedown", onMouseClick, false);
     ///Mouse Position Update\\\
     function onMouseUpdate(_event) {
-        LocoFudge.GameManager.mouse.updateMousePos(_event);
+        LocoFudge.GameManager.getMouse().updateMousePos(_event);
     }
     ///Mouse Left Click Event\\\
     function onMouseClick(_event) {
         if (_event.button == 0) {
-            LocoFudge.GameManager.mouse.pickNode();
+            LocoFudge.GameManager.getMouse().pickNode();
         }
         else if (_event.button == 2) {
             //TODO: right click movement
@@ -267,9 +287,9 @@ var LocoFudge;
     function start(_event) {
         viewport = _event.detail;
         LocoFudge.GameManager.initiate(viewport);
-        console.log(LocoFudge.GameManager.camera.root);
-        console.log(LocoFudge.GameManager.graph);
-        //TODOO:may come in handy https://jirkadelloro.github.io/FUDGE/Test/Debug/ScreenToRayToScreen/Test.html
+        console.log(LocoFudge.GameManager.getCamera().root);
+        console.log(LocoFudge.GameManager.getGraph());
+        //TODO:may come in handy https://jirkadelloro.github.io/FUDGE/Test/Debug/ScreenToRayToScreen/Test.html
         //Create Camera and add it to the viewport
         //Create World
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
@@ -288,7 +308,7 @@ var LocoFudge;
     class MainLoop {
         static async update() {
             let deltaSeconds = ƒ.Loop.timeFrameGame / 1000;
-            LocoFudge.GameManager.camera.cameraMovementUpdate(deltaSeconds);
+            LocoFudge.GameManager.getCamera().cameraMovementUpdate(deltaSeconds);
             //TODO:Update World
             //TODO:Update Audio
         }

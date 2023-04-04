@@ -2,13 +2,13 @@ namespace LocoFudge {
     import ƒ = FudgeCore;
     export class GameManager {
 
-        public static viewport: ƒ.Viewport = null;
-        public static canvas: HTMLCanvasElement = null;
-        public static camera: Camera = null;
-        public static graph: ƒ.Graph = null; //Graph of all resources
-        public static tileGraph: ƒ.Graph[] = new Array(); //Graph of all tiles  //TODO:Finish crating instances of graphs
-        public static world: World = null;
-        public static mouse: Mouse = null;
+        private static viewport: ƒ.Viewport = null;
+        private static canvas: HTMLCanvasElement = null;
+        private static camera: Camera = null;
+        private static graph: ƒ.Graph = null; //Graph of all resources
+        private static tileGraph: ƒ.Graph[] = new Array(); //Graph of all tiles  //TODO:Finish crating instances of graphs
+        private static world: World = null;
+        private static mouse: Mouse = null;
 
         public static initiate(viewport: ƒ.Viewport): void {
             this.viewport = viewport;
@@ -31,11 +31,35 @@ namespace LocoFudge {
 
             this.startWorld();
         }
+
+        ///Getter\\\
+        static getViewport(): ƒ.Viewport {
+            return this.viewport;
+        }
+        static getCanvas(): HTMLCanvasElement {
+            return this.canvas;
+        }
+        static getCamera(): Camera {
+            return this.camera;
+        }
+        static getGraph(): ƒ.Graph {
+            return this.graph;
+        }
+        public static getTileGraph(): ƒ.Graph[] {
+            return this.tileGraph;
+        }
+        public static getWorld(): World {
+            return this.world;
+        }
+        public static getMouse(): Mouse {
+            return this.mouse;
+        }
+
         public static startWorld(): void {
             let world: World = new World();
 
             //Generate World size is selectable
-            world.generateWorld(WorldSize.Medium);
+            world.generateWorld(WORLDSIZE.Medium);
             this.world = world;
             this.viewport.getBranch().addChild(world.getNode());
 
@@ -43,9 +67,7 @@ namespace LocoFudge {
             console.log(world.getNode());
         }
 
-        public static getTileGraph(): ƒ.Graph[] {
-            return this.tileGraph;
-        }
+        
         //TODO:Finish crating instances of graphs
 
         // private static addTileGraph(graphIds:string[]): void {

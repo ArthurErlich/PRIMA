@@ -7,7 +7,7 @@ namespace LocoFudge {
         private worldSize: number = null;
         private tiles: Tile[] = null;
 
-        public generateWorld(worldSize: WorldSize): void {
+        public generateWorld(worldSize: WORLDSIZE): void {
          
             this.worldSize = worldSize;
             this.node = new ƒ.Node("World");
@@ -25,13 +25,13 @@ namespace LocoFudge {
                 y++;
             }
         }
-
+        
         public getNode(): ƒ.Node {
             return this.node;
         }
 
     }
-    export enum WorldSize {
+    export enum WORLDSIZE {
         "Tiny" = 4,
         "Small" = 16,
         "Medium" = 32,

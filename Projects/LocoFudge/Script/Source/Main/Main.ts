@@ -11,12 +11,12 @@ namespace LocoFudge {
 
   ///Mouse Position Update\\\
   function onMouseUpdate(_event: MouseEvent): void {
-    GameManager.mouse.updateMousePos(_event);
+    GameManager.getMouse().updateMousePos(_event);
   }
   ///Mouse Left Click Event\\\
   function onMouseClick(_event: MouseEvent): void {
     if (_event.button == 0){
-      GameManager.mouse.pickNode();
+      GameManager.getMouse().pickNode();
     } else if (_event.button == 2){
       //TODO: right click movement
     }
@@ -25,13 +25,13 @@ namespace LocoFudge {
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
     GameManager.initiate(viewport);
-    console.log(GameManager.camera.root);
+    console.log(GameManager.getCamera().root);
 
-    console.log(GameManager.graph);
+    console.log(GameManager.getGraph());
     
     
     
-  //TODOO:may come in handy https://jirkadelloro.github.io/FUDGE/Test/Debug/ScreenToRayToScreen/Test.html
+  //TODO:may come in handy https://jirkadelloro.github.io/FUDGE/Test/Debug/ScreenToRayToScreen/Test.html
 
     //Create Camera and add it to the viewport
     //Create World

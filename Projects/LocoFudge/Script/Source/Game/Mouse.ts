@@ -12,8 +12,8 @@ namespace LocoFudge {
             return this.mousePos;
         }
         public pickNode(): void {
-            let pickedNodes = ƒ.Picker.pickViewport(GameManager.viewport, this.mousePos);
-            let selectionNode: ƒ.Node = GameManager.graph.getChild(0).getChildrenByName("Selection")[0];
+            let pickedNodes = ƒ.Picker.pickViewport(GameManager.getViewport(), this.mousePos);
+            let selectionNode: ƒ.Node = GameManager.getGraph().getChild(0).getChildrenByName("Selection")[0];
           
             for (let i: number = 0; i < pickedNodes.length; i++) {
 
@@ -27,7 +27,7 @@ namespace LocoFudge {
                         selectionNode.mtxLocal.translateY(0.05);//TODO: remove Temp fix
                         selectionNode.mtxLocal.translateX(0.05);//TODO: remove Temp fix
 
-                        GameManager.graph.getChild(0).addChild(selectionNode);
+                        GameManager.getGraph().getChild(0).addChild(selectionNode);
                     }
                     this.selectedTile = pickedNodes[i].node;
                     this.selectedTile.addChild(selectionNode);
