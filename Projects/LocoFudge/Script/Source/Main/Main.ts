@@ -6,15 +6,20 @@ namespace LocoFudge {
 
  let viewport: ƒ.Viewport;
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
-  document.addEventListener("mousemove",onMauseUpdate, false);
-  document.addEventListener("mousedown",onMauseClick, false)
+  document.addEventListener("mousemove",onMouseUpdate, false);
+  document.addEventListener("mousedown",onMouseClick, false)
 
   ///Mouse Position Update\\\
-  function onMauseUpdate(_event: MouseEvent): void {
+  function onMouseUpdate(_event: MouseEvent): void {
     GameManager.mouse.updateMousePos(_event);
   }
-  function onMauseClick(_event: MouseEvent): void {
-    GameManager.mouse.pickNode();
+  ///Mouse Left Click Event\\\
+  function onMouseClick(_event: MouseEvent): void {
+    if (_event.button == 0){
+      GameManager.mouse.pickNode();
+    } else if (_event.button == 2){
+      //TODO: right click movement
+    }
   }
 
   function start(_event: CustomEvent): void {
