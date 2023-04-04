@@ -11,7 +11,7 @@ namespace LocoFudge {
             this.node = new ƒ.Node("Tile" + index);
     
             let node: ƒ.Node = GameManager.graph.getChild(0).getChildrenByName("GrassTile")[0];
-            
+            //TODO: make Tiles with Material and Mesh as references
             this.node.addComponent(new ƒ.ComponentTransform());
             this.node.addComponent(new ƒ.ComponentMaterial(node.getComponent(ƒ.ComponentMaterial).material));
             this.node.addComponent(new ƒ.ComponentMesh(node.getComponent(ƒ.ComponentMesh).mesh));

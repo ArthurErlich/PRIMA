@@ -32,14 +32,10 @@ namespace LocoFudge {
     //Create World
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-    ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    ƒ.Loop.start();  // start the game loop to continuously draw the viewport, update the audiosystem and drive the physics i/a
   }
 
   async function update(_event: Event): Promise<void> {
-
-    let deltaSeconds: number = ƒ.Loop.timeFrameGame / 1000;
-
-    //updates the MainLoop
     await MainLoop.update();
     // ƒ.Physics.simulate();  // if physics is included and used
     viewport.draw();

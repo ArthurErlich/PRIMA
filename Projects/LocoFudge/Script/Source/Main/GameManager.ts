@@ -21,7 +21,6 @@ namespace LocoFudge {
             this.graph = ƒ.Project.resources[graphId] as ƒ.Graph;
             if(!this.graph){
                 console.error("Graph with resources not found " + graphId);
-                
             }
 
             this.startWorld();
