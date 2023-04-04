@@ -3,5 +3,10 @@
     "liveServer.settings.port": 5501,
     "cSpell.words": [
         "audiosystem"
-    ]
+    ],
+    "sundial.sunrise": "10:00",
+    "sundial.sunset": " \"window.autoDetectColorScheme\": false",
+    "window.autoDetectColorScheme": true,
+    "workbench.preferredLightColorTheme": "Visual Studio Light - C++",
+    "workbench.colorTheme": "Visual Studio Dark - C++"
 }

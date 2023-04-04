@@ -1,31 +1,41 @@
 namespace LocoFudge {
     import ƒ = FudgeCore;
     export class Mouse {
-        private mousePos:ƒ.Vector2 = new ƒ.Vector2(0,0);
-        private pickedNodes:ƒ.Pick[] = null; 
+        private mousePos: ƒ.Vector2 = new ƒ.Vector2(0, 0);
+        private selectedTile: ƒ.Node = null;
 
-        public updateMousePos(e:MouseEvent):void{
+        public updateMousePos(e: MouseEvent): void {
             this.mousePos.x = e.clientX;
             this.mousePos.y = e.clientY;
         }
-        public getMousePos():ƒ.Vector2{
+        public getMousePos(): ƒ.Vector2 {
             return this.mousePos;
         }
-        public pickNode():void{
-           this.pickedNodes = ƒ.Picker.pickViewport(GameManager.viewport, this.mousePos)
+        public pickNode(): void {
+            let pickedNodes = ƒ.Picker.pickViewport(GameManager.viewport, this.mousePos);
+            let selectionNode: ƒ.Node = GameManager.graph.getChild(0).getChildrenByName("Selection")[0];
+          
+            for (let i: number = 0; i < pickedNodes.length; i++) {
 
-            for (let i : number = 0; i<this.pickedNodes.length; i++){
-                if(this.pickedNodes[i].node.name.includes("Tile")){
+                //TODO: make a selection add stuff to do ..... etc
+                
 
-                    //TODO: check if the tile is active/visible
-                    if(this.pickedNodes[i].node.getComponent(ƒ.ComponentMaterial).isActive){
+                if (pickedNodes[i].node.name.includes("Tile")) {
+                    if (this.selectedTile != null ) {
+                        selectionNode = this.selectedTile.getChildrenByName("Selection")[0];
+                        selectionNode.mtxLocal.translateZ(-0.1);//TODO: remove Temp fix
+                        selectionNode.mtxLocal.translateY(0.05);//TODO: remove Temp fix
+                        selectionNode.mtxLocal.translateX(0.05);//TODO: remove Temp fix
 
-                        this.pickedNodes[i].node.getComponent(ƒ.ComponentMaterial).activate(false);
-                    }else{
-                        this.pickedNodes[i].node.getComponent(ƒ.ComponentMaterial).activate(true);
+                        GameManager.graph.getChild(0).addChild(selectionNode);
                     }
+                    this.selectedTile = pickedNodes[i].node;
+                    this.selectedTile.addChild(selectionNode);
+                    selectionNode.mtxLocal.translateZ(0.1);//TODO: remove Temp fix
+                    selectionNode.mtxLocal.translateY(-0.05);//TODO: remove Temp fix
+                    selectionNode.mtxLocal.translateX(-0.05);//TODO: remove Temp fix
                 }
-              }
+            }
         }
     }
 }

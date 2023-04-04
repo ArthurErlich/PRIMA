@@ -10,10 +10,9 @@ declare namespace Script {
 declare namespace LocoFudge {
     import ƒ = FudgeCore;
     class Camera {
-        private viewport;
         private canvas;
         root: ƒ.Node;
-        camComp: ƒ.ComponentCamera;
+        componentCamera: ƒ.ComponentCamera;
         fieldOfView: number;
         startClipping: number;
         endClipping: number;
@@ -33,7 +32,7 @@ declare namespace LocoFudge {
     import ƒ = FudgeCore;
     class Mouse {
         private mousePos;
-        private pickedNodes;
+        private selectedTile;
         updateMousePos(e: MouseEvent): void;
         getMousePos(): ƒ.Vector2;
         pickNode(): void;
@@ -70,10 +69,12 @@ declare namespace LocoFudge {
         static canvas: HTMLCanvasElement;
         static camera: Camera;
         static graph: ƒ.Graph;
+        static tileGraph: ƒ.Graph[];
         static world: World;
         static mouse: Mouse;
         static initiate(viewport: ƒ.Viewport): void;
         static startWorld(): void;
+        static getTileGraph(): ƒ.Graph[];
     }
 }
 declare namespace LocoFudge {

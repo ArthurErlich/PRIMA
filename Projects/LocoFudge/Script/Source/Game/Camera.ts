@@ -2,40 +2,38 @@ namespace LocoFudge {
     import ƒ = FudgeCore;
     export class Camera {
 
-        private viewport: ƒ.Viewport;
         private canvas: HTMLCanvasElement;
 
         public root: ƒ.Node;
         //multiply cameras? -> than array. + Active cam
-        public camComp: ƒ.ComponentCamera;
+        public componentCamera: ƒ.ComponentCamera;
         public fieldOfView: number = 5;
         public startClipping: number = 0.2;
         public endClipping: number = 10000;
 
         public init(): void {
-            this.viewport = GameManager.viewport;
             this.canvas = GameManager.canvas;
 
 
             //create the camera and add it to the viewport
             this.root = new ƒ.Node("CameraRoot");
             this.root.addComponent(new ƒ.ComponentTransform());
-            this.camComp = new ƒ.ComponentCamera();
+            this.componentCamera = new ƒ.ComponentCamera();
 
             let aspectRatio: number = this.canvas.clientWidth / this.canvas.clientHeight;
 
-            this.camComp.projectCentral(aspectRatio, this.fieldOfView, ƒ.FIELD_OF_VIEW.DIAGONAL, this.startClipping, this.endClipping);
+            this.componentCamera.projectCentral(aspectRatio, this.fieldOfView, ƒ.FIELD_OF_VIEW.DIAGONAL, this.startClipping, this.endClipping);
 
             ///Start Position for FAKE Orthographic View\\\
-            this.camComp.mtxPivot.translateZ(160);
-            this.camComp.mtxPivot.translateX(-110);
-            this.camComp.mtxPivot.translateY(-110);
+            this.componentCamera.mtxPivot.translateZ(160);
+            this.componentCamera.mtxPivot.translateX(-110);
+            this.componentCamera.mtxPivot.translateY(-110);
 
             ///Start Rotation for FAKE Perspective View\\\
-            this.camComp.mtxPivot.rotateY(180);
-            this.camComp.mtxPivot.rotateZ(45);
-            this.camComp.mtxPivot.rotateX(-45);
-            this.root.addComponent(this.camComp);
+            this.componentCamera.mtxPivot.rotateY(180);
+            this.componentCamera.mtxPivot.rotateZ(45);
+            this.componentCamera.mtxPivot.rotateX(-45);
+            this.root.addComponent(this.componentCamera);
             console.log("Camera initiated");
         }
 
@@ -61,7 +59,7 @@ namespace LocoFudge {
                 moveDirection.normalize();
             }
             moveDirection.scale(10 * deltaSeconds);
-            this.camComp.mtxPivot.translate(moveDirection);
+            this.componentCamera.mtxPivot.translate(moveDirection);
             //Mouse movement
         }
     }

@@ -10,20 +10,19 @@ namespace LocoFudge {
             //TODO: tiles are not generated
             this.node = new ƒ.Node("Tile" + index);
     
-            let node: ƒ.Node = GameManager.graph.getChild(0).getChildrenByName("GrassTile")[0];
             //TODO: make Tiles with Material and Mesh as references
+            let node: ƒ.Node = GameManager.graph.getChild(0).getChildrenByName("GrassTile")[0]; 
             this.node.addComponent(new ƒ.ComponentTransform());
             this.node.addComponent(new ƒ.ComponentMaterial(node.getComponent(ƒ.ComponentMaterial).material));
             this.node.addComponent(new ƒ.ComponentMesh(node.getComponent(ƒ.ComponentMesh).mesh));
             
             this.node.mtxLocal.translate(location);
-            this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scale(ƒ.Vector3.ONE(0.9));
+            this.node.getComponent(ƒ.ComponentMesh).mtxPivot.scale(ƒ.Vector3.ONE(0.98));
 
         }
         public getNode(): ƒ.Node {
             return this.node;
         }
-
     }
     //the tile type+textures
 }
