@@ -2,11 +2,10 @@ namespace LocoFudge {
     import ƒ = FudgeCore;
     export class MainLoop
      {
-        static update():void{
+        static async update():Promise<void>{
             let deltaSeconds: number = ƒ.Loop.timeFrameGame / 1000;
-
-            //Update Camera
             GameManager.camera.cameraMovementUpdate(deltaSeconds);
+            //Update Camera
             //Update World
             //Update UI
             //Update Audio

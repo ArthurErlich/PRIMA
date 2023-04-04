@@ -11,7 +11,6 @@ namespace LocoFudge {
             this.node = new ƒ.Node("Tile" + index);
     
             let node: ƒ.Node = GameManager.graph.getChild(0).getChildrenByName("GrassTile")[0];
-            console.log(node);
             
             this.node.addComponent(new ƒ.ComponentTransform());
             this.node.addComponent(new ƒ.ComponentMaterial(node.getComponent(ƒ.ComponentMaterial).material));

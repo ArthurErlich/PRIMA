@@ -31,6 +31,16 @@ declare namespace LocoFudge {
 }
 declare namespace LocoFudge {
     import ƒ = FudgeCore;
+    class Mouse {
+        private mousePos;
+        private pickedNodes;
+        updateMousePos(e: MouseEvent): void;
+        getMousePos(): ƒ.Vector2;
+        pickNode(): void;
+    }
+}
+declare namespace LocoFudge {
+    import ƒ = FudgeCore;
     class Tile {
         private node;
         constructor(index: number, location: ƒ.Vector3);
@@ -61,6 +71,7 @@ declare namespace LocoFudge {
         static camera: Camera;
         static graph: ƒ.Graph;
         static world: World;
+        static mouse: Mouse;
         static initiate(viewport: ƒ.Viewport): void;
         static startWorld(): void;
     }
@@ -69,6 +80,6 @@ declare namespace LocoFudge {
 }
 declare namespace LocoFudge {
     class MainLoop {
-        static update(): void;
+        static update(): Promise<void>;
     }
 }

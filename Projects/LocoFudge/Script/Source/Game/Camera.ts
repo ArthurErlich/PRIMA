@@ -6,15 +6,11 @@ namespace LocoFudge {
         private canvas: HTMLCanvasElement;
 
         public root: ƒ.Node;
+        //multiply cameras? -> than array. + Active cam
         public camComp: ƒ.ComponentCamera;
         public fieldOfView: number = 5;
         public startClipping: number = 0.2;
         public endClipping: number = 10000;
-
-        //multiply cameras? -> than array. + Active cam
-
-
-
 
         public init(): void {
             this.viewport = GameManager.viewport;
@@ -30,14 +26,12 @@ namespace LocoFudge {
 
             this.camComp.projectCentral(aspectRatio, this.fieldOfView, ƒ.FIELD_OF_VIEW.DIAGONAL, this.startClipping, this.endClipping);
 
-            ///Start Values for FAKE Orthographic View\\\
+            ///Start Position for FAKE Orthographic View\\\
             this.camComp.mtxPivot.translateZ(160);
             this.camComp.mtxPivot.translateX(-110);
             this.camComp.mtxPivot.translateY(-110);
 
-
-
-
+            ///Start Rotation for FAKE Perspective View\\\
             this.camComp.mtxPivot.rotateY(180);
             this.camComp.mtxPivot.rotateZ(45);
             this.camComp.mtxPivot.rotateX(-45);
@@ -68,8 +62,6 @@ namespace LocoFudge {
             }
             moveDirection.scale(10 * deltaSeconds);
             this.camComp.mtxPivot.translate(moveDirection);
-
-
             //Mouse movement
         }
     }

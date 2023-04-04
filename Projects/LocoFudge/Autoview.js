@@ -53,8 +53,8 @@ async function startInteractiveViewport(_graphId)/* : void */ {
   ƒ.Debug.log("Viewport:", viewport);  
 
   // hide the cursor when interacting, also suppressing right-click menu
-  canvas.addEventListener("mousedown", canvas.requestPointerLock);
-  canvas.addEventListener("mouseup", function () { document.exitPointerLock(); });
+  // canvas.addEventListener("oncontextmenu", canvas.requestPointerLock);
+  // canvas.addEventListener("mouseup", function () { document.exitPointerLock(); });
 
   // setup audio
   ƒ.AudioManager.default.listenTo(graph);
