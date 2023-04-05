@@ -63,7 +63,12 @@ namespace LocoFudge {
                 moveDirection.normalize();
             }
             if(this.moveMouse){
-                moveDirection = new ƒ.Vector3(GameManager.getMouse().getAcceleration().x/10, GameManager.getMouse().getAcceleration().y/10, moveDirection.z); //TODO: Fix Hacky Mouse Movement
+                let camSpeedReduction: number = 6;
+                moveDirection = new ƒ.Vector3(GameManager.getMouse().getAcceleration().x/camSpeedReduction, GameManager.getMouse().getAcceleration().y/camSpeedReduction, moveDirection.z); //TODO: Fix Hacky Mouse Movement
+                moveDirection.scale(deltaSeconds);
+
+                this.componentCamera.mtxPivot.translate(moveDirection);
+                return;
             }
             moveDirection.scale(10 * deltaSeconds);
             this.componentCamera.mtxPivot.translate(moveDirection);

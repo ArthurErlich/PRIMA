@@ -87,7 +87,11 @@ var LocoFudge;
                 moveDirection.normalize();
             }
             if (this.moveMouse) {
-                moveDirection = new ƒ.Vector3(LocoFudge.GameManager.getMouse().getAcceleration().x / 10, LocoFudge.GameManager.getMouse().getAcceleration().y / 10, moveDirection.z); //TODO: Fix Hacky Mouse Movement
+                let camSpeedReduction = 6;
+                moveDirection = new ƒ.Vector3(LocoFudge.GameManager.getMouse().getAcceleration().x / camSpeedReduction, LocoFudge.GameManager.getMouse().getAcceleration().y / camSpeedReduction, moveDirection.z); //TODO: Fix Hacky Mouse Movement
+                moveDirection.scale(deltaSeconds);
+                this.componentCamera.mtxPivot.translate(moveDirection);
+                return;
             }
             moveDirection.scale(10 * deltaSeconds);
             this.componentCamera.mtxPivot.translate(moveDirection);
