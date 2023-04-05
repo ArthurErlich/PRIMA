@@ -11,7 +11,7 @@ namespace LocoFudge {
         public getMousePos(): ƒ.Vector2 {
             return this.mousePos;
         }
-        public pickNode(): void {
+        public selectTile(): ƒ.Node {
             let pickedNodes = ƒ.Picker.pickViewport(GameManager.getViewport(), this.mousePos);
             let selectionNode: ƒ.Node = GameManager.getGraph().getChild(0).getChildrenByName("Selection")[0];
           
@@ -36,6 +36,7 @@ namespace LocoFudge {
                     selectionNode.mtxLocal.translateX(-0.05);//TODO: remove Temp fix
                 }
             }
+            return this.selectedTile.getChildrenByName("Track")[0];
         }
     }
 }

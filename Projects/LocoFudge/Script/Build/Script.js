@@ -115,7 +115,7 @@ var LocoFudge;
         getMousePos() {
             return this.mousePos;
         }
-        pickNode() {
+        selectTile() {
             let pickedNodes = ƒ.Picker.pickViewport(LocoFudge.GameManager.getViewport(), this.mousePos);
             let selectionNode = LocoFudge.GameManager.getGraph().getChild(0).getChildrenByName("Selection")[0];
             for (let i = 0; i < pickedNodes.length; i++) {
@@ -135,6 +135,7 @@ var LocoFudge;
                     selectionNode.mtxLocal.translateX(-0.05); //TODO: remove Temp fix
                 }
             }
+            return this.selectedTile.getChildrenByName("Track")[0];
         }
     }
     LocoFudge.Mouse = Mouse;
@@ -199,6 +200,23 @@ var LocoFudge;
         WORLDSIZE[WORLDSIZE["Medium"] = 32] = "Medium";
         WORLDSIZE[WORLDSIZE["Large"] = 64] = "Large";
     })(WORLDSIZE = LocoFudge.WORLDSIZE || (LocoFudge.WORLDSIZE = {}));
+})(LocoFudge || (LocoFudge = {}));
+var LocoFudge;
+(function (LocoFudge) {
+    class StraightTrack extends LocoFudge.Track {
+        //TODO: add trackImage or reference to trackNode from Graph
+        constructor() {
+            super();
+        }
+    }
+    LocoFudge.StraightTrack = StraightTrack;
+})(LocoFudge || (LocoFudge = {}));
+var LocoFudge;
+(function (LocoFudge) {
+    //TODO:create a track class
+    class Track {
+    }
+    LocoFudge.Track = Track;
 })(LocoFudge || (LocoFudge = {}));
 var LocoFudge;
 (function (LocoFudge) {
@@ -278,7 +296,7 @@ var LocoFudge;
     ///Mouse Left Click Event\\\
     function onMouseClick(_event) {
         if (_event.button == 0) {
-            LocoFudge.GameManager.getMouse().pickNode();
+            console.log(LocoFudge.GameManager.getMouse().selectTile()); // TODO: remove temp test
         }
         else if (_event.button == 2) {
             //TODO: right click movement
@@ -287,8 +305,6 @@ var LocoFudge;
     function start(_event) {
         viewport = _event.detail;
         LocoFudge.GameManager.initiate(viewport);
-        console.log(LocoFudge.GameManager.getCamera().root);
-        console.log(LocoFudge.GameManager.getGraph());
         //TODO:may come in handy https://jirkadelloro.github.io/FUDGE/Test/Debug/ScreenToRayToScreen/Test.html
         //Create Camera and add it to the viewport
         //Create World
@@ -306,7 +322,7 @@ var LocoFudge;
 (function (LocoFudge) {
     var ƒ = FudgeCore;
     class MainLoop {
-        static async update() {
+        static update() {
             let deltaSeconds = ƒ.Loop.timeFrameGame / 1000;
             LocoFudge.GameManager.getCamera().cameraMovementUpdate(deltaSeconds);
             //TODO:Update World

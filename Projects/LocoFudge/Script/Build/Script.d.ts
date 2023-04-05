@@ -35,7 +35,7 @@ declare namespace LocoFudge {
         private selectedTile;
         updateMousePos(e: MouseEvent): void;
         getMousePos(): ƒ.Vector2;
-        pickNode(): void;
+        selectTile(): ƒ.Node;
     }
 }
 declare namespace LocoFudge {
@@ -63,6 +63,15 @@ declare namespace LocoFudge {
     }
 }
 declare namespace LocoFudge {
+    class StraightTrack extends Track {
+        constructor();
+    }
+}
+declare namespace LocoFudge {
+    class Track {
+    }
+}
+declare namespace LocoFudge {
     import ƒ = FudgeCore;
     class GameManager {
         private static viewport;
@@ -87,6 +96,6 @@ declare namespace LocoFudge {
 }
 declare namespace LocoFudge {
     class MainLoop {
-        static update(): Promise<void>;
+        static update(): void;
     }
 }

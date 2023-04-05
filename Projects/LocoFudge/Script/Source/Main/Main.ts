@@ -16,7 +16,7 @@ namespace LocoFudge {
   ///Mouse Left Click Event\\\
   function onMouseClick(_event: MouseEvent): void {
     if (_event.button == 0){
-      GameManager.getMouse().pickNode();
+      console.log(GameManager.getMouse().selectTile()); // TODO: remove temp test
     } else if (_event.button == 2){
       //TODO: right click movement
     }
@@ -25,10 +25,6 @@ namespace LocoFudge {
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
     GameManager.initiate(viewport);
-    console.log(GameManager.getCamera().root);
-
-    console.log(GameManager.getGraph());
-    
     
     
   //TODO:may come in handy https://jirkadelloro.github.io/FUDGE/Test/Debug/ScreenToRayToScreen/Test.html
