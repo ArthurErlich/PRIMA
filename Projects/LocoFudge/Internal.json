@@ -1,11 +1,4 @@
 {
-  "MeshCube|2023-04-03T21:19:53.291Z|13887": {
-    "ƒ.MeshCube": {
-      "idResource": "MeshCube|2023-04-03T21:19:53.291Z|13887",
-      "name": "MeshCube",
-      "type": "MeshCube"
-    }
-  },
   "Material|2023-04-03T21:20:15.338Z|79133": {
     "ƒ.Material": {
       "name": "ShaderLit",
@@ -13,7 +6,7 @@
       "shader": "ShaderLit",
       "coat": {
         "ƒ.CoatColored": {
-          "color": "[0.9450980392156862, 0.9137254901960784, 0.9137254901960784, 1]"
+          "color": "[1, 0.7843137254901961, 0, 1]"
         }
       }
     }
@@ -41,6 +34,17 @@
       }
     }
   },
+  "TextureImage|2023-04-04T16:24:06.476Z|16583": {
+    "ƒ.TextureImage": {
+      "url": "Textures\\GroundSpriteTextures\\Dirt.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-04-04T16:24:06.476Z|16583",
+        "name": "GrassTexture",
+        "mipmap": "CRISP"
+      }
+    }
+  },
   "MeshCube|2023-04-03T21:56:57.027Z|92484": {
     "ƒ.MeshCube": {
       "idResource": "MeshCube|2023-04-03T21:56:57.027Z|92484",
@@ -51,8 +55,32 @@
   "MeshSprite|2023-04-03T22:47:48.071Z|43076": {
     "ƒ.MeshSprite": {
       "idResource": "MeshSprite|2023-04-03T22:47:48.071Z|43076",
-      "name": "MeshSprite",
+      "name": "BasicSprite",
       "type": "MeshSprite"
+    }
+  },
+  "Material|2023-04-04T16:29:53.878Z|30567": {
+    "ƒ.Material": {
+      "name": "SelectedTile",
+      "idResource": "Material|2023-04-04T16:29:53.878Z|30567",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-04-04T16:30:14.075Z|34677"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-04-04T16:30:14.075Z|34677": {
+    "ƒ.TextureImage": {
+      "url": "Textures\\GroundSpriteTextures\\TileSelect.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-04-04T16:30:14.075Z|34677",
+        "name": "Selection",
+        "mipmap": "CRISP"
+      }
     }
   },
   "Graph|2023-04-03T21:33:17.373Z|97920": {
@@ -189,6 +217,71 @@
               }
             ]
           }
+        },
+        {
+          "ƒ.Node": {
+            "name": "3D",
+            "active": true,
+            "components": {},
+            "children": [
+              {
+                "ƒ.Node": {
+                  "name": "Track_Stright",
+                  "active": true,
+                  "components": {
+                    "ComponentMesh": [
+                      {
+                        "ƒ.ComponentMesh": {
+                          "idMesh": "MeshObj|2023-04-05T16:06:50.289Z|57071",
+                          "pivot": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentMaterial": [
+                      {
+                        "ƒ.ComponentMaterial": {
+                          "sortForAlpha": false,
+                          "clrPrimary": "[1, 1, 1, 1]",
+                          "clrSecondary": "[1, 1, 1, 1]",
+                          "pivot": {
+                            "translation": "[0, 0]",
+                            "rotation": 0,
+                            "scaling": "[1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          },
+                          "idMaterial": "Material|2023-04-03T21:20:15.338Z|79133"
+                        }
+                      }
+                    ]
+                  },
+                  "children": []
+                }
+              }
+            ]
+          }
         }
       ],
       "idResource": "Graph|2023-04-03T21:33:17.373Z|97920",
@@ -207,83 +300,12 @@
       }
     }
   },
-  "Graph|2023-04-04T15:30:19.835Z|02723": {
-    "ƒ.Graph": {
-      "name": "DemoTile",
-      "active": true,
-      "components": {
-        "ComponentMesh": [
-          {
-            "ƒ.ComponentMesh": {
-              "idMesh": "MeshSprite|2023-04-03T22:47:48.071Z|43076",
-              "pivot": {
-                "translation": "[0, 0, 0]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[1, 1, 1]"
-              },
-              "Component": {
-                "active": true
-              }
-            }
-          }
-        ],
-        "ComponentMaterial": [
-          {
-            "ƒ.ComponentMaterial": {
-              "sortForAlpha": false,
-              "clrPrimary": "[1, 1, 1, 1]",
-              "clrSecondary": "[1, 1, 1, 1]",
-              "pivot": {
-                "translation": "[0, 0]",
-                "rotation": 0,
-                "scaling": "[1, 1]"
-              },
-              "Component": {
-                "active": true
-              },
-              "idMaterial": "Material|2023-04-03T21:57:18.812Z|71497"
-            }
-          }
-        ]
-      },
-      "children": [],
-      "idResource": "Graph|2023-04-04T15:30:19.835Z|02723",
-      "type": "Graph"
-    }
-  },
-  "TextureImage|2023-04-04T16:24:06.476Z|16583": {
-    "ƒ.TextureImage": {
-      "url": "Textures\\GroundSpriteTextures\\Dirt.png",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2023-04-04T16:24:06.476Z|16583",
-        "name": "Textures\\GroundSpriteTextures\\Dirt.png",
-        "mipmap": "CRISP"
-      }
-    }
-  },
-  "Material|2023-04-04T16:29:53.878Z|30567": {
-    "ƒ.Material": {
-      "name": "SelectedTile",
-      "idResource": "Material|2023-04-04T16:29:53.878Z|30567",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-04-04T16:30:14.075Z|34677"
-        }
-      }
-    }
-  },
-  "TextureImage|2023-04-04T16:30:14.075Z|34677": {
-    "ƒ.TextureImage": {
-      "url": "Textures\\GroundSpriteTextures\\TileSelect.png",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2023-04-04T16:30:14.075Z|34677",
-        "name": "Textures\\GroundSpriteTextures\\TileSelect.png",
-        "mipmap": "CRISP"
-      }
+  "MeshObj|2023-04-05T16:06:50.289Z|57071": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-04-05T16:06:50.289Z|57071",
+      "name": "Objects\\Track\\StrightTrack_V1.obj",
+      "type": "MeshObj",
+      "url": "Objects\\Track\\StrightTrack_V1.obj"
     }
   }
 }

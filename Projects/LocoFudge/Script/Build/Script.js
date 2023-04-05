@@ -48,6 +48,7 @@ var LocoFudge;
         fieldOfView = 5;
         startClipping = 0.2;
         endClipping = 10000;
+        moveMouse = false;
         init() {
             this.canvas = LocoFudge.GameManager.getCanvas();
             //create the camera and add it to the viewport
@@ -85,9 +86,15 @@ var LocoFudge;
             if (moveDirection.magnitude > 0) {
                 moveDirection.normalize();
             }
+            if (this.moveMouse) {
+                moveDirection = new ƒ.Vector3(LocoFudge.GameManager.getMouse().getAcceleration().x / 10, LocoFudge.GameManager.getMouse().getAcceleration().y / 10, moveDirection.z); //TODO: Fix Hacky Mouse Movement
+            }
             moveDirection.scale(10 * deltaSeconds);
             this.componentCamera.mtxPivot.translate(moveDirection);
             //Mouse movement
+        }
+        moveCamera(moveMouse) {
+            this.moveMouse = moveMouse;
         }
     }
     LocoFudge.Camera = Camera;
@@ -107,6 +114,7 @@ var LocoFudge;
     var ƒ = FudgeCore;
     class Mouse {
         mousePos = new ƒ.Vector2(0, 0);
+        acceleration = new ƒ.Vector2(0, 0);
         selectedTile = null;
         updateMousePos(e) {
             this.mousePos.x = e.clientX;
@@ -114,6 +122,15 @@ var LocoFudge;
         }
         getMousePos() {
             return this.mousePos;
+        }
+        mousePressed(_event) {
+            if (_event.button == 0) {
+                //TODO: left click movement temporary selection
+                this.selectTile();
+            }
+            else if (_event.button == 2) {
+                //TODO: right click movement
+            }
         }
         selectTile() {
             let pickedNodes = ƒ.Picker.pickViewport(LocoFudge.GameManager.getViewport(), this.mousePos);
@@ -136,6 +153,12 @@ var LocoFudge;
                 }
             }
             return this.selectedTile.getChildrenByName("Track")[0];
+        }
+        setAcceleration(speedVector) {
+            this.acceleration = speedVector;
+        }
+        getAcceleration() {
+            return this.acceleration;
         }
     }
     LocoFudge.Mouse = Mouse;
@@ -201,16 +224,11 @@ var LocoFudge;
         WORLDSIZE[WORLDSIZE["Large"] = 64] = "Large";
     })(WORLDSIZE = LocoFudge.WORLDSIZE || (LocoFudge.WORLDSIZE = {}));
 })(LocoFudge || (LocoFudge = {}));
-var LocoFudge;
-(function (LocoFudge) {
-    class StraightTrack extends LocoFudge.Track {
-        //TODO: add trackImage or reference to trackNode from Graph
-        constructor() {
-            super();
-        }
-    }
-    LocoFudge.StraightTrack = StraightTrack;
-})(LocoFudge || (LocoFudge = {}));
+// namespace LocoFudge {
+//     export class StraightTrack extends Track {
+//         //TODO: add trackImage or reference to trackNode from Graph
+//     }
+// }
 var LocoFudge;
 (function (LocoFudge) {
     //TODO:create a track class
@@ -292,15 +310,18 @@ var LocoFudge;
     ///Mouse Position Update\\\
     function onMouseUpdate(_event) {
         LocoFudge.GameManager.getMouse().updateMousePos(_event);
+        if (_event.buttons === 2) {
+            LocoFudge.GameManager.getMouse().setAcceleration(new ƒ.Vector2(_event.movementX, _event.movementY));
+            LocoFudge.GameManager.getCamera().moveCamera(true);
+        }
+        else {
+            LocoFudge.GameManager.getMouse().setAcceleration(ƒ.Vector2.ZERO()); //TODO: remove temp fix unused variable
+            LocoFudge.GameManager.getCamera().moveCamera(false);
+        }
     }
     ///Mouse Left Click Event\\\
     function onMouseClick(_event) {
-        if (_event.button == 0) {
-            console.log(LocoFudge.GameManager.getMouse().selectTile()); // TODO: remove temp test
-        }
-        else if (_event.button == 2) {
-            //TODO: right click movement
-        }
+        console.log(LocoFudge.GameManager.getMouse().mousePressed(_event)); // TODO: remove temp test
     }
     function start(_event) {
         viewport = _event.detail;
@@ -315,6 +336,7 @@ var LocoFudge;
         await LocoFudge.MainLoop.update();
         // ƒ.Physics.simulate();  // if physics is included and used
         viewport.draw();
+        LocoFudge.GameManager.getMouse().setAcceleration(ƒ.Vector2.ZERO()); //TODO: fixes the further movement when the mouse is not moving. -->remove temp fix after getting proper implementation
         // ƒ.AudioManager.default.update();
     }
 })(LocoFudge || (LocoFudge = {}));

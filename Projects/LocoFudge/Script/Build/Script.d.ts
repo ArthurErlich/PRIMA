@@ -16,8 +16,10 @@ declare namespace LocoFudge {
         fieldOfView: number;
         startClipping: number;
         endClipping: number;
+        private moveMouse;
         init(): void;
-        cameraMovementUpdate(deltaSeconds: number): void;
+        cameraMovementUpdate(deltaSeconds?: number): void;
+        moveCamera(moveMouse: boolean): void;
     }
 }
 declare namespace LocoFudge {
@@ -32,10 +34,14 @@ declare namespace LocoFudge {
     import ƒ = FudgeCore;
     class Mouse {
         private mousePos;
+        private acceleration;
         private selectedTile;
         updateMousePos(e: MouseEvent): void;
         getMousePos(): ƒ.Vector2;
+        mousePressed(_event: MouseEvent): void;
         selectTile(): ƒ.Node;
+        setAcceleration(speedVector: ƒ.Vector2): void;
+        getAcceleration(): ƒ.Vector2;
     }
 }
 declare namespace LocoFudge {
@@ -60,11 +66,6 @@ declare namespace LocoFudge {
         "Small" = 16,
         "Medium" = 32,
         "Large" = 64
-    }
-}
-declare namespace LocoFudge {
-    class StraightTrack extends Track {
-        constructor();
     }
 }
 declare namespace LocoFudge {

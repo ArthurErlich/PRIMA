@@ -9,22 +9,29 @@ namespace LocoFudge {
   document.addEventListener("mousemove",onMouseUpdate, false);
   document.addEventListener("mousedown",onMouseClick, false)
 
+
   ///Mouse Position Update\\\
   function onMouseUpdate(_event: MouseEvent): void {
     GameManager.getMouse().updateMousePos(_event);
+    if(_event.buttons === 2){
+      GameManager.getMouse().setAcceleration(new ƒ.Vector2(_event.movementX,_event.movementY));
+      GameManager.getCamera().moveCamera(true);
+
+    }else{
+      GameManager.getMouse().setAcceleration(ƒ.Vector2.ZERO());//TODO: remove temp fix unused variable
+      GameManager.getCamera().moveCamera(false);
+    }
+    
   }
   ///Mouse Left Click Event\\\
   function onMouseClick(_event: MouseEvent): void {
-    if (_event.button == 0){
-      console.log(GameManager.getMouse().selectTile()); // TODO: remove temp test
-    } else if (_event.button == 2){
-      //TODO: right click movement
-    }
+    console.log(GameManager.getMouse().mousePressed(_event)); // TODO: remove temp test
   }
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
     GameManager.initiate(viewport);
+      
     
     
   //TODO:may come in handy https://jirkadelloro.github.io/FUDGE/Test/Debug/ScreenToRayToScreen/Test.html
@@ -37,9 +44,11 @@ namespace LocoFudge {
   }
 
   async function update(_event: Event): Promise<void> {
+    
     await MainLoop.update();
     // ƒ.Physics.simulate();  // if physics is included and used
     viewport.draw();
+    GameManager.getMouse().setAcceleration(ƒ.Vector2.ZERO());//TODO: fixes the further movement when the mouse is not moving. -->remove temp fix after getting proper implementation
     // ƒ.AudioManager.default.update();
   }
 }

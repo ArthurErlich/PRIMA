@@ -12,6 +12,8 @@ namespace LocoFudge {
         public startClipping: number = 0.2;
         public endClipping: number = 10000;
 
+        private moveMouse:boolean = false;
+
         public init(): void {
             this.canvas = GameManager.getCanvas();
 
@@ -39,7 +41,7 @@ namespace LocoFudge {
         }
 
         ///Camera Controller\\\ 
-        public cameraMovementUpdate(deltaSeconds: number): void {
+        public cameraMovementUpdate(deltaSeconds?: number): void {
 
             let moveDirection: ƒ.Vector3 = new ƒ.Vector3(0, 0, 0);
 
@@ -56,12 +58,20 @@ namespace LocoFudge {
                 moveDirection = new ƒ.Vector3(-1, moveDirection.y, moveDirection.z);
             }
             
+            
             if (moveDirection.magnitude > 0) {
                 moveDirection.normalize();
+            }
+            if(this.moveMouse){
+                moveDirection = new ƒ.Vector3(GameManager.getMouse().getAcceleration().x/10, GameManager.getMouse().getAcceleration().y/10, moveDirection.z); //TODO: Fix Hacky Mouse Movement
             }
             moveDirection.scale(10 * deltaSeconds);
             this.componentCamera.mtxPivot.translate(moveDirection);
             //Mouse movement
+        }
+
+        public moveCamera(moveMouse:boolean): void {
+            this.moveMouse = moveMouse;
         }
     }
 }
