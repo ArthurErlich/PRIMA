@@ -182,12 +182,12 @@ Leider ist im Fudge ein Problem mit diesen AnimationsFrame auswhal
 
 # Problems and so one 📅06.04.2023
 
-* If you need to hange a lot of things. Do that in the internal.json. There will be the node Tree, where you can change the Nodes and there components.
+* If you need to change a lot of things. Do that in the internal.json. There will be the node Tree, where you can change the Nodes and there components.
 * You can get the scaling of objects and so with: let mtexNewLocal = node.mtxLocal.scaling<--
 * add issue (AnimSprite prevwiee wont update when you put a texture inside)
 * #
-* **TAKS::** Chante the animation for "sonic"
+* **TAKS::** Change the animation for "sonic"
 
-You can get Recourses by f.getResurcesByName???
+You can get Recourses by FudgeCore.getResurcesByName???
 
 ActionSequence-> AktivityDiagram [INSERT FOTO HERE]
