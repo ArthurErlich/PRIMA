@@ -81,6 +81,60 @@
       "latitudes": 8
     }
   },
+  "Material|2023-03-29T16:46:26.677Z|14751": {
+    "ƒ.Material": {
+      "name": "Ma_Floor_2",
+      "idResource": "Material|2023-03-29T16:46:26.677Z|14751",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-03-29T16:45:21.020Z|57648"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-03-29T16:45:21.020Z|57648": {
+    "ƒ.TextureImage": {
+      "url": "Texture\\Tex_Floor_2.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-03-29T16:45:21.020Z|57648",
+        "name": "Texture\\Tex_Floor_2.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Material|2023-03-31T13:26:16.770Z|31436": {
+    "ƒ.Material": {
+      "name": "Ma_BackGroundTEST",
+      "idResource": "Material|2023-03-31T13:26:16.770Z|31436",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-03-31T13:26:13.298Z|95387"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-03-31T13:26:13.298Z|95387": {
+    "ƒ.TextureImage": {
+      "url": "Texture\\SourceSpriteMap\\PlayStation - Castlevania Symphony of the Night.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-03-31T13:26:13.298Z|95387",
+        "name": "Texture\\SourceSpriteMap\\PlayStation - Castlevania Symphony of the Night.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "MeshQuad|2023-03-31T13:25:13.222Z|66701": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2023-03-31T13:25:13.222Z|66701",
+      "name": "M_BackGroundTEST"
+    }
+  },
   "Graph|2023-03-29T16:28:46.133Z|95456": {
     "ƒ.Graph": {
       "name": "Game",
@@ -1443,6 +1497,77 @@
                   },
                   "children": []
                 }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "Alucard2dot0",
+                  "active": true,
+                  "components": {
+                    "ComponentAnimator": [
+                      {
+                        "ƒ.ComponentAnimator": {
+                          "Component": {
+                            "active": false
+                          },
+                          "idAnimation": "AnimationSprite|2023-04-06T13:01:36.249Z|70705",
+                          "playmode": "loop",
+                          "quantization": "continous",
+                          "scale": 1,
+                          "scaleWithGameTime": true,
+                          "animateInEditor": false
+                        }
+                      }
+                    ],
+                    "ComponentMaterial": [
+                      {
+                        "ƒ.ComponentMaterial": {
+                          "sortForAlpha": false,
+                          "clrPrimary": "[1, 1, 1, 1]",
+                          "clrSecondary": "[1, 1, 1, 1]",
+                          "pivot": {
+                            "translation": "[0, 0]",
+                            "rotation": 0,
+                            "scaling": "[1, 1]"
+                          },
+                          "Component": {
+                            "active": false
+                          },
+                          "idMaterial": "Material|2023-03-29T16:49:22.830Z|31520"
+                        }
+                      }
+                    ],
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentMesh": [
+                      {
+                        "ƒ.ComponentMesh": {
+                          "idMesh": "MeshSprite|2023-03-29T16:49:43.639Z|77441",
+                          "pivot": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "children": []
+                }
               }
             ]
           }
@@ -2008,30 +2133,6 @@
       "type": "Graph"
     }
   },
-  "Material|2023-03-29T16:46:26.677Z|14751": {
-    "ƒ.Material": {
-      "name": "Ma_Floor_2",
-      "idResource": "Material|2023-03-29T16:46:26.677Z|14751",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-03-29T16:45:21.020Z|57648"
-        }
-      }
-    }
-  },
-  "TextureImage|2023-03-29T16:45:21.020Z|57648": {
-    "ƒ.TextureImage": {
-      "url": "Texture\\Tex_Floor_2.png",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2023-03-29T16:45:21.020Z|57648",
-        "name": "Texture\\Tex_Floor_2.png",
-        "mipmap": "CRISP"
-      }
-    }
-  },
   "Graph|2023-03-29T16:41:09.824Z|22349": {
     "ƒ.Graph": {
       "name": "Floor_2",
@@ -2101,33 +2202,23 @@
       }
     }
   },
-  "MeshQuad|2023-03-31T13:25:13.222Z|66701": {
-    "ƒ.MeshQuad": {
-      "idResource": "MeshQuad|2023-03-31T13:25:13.222Z|66701",
-      "name": "M_BackGroundTEST"
-    }
-  },
-  "TextureImage|2023-03-31T13:26:13.298Z|95387": {
-    "ƒ.TextureImage": {
-      "url": "Texture\\SourceSpriteMap\\PlayStation - Castlevania Symphony of the Night.png",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2023-03-31T13:26:13.298Z|95387",
-        "name": "Texture\\SourceSpriteMap\\PlayStation - Castlevania Symphony of the Night.png",
-        "mipmap": "CRISP"
-      }
-    }
-  },
-  "Material|2023-03-31T13:26:16.770Z|31436": {
-    "ƒ.Material": {
-      "name": "Ma_BackGroundTEST",
-      "idResource": "Material|2023-03-31T13:26:16.770Z|31436",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-03-31T13:26:13.298Z|95387"
-        }
+  "AnimationSprite|2023-04-06T13:01:36.249Z|70705": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-04-06T13:01:36.249Z|70705",
+      "idTexture": "TextureImage|2023-03-29T17:28:25.576Z|40103",
+      "frames": 25,
+      "wrapAfter": 23,
+      "start": "[0, 0]",
+      "size": "[64, 65]",
+      "next": "[64, 0]",
+      "wrap": "[0, 80]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-04-06T13:01:36.249Z|70705",
+        "name": "AnimationSprite",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 25,
+        "animationStructure": {}
       }
     }
   }

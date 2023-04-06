@@ -19,7 +19,7 @@ declare namespace LocoFudge {
         private moveMouse;
         init(): void;
         cameraMovementUpdate(deltaSeconds?: number): void;
-        moveCamera(moveMouse: boolean): void;
+        moveCameraWithMouse(moveMouse: boolean): void;
     }
 }
 declare namespace LocoFudge {

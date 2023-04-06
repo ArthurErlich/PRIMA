@@ -4,6 +4,7 @@ namespace LocoFudge {
      {
         static update():void{
             let deltaSeconds: number = ƒ.Loop.timeFrameGame / 1000;
+            
             GameManager.getCamera().cameraMovementUpdate(deltaSeconds);
 
             

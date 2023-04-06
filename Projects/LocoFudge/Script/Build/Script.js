@@ -83,6 +83,13 @@ var LocoFudge;
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
                 moveDirection = new ƒ.Vector3(-1, moveDirection.y, moveDirection.z);
             }
+            /*
+            if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE_DE.PLUS])){ //TODO:Look up why it wont work
+
+            }
+            if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE_DE.MINUS])){
+                
+            }*/
             if (moveDirection.magnitude > 0) {
                 moveDirection.normalize();
             }
@@ -97,7 +104,7 @@ var LocoFudge;
             this.componentCamera.mtxPivot.translate(moveDirection);
             //Mouse movement
         }
-        moveCamera(moveMouse) {
+        moveCameraWithMouse(moveMouse) {
             this.moveMouse = moveMouse;
         }
     }
@@ -166,6 +173,24 @@ var LocoFudge;
         }
     }
     LocoFudge.Mouse = Mouse;
+    document.addEventListener("mousemove", onMouseUpdate);
+    document.addEventListener("mousedown", onMouseClick);
+    ///Mouse Position Update\\\
+    function onMouseUpdate(_event) {
+        LocoFudge.GameManager.getMouse().updateMousePos(_event);
+        if (_event.buttons === 2) {
+            LocoFudge.GameManager.getMouse().setAcceleration(new ƒ.Vector2(_event.movementX, _event.movementY));
+            LocoFudge.GameManager.getCamera().moveCameraWithMouse(true); //TODO:Needs to bo remaind. Something to make me understand that.
+        }
+        else {
+            LocoFudge.GameManager.getMouse().setAcceleration(ƒ.Vector2.ZERO()); //TODO: remove temp fix unused variable
+            LocoFudge.GameManager.getCamera().moveCameraWithMouse(false);
+        }
+    }
+    ///Mouse Left Click Event\\\
+    function onMouseClick(_event) {
+        console.log(LocoFudge.GameManager.getMouse().mousePressed(_event)); // TODO: remove temp test
+    }
 })(LocoFudge || (LocoFudge = {}));
 var LocoFudge;
 (function (LocoFudge) {
@@ -309,24 +334,6 @@ var LocoFudge;
     ƒ.Debug.info("LocoEditor is running! 🏃");
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
-    document.addEventListener("mousemove", onMouseUpdate, false);
-    document.addEventListener("mousedown", onMouseClick, false);
-    ///Mouse Position Update\\\
-    function onMouseUpdate(_event) {
-        LocoFudge.GameManager.getMouse().updateMousePos(_event);
-        if (_event.buttons === 2) {
-            LocoFudge.GameManager.getMouse().setAcceleration(new ƒ.Vector2(_event.movementX, _event.movementY));
-            LocoFudge.GameManager.getCamera().moveCamera(true);
-        }
-        else {
-            LocoFudge.GameManager.getMouse().setAcceleration(ƒ.Vector2.ZERO()); //TODO: remove temp fix unused variable
-            LocoFudge.GameManager.getCamera().moveCamera(false);
-        }
-    }
-    ///Mouse Left Click Event\\\
-    function onMouseClick(_event) {
-        console.log(LocoFudge.GameManager.getMouse().mousePressed(_event)); // TODO: remove temp test
-    }
     function start(_event) {
         viewport = _event.detail;
         LocoFudge.GameManager.initiate(viewport);
@@ -340,8 +347,8 @@ var LocoFudge;
         await LocoFudge.MainLoop.update();
         // ƒ.Physics.simulate();  // if physics is included and used
         viewport.draw();
-        LocoFudge.GameManager.getMouse().setAcceleration(ƒ.Vector2.ZERO()); //TODO: fixes the further movement when the mouse is not moving. -->remove temp fix after getting proper implementation
         // ƒ.AudioManager.default.update();
+        LocoFudge.GameManager.getMouse().setAcceleration(ƒ.Vector2.ZERO()); //TODO: fixes the further movement when the mouse is not moving. -->remove temp fix after getting proper implementation
     }
 })(LocoFudge || (LocoFudge = {}));
 var LocoFudge;

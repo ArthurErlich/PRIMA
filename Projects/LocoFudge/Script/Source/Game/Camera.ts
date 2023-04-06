@@ -57,6 +57,13 @@ namespace LocoFudge {
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
                 moveDirection = new ƒ.Vector3(-1, moveDirection.y, moveDirection.z);
             }
+            /*
+            if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE_DE.PLUS])){ //TODO:Look up why it wont work
+
+            }
+            if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE_DE.MINUS])){
+                
+            }*/
             
             
             if (moveDirection.magnitude > 0) {
@@ -75,7 +82,7 @@ namespace LocoFudge {
             //Mouse movement
         }
 
-        public moveCamera(moveMouse:boolean): void {
+        public moveCameraWithMouse(moveMouse:boolean): void {
             this.moveMouse = moveMouse;
         }
     }

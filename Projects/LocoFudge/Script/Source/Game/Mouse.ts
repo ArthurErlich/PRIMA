@@ -55,4 +55,26 @@ namespace LocoFudge {
             return this.acceleration;
         }
     }
+    document.addEventListener("mousemove",onMouseUpdate);
+    document.addEventListener("mousedown",onMouseClick);
+
+
+    ///Mouse Position Update\\\
+  function onMouseUpdate(_event: MouseEvent): void {
+    GameManager.getMouse().updateMousePos(_event);
+    if(_event.buttons === 2){
+      GameManager.getMouse().setAcceleration(new ƒ.Vector2(_event.movementX,_event.movementY));
+      GameManager.getCamera().moveCameraWithMouse(true); //TODO:Needs to bo remaind. Something to make me understand that.
+
+    }else{
+      GameManager.getMouse().setAcceleration(ƒ.Vector2.ZERO());//TODO: remove temp fix unused variable
+      GameManager.getCamera().moveCameraWithMouse(false);
+    }
+    
+  }
+  ///Mouse Left Click Event\\\
+  function onMouseClick(_event: MouseEvent): void {
+    console.log(GameManager.getMouse().mousePressed(_event)); // TODO: remove temp test
+  }
+
 }

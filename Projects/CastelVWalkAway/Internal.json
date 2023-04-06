@@ -1,0 +1,50 @@
+{
+  "TextureImage|2023-04-06T13:17:44.375Z|32279": {
+    "ƒ.TextureImage": {
+      "url": "Alucard.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-04-06T13:17:44.375Z|32279",
+        "name": "Alucard.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Graph|2023-04-06T13:17:47.089Z|34524": {
+    "ƒ.Graph": {
+      "name": "GameGraph",
+      "active": true,
+      "components": {},
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "Allucard",
+            "active": true,
+            "components": {},
+            "children": []
+          }
+        }
+      ],
+      "idResource": "Graph|2023-04-06T13:17:47.089Z|34524",
+      "type": "Graph"
+    }
+  },
+  "MeshQuad|2023-04-06T13:17:57.482Z|37752": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2023-04-06T13:17:57.482Z|37752",
+      "name": "AlucardMesh"
+    }
+  },
+  "Material|2023-04-06T13:18:05.780Z|53746": {
+    "ƒ.Material": {
+      "name": "AlucardTexture",
+      "idResource": "Material|2023-04-06T13:18:05.780Z|53746",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]"
+        }
+      }
+    }
+  }
+}
