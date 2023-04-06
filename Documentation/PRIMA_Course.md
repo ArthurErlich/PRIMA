@@ -172,4 +172,22 @@ f.Loop.start() <-- LOOP_MODE -> man kann vom Loop auskoppeln und etwas anderes e
 
 Leider ist im Fudge ein Problem mit diesen AnimationsFrame auswhal
 
-* Animations Ediotor läuft leider auch noch nicht
+* mehr zu animaitonnen:
+* ![](assets/20230406_150706_image.png)
+* ![setze quantitation!! für spirte animationen richtig!!](assets/20230406_150727_image.png)
+* ![Alucard Animation](assets/20230406_151053_AlucardWalking.gif)
+* Das animations sprite nimmt sich die Kontrolle vom Material
+
+#* Animations Ediotor läuft leider auch noch nicht
+
+# Problems and so one 📅06.04.2023
+
+* If you need to hange a lot of things. Do that in the internal.json. There will be the node Tree, where you can change the Nodes and there components.
+* You can get the scaling of objects and so with: let mtexNewLocal = node.mtxLocal.scaling<--
+* add issue (AnimSprite prevwiee wont update when you put a texture inside)
+* #
+* **TAKS::** Chante the animation for "sonic"
+
+You can get Recourses by f.getResurcesByName???
+
+ActionSequence-> AktivityDiagram [INSERT FOTO HERE]
