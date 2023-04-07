@@ -9,23 +9,36 @@ namespace CastleV {
         private gravity: number = -30;
         private fallingSpeed: number = 0;
         //--> maxFallSpeed is used below, //TODO: check implementation of fall speed
+        //If the player falls too fast on a slow computer, the player will fall trough a block.
         //private maxFallSpeed: number = 0.2;
 
         private playerSpeed: ƒ.Vector3 = new ƒ.Vector3(0, 0, 0);
+        
         private material: ƒ.ComponentMaterial = null;
+
+        ///Animation\\\
+        private animation: ƒ.Animation = null;
+
+     
 
         //deltaTime
         private deltaTimeSeconds: number = 0;
-
+        
         //animation
+        private animationDirection: number;
+        /*
         private updateTime: number = 0.045;
         private elapsedTimeAnim: number = 0;
+        */
 
         constructor(viewport: ƒ.Viewport) {
             this.alucard = viewport.getBranch().getChildrenByName("Character")[0];
 
             this.pivot = this.alucard.getChildrenByName("Alucard")[0]
             this.material = this.pivot.getComponent(ƒ.ComponentMaterial);
+
+            this.animation = this.pivot.getComponent(ƒ.ComponentAnimator).animation;
+                        
         }
 
         //updates the Player -> called in Main.ts update Loop
@@ -41,11 +54,24 @@ namespace CastleV {
             this.alucard.mtxLocal.translation = new ƒ.Vector3(0, 1, 0);//TODO: Change to spawnpoint
         }
 
+        public setAnimation(animation: ƒ.Animation):void{
+            // if(this.animation == animation){
+            //     return;
+            // }
+            this.animation = animation;
+            this.pivot.getComponent(ƒ.ComponentAnimator).animation = this.animation;            
+        }
+
+        public getSpeed():ƒ.Vector3{
+            return this.playerSpeed;
+        }
+
         private input(): void {
             let isGrounded = true;
             this.playerSpeed = new ƒ.Vector3(0, 0, 0);
 
             //CollisionDetection.check(this.alucard.mtxWorld) <- make that with vector 3 instand of matrix
+
             if (CollisionDetection.check(this.alucard.mtxWorld).find(e => e == Collision.DOWN) != Collision.DOWN) {
                 isGrounded = false;
             } else {
@@ -56,15 +82,11 @@ namespace CastleV {
             // console.log(CollisionDetection.lastCollisionY);
 
 
-
-
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]) && !(CollisionDetection.check(this.alucard.mtxWorld).find(e => e == Collision.RIGHT) == Collision.RIGHT)) {
-                this.playerSpeed = new ƒ.Vector3(this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);
-                this.updatePlayerAnim(WalkDirection.RIGHT);
+                this.playerSpeed = new ƒ.Vector3(this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);                
             }
             else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]) && !(CollisionDetection.check(this.alucard.mtxWorld).find(e => e == Collision.LEFT) == Collision.LEFT)) {
                 this.playerSpeed = new ƒ.Vector3(-this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);
-                this.updatePlayerAnim(WalkDirection.LEFT);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
                 this.fallingSpeed = 10;
@@ -104,6 +126,10 @@ namespace CastleV {
             }
         }
 
+        
+
+        /*
+        //TODO:Remove old implementation of Animation
         private updatePlayerAnim(direction: WalkDirection): void {
             this.elapsedTimeAnim += ƒ.Loop.timeFrameGame / 1000;
 
@@ -116,14 +142,11 @@ namespace CastleV {
             } else if (this.elapsedTimeAnim >= this.updateTime && direction == WalkDirection.LEFT) {
 
                 this.material.mtxPivot.translateX(-0.0625);
-                //TODO:Rotate Alucards TexturedMesh
+
                 this.elapsedTimeAnim = 0;
             }
         }
 
-    }
-    enum WalkDirection {
-        LEFT = 0,
-        RIGHT = 1
+        */
     }
 }

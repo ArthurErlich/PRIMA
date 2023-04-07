@@ -3,6 +3,7 @@ declare namespace CastleV {
     class CollisionDetection {
         static tiles: ƒ.Node[];
         static lastCollision: ƒ.Vector3;
+        static setupCollision(floor: ƒ.Node): void;
         static updateTiles(tiles: ƒ.Node[]): void;
         static check(playerMtxWorld: ƒ.Matrix4x4): Collision[];
         private static getDistance;
@@ -36,14 +37,15 @@ declare namespace CastleV {
         private fallingSpeed;
         private playerSpeed;
         private material;
+        private animation;
         private deltaTimeSeconds;
-        private updateTime;
-        private elapsedTimeAnim;
+        private animationDirection;
         constructor(viewport: ƒ.Viewport);
         update(deltaTimeSeconds: number): void;
         resetPlayer(): void;
+        setAnimation(animation: ƒ.Animation): void;
+        getSpeed(): ƒ.Vector3;
         private input;
         private movement;
-        private updatePlayerAnim;
     }
 }

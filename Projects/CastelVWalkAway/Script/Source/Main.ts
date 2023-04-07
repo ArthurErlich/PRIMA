@@ -6,19 +6,18 @@ namespace Script {
   
   let viewport: ƒ.Viewport;
   let alucard:ƒ.Node = null;
-  let aluAnimations:fu.AnimationSprite[]
+  let anim:AnimController = null
   
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
     alucard = viewport.getBranch().getChildrenByName("Alucard")[0];
+    anim = new AnimController();
+    anim.
+    
 
-    //TODO
-    aluAnimations = [
-      FudgeCore.Project.getResourcesByName("1")[0] as fu.AnimationSprite,
-      FudgeCore.Project.getResourcesByName("2")[0] as fu.AnimationSprite,
-  ];
+
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -30,7 +29,13 @@ namespace Script {
       //TODO: make anim change
     }
 
+    //TODO: Animation update
+
     viewport.draw();
     ƒ.AudioManager.default.update();
   }
+
+  //TODO:create animFunction
+      //check the played animation (setAnim)
+      //is the animation to set falid
 }

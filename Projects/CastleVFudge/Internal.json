@@ -14,8 +14,19 @@
       "coat": {
         "ƒ.CoatTextured": {
           "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-03-29T17:28:25.576Z|40103"
+          "idTexture": "TextureImage|2023-04-06T20:56:47.640Z|93948"
         }
+      }
+    }
+  },
+  "TextureImage|2023-04-06T20:56:47.640Z|93948": {
+    "ƒ.TextureImage": {
+      "url": "Texture\\SourceSpriteMap\\Alucard.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-04-06T20:56:47.640Z|93948",
+        "name": "AlucardSpriteMap",
+        "mipmap": "CRISP"
       }
     }
   },
@@ -25,7 +36,7 @@
       "type": "TextureImage",
       "Texture": {
         "idResource": "TextureImage|2023-03-29T17:28:25.576Z|40103",
-        "name": "Texture\\SourceSpriteMap\\Alucard\\Alucard-Walk-Right.png",
+        "name": "OldWalk",
         "mipmap": "CRISP"
       }
     }
@@ -133,6 +144,46 @@
     "ƒ.MeshQuad": {
       "idResource": "MeshQuad|2023-03-31T13:25:13.222Z|66701",
       "name": "M_BackGroundTEST"
+    }
+  },
+  "AnimationSprite|2023-04-06T13:01:36.249Z|70705": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-04-06T13:01:36.249Z|70705",
+      "idTexture": "TextureImage|2023-04-06T20:56:47.640Z|93948",
+      "frames": 6,
+      "wrapAfter": 23,
+      "start": "[44, 51]",
+      "size": "[40, 60]",
+      "next": "[119, 0]",
+      "wrap": "[0, 80]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-04-06T13:01:36.249Z|70705",
+        "name": "Anim_Idl",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 10,
+        "animationStructure": {}
+      }
+    }
+  },
+  "AnimationSprite|2023-04-06T21:11:12.218Z|91753": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
+      "idTexture": "TextureImage|2023-04-06T20:56:47.640Z|93948",
+      "frames": 16,
+      "wrapAfter": 23,
+      "start": "[44, 249]",
+      "size": "[40, 60]",
+      "next": "[119, 0]",
+      "wrap": "[0, 80]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
+        "name": "Anim_Walking",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 15,
+        "animationStructure": {}
+      }
     }
   },
   "Graph|2023-03-29T16:28:46.133Z|95456": {
@@ -1469,9 +1520,9 @@
                           "clrPrimary": "[1, 1, 1, 1]",
                           "clrSecondary": "[1, 1, 1, 1]",
                           "pivot": {
-                            "translation": "[0.10999999195337296, 0]",
+                            "translation": "[0.22608695924282074, 0.05068027228116989]",
                             "rotation": 0,
-                            "scaling": "[0.07000000029802322, 1]"
+                            "scaling": "[0.017391303554177284, 0.020408162847161293]"
                           },
                           "Component": {
                             "active": true
@@ -1493,75 +1544,19 @@
                           }
                         }
                       }
-                    ]
-                  },
-                  "children": []
-                }
-              },
-              {
-                "ƒ.Node": {
-                  "name": "Alucard2dot0",
-                  "active": true,
-                  "components": {
+                    ],
                     "ComponentAnimator": [
                       {
                         "ƒ.ComponentAnimator": {
                           "Component": {
-                            "active": false
+                            "active": true
                           },
-                          "idAnimation": "AnimationSprite|2023-04-06T13:01:36.249Z|70705",
+                          "idAnimation": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
                           "playmode": "loop",
-                          "quantization": "continous",
+                          "quantization": "discrete",
                           "scale": 1,
                           "scaleWithGameTime": true,
                           "animateInEditor": false
-                        }
-                      }
-                    ],
-                    "ComponentMaterial": [
-                      {
-                        "ƒ.ComponentMaterial": {
-                          "sortForAlpha": false,
-                          "clrPrimary": "[1, 1, 1, 1]",
-                          "clrSecondary": "[1, 1, 1, 1]",
-                          "pivot": {
-                            "translation": "[0, 0]",
-                            "rotation": 0,
-                            "scaling": "[1, 1]"
-                          },
-                          "Component": {
-                            "active": false
-                          },
-                          "idMaterial": "Material|2023-03-29T16:49:22.830Z|31520"
-                        }
-                      }
-                    ],
-                    "ComponentTransform": [
-                      {
-                        "ƒ.ComponentTransform": {
-                          "local": {
-                            "translation": "[0, 0, 0]",
-                            "rotation": "[0, 0, 0]",
-                            "scaling": "[1, 1, 1]"
-                          },
-                          "Component": {
-                            "active": true
-                          }
-                        }
-                      }
-                    ],
-                    "ComponentMesh": [
-                      {
-                        "ƒ.ComponentMesh": {
-                          "idMesh": "MeshSprite|2023-03-29T16:49:43.639Z|77441",
-                          "pivot": {
-                            "translation": "[0, 0, 0]",
-                            "rotation": "[0, 0, 0]",
-                            "scaling": "[1, 1, 1]"
-                          },
-                          "Component": {
-                            "active": true
-                          }
                         }
                       }
                     ]
@@ -2202,22 +2197,62 @@
       }
     }
   },
-  "AnimationSprite|2023-04-06T13:01:36.249Z|70705": {
+  "AnimationSprite|2023-04-06T21:16:51.804Z|57929": {
     "ƒ.AnimationSprite": {
-      "idResource": "AnimationSprite|2023-04-06T13:01:36.249Z|70705",
-      "idTexture": "TextureImage|2023-03-29T17:28:25.576Z|40103",
-      "frames": 25,
+      "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
+      "idTexture": "TextureImage|2023-04-06T20:56:47.640Z|93948",
+      "frames": 15,
       "wrapAfter": 23,
-      "start": "[0, 0]",
-      "size": "[64, 65]",
-      "next": "[64, 0]",
+      "start": "[44, 149]",
+      "size": "[40, 60]",
+      "next": "[119, 0]",
       "wrap": "[0, 80]",
       "Animation": {
-        "idResource": "AnimationSprite|2023-04-06T13:01:36.249Z|70705",
-        "name": "AnimationSprite",
+        "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
+        "name": "Anim_StartWalk",
         "labels": {},
         "events": {},
-        "framesPerSecond": 25,
+        "framesPerSecond": 15,
+        "animationStructure": {}
+      }
+    }
+  },
+  "AnimationSprite|2023-04-06T21:16:55.591Z|61182": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
+      "idTexture": "TextureImage|2023-04-06T20:56:47.640Z|93948",
+      "frames": 15,
+      "wrapAfter": 23,
+      "start": "[44, 150]",
+      "size": "[40, 60]",
+      "next": "[119, 0]",
+      "wrap": "[0, 80]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
+        "name": "Anim_2",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 15,
+        "animationStructure": {}
+      }
+    }
+  },
+  "AnimationSprite|2023-04-06T21:17:01.772Z|47521": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
+      "idTexture": "TextureImage|2023-04-06T20:56:47.640Z|93948",
+      "frames": 16,
+      "wrapAfter": 23,
+      "start": "[44, 249]",
+      "size": "[40, 60]",
+      "next": "[119, 0]",
+      "wrap": "[0, 80]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
+        "name": "Anim_Walking",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 15,
         "animationStructure": {}
       }
     }

@@ -190,4 +190,4 @@ Leider ist im Fudge ein Problem mit diesen AnimationsFrame auswhal
 
 You can get Recourses by f.getResurcesByName???
 
-ActionSequence-> AktivityDiagram [INSERT FOTO HERE]
+ActionSequence-> AktivityDiagram ![](assets/IMG_20230406_154433.jpg)

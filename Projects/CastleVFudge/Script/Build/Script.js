@@ -1,13 +1,70 @@
 "use strict";
+/*
+namespace CastleV{
+    import ƒ = FudgeCore;
+    export class AnimController{
+        private animations:ƒ.ComponentAnimator[];
+        private plaingAnim:ANIMATION_INDEX= null;
+        private plaingDirection:ANIMATION_DIRECTION = null;
+        private alucardAnimator:ƒ.ComponentAnimator;
+
+        constructor(animator:ƒ.ComponentAnimator){
+            this.init(animator)
+        }
+
+        public init(animator:ƒ.ComponentAnimator){
+            this.setAnimator(animator);
+            this.getAnimationsFromResurses();
+        }
+        
+        private getAnimationsFromResurses(){
+            this.animations = [
+                ƒ.Project.getResourcesByName("Anim_Idl")[0],
+                ƒ.Project.getResourcesByName("Anim_StartWalking")[0],
+                ƒ.Project.getResourcesByName("Anim_Walking")[0],
+            ]
+        }
+        private setAnimator(animator:ƒ.ComponentAnimator){
+            this.alucardAnimator = animator;
+        }
+        public playAnimation(play:ANIMATION_INDEX,direction:ANIMATION_DIRECTION){
+            if((this.plaingAnim == null||this.plaingAnim==play) && (this.plaingDirection == null || this.plaingDirection == direction)){
+                this.plaingAnim = play;
+                this.plaingDirection = direction;
+                this.alucardAnimator = this.animations[ANIMATION_INDEX.Anim_StartWalking];//TODO: Change alucards animator not animations sprite
+            }
+        }
+    }
+    export enum ANIMATION_INDEX{
+        Anim_Idl,
+        Anim_StartWalking,
+        Anim_Walking
+    }
+    export enum ANIMATION_DIRECTION{
+        Forward,
+        Beckwards
+    }
+}
+*/ 
 var CastleV;
 (function (CastleV) {
     var ƒ = FudgeCore;
     class CollisionDetection {
         static tiles = [];
         static lastCollision = new ƒ.Vector3(0, 0, 0);
+        static setupCollision(floor) {
+            let tiles = new Array();
+            for (let floorChild of floor.getChildren()) {
+                for (let tileChild of floorChild.getChildren()) {
+                    tiles.push(tileChild);
+                }
+            }
+            CollisionDetection.updateTiles(tiles);
+        }
         static updateTiles(tiles) {
             this.tiles = tiles;
         }
+        //TODO: add offset of player speed / 2
         static check(playerMtxWorld) {
             let collision = [Collision.NONE];
             for (let tile of this.tiles) {
@@ -138,12 +195,10 @@ var CastleV;
     let deltaTimeSeconds;
     ///ƒ Viewport\\\
     let viewport;
-    let floor = null;
-    let floorTile_1 = null;
     ///Player\\\
     let player;
-    ///Tile Test\\\
-    // let collisionNode: ƒ.Node = null;
+    ///AnimationSprite\\\
+    let animation = new Array();
     //Keyboard input! Bubble Hirachie... Fudge Docu
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
@@ -154,25 +209,20 @@ var CastleV;
         console.log("moved cam");
         viewport.camera.mtxPivot.translateZ(9);
         viewport.camera.mtxPivot.rotateY(180);
-        //get nodes
-        floor = viewport.getBranch().getChildrenByName("Floor")[0];
-        // collisionNode = viewport.getBranch().getChildrenByName("Test")[0];
-        // how to access other Graphs? -> recurses
-        //floorTile_1 = ƒ.Project.getBranch().getChildrenByName("Platform_4x1")[0];
-        console.log(floorTile_1);
         //attach the camera to the player node
         let cNode = new ƒ.Node("Camera");
         cNode.addComponent(viewport.camera);
         player.pivot.addChild(cNode);
+        animation = [
+            ƒ.Project.getResourcesByName("Anim_Idl")[0],
+            ƒ.Project.getResourcesByName("Anim_Walking")[0],
+        ];
+        player.setAnimation(animation[0]);
+        console.log(animation);
         ///Gets Tiles and set them into Collision List\\\
-        let tiles = new Array();
-        for (let floorChild of floor.getChildren()) {
-            for (let tileChild of floorChild.getChildren()) {
-                tiles.push(tileChild);
-            }
-        }
-        CastleV.CollisionDetection.updateTiles(tiles.map(x => x));
-        console.log(CastleV.CollisionDetection.tiles);
+        CastleV.CollisionDetection.setupCollision(viewport.getBranch().getChildrenByName("Floor")[0]);
+        //CollisionDetection.updateTiles(tiles.map(x => x));
+        //console.log(CollisionDetection.tiles);
         //---------------------------------------S-T-A-R-T---L-O-O-P-----------------------------------------------------------\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continuously draw the viewport, update the audio system and drive the physics i/a
@@ -192,6 +242,17 @@ var CastleV;
             player.alucard.mtxLocal.translation = new ƒ.Vector3(player.pivot.mtxWorld.translation.x, 2, player.pivot.mtxWorld.translation.z);
             player.resetPlayer();
         }
+        console.log(player.getSpeed().toString());
+        //TODO: Create Animation in Fliped Direction!!
+        if ((player.getSpeed().x) > 0) {
+            player.setAnimation(animation[1]);
+        }
+        else if (player.getSpeed().x == 0.0) {
+            player.setAnimation(animation[0]);
+        }
+        else if (player.getSpeed().x < 0) {
+            player.setAnimation(animation[1]);
+        }
         //-------------------------------------------------------------------------------------------------------------------------\\
         viewport.draw();
         // ƒ.AudioManager.default.update();
@@ -207,18 +268,25 @@ var CastleV;
         gravity = -30;
         fallingSpeed = 0;
         //--> maxFallSpeed is used below, //TODO: check implementation of fall speed
+        //If the player falls too fast on a slow computer, the player will fall trough a block.
         //private maxFallSpeed: number = 0.2;
         playerSpeed = new ƒ.Vector3(0, 0, 0);
         material = null;
+        ///Animation\\\
+        animation = null;
         //deltaTime
         deltaTimeSeconds = 0;
         //animation
-        updateTime = 0.045;
-        elapsedTimeAnim = 0;
+        animationDirection;
+        /*
+        private updateTime: number = 0.045;
+        private elapsedTimeAnim: number = 0;
+        */
         constructor(viewport) {
             this.alucard = viewport.getBranch().getChildrenByName("Character")[0];
             this.pivot = this.alucard.getChildrenByName("Alucard")[0];
             this.material = this.pivot.getComponent(ƒ.ComponentMaterial);
+            this.animation = this.pivot.getComponent(ƒ.ComponentAnimator).animation;
         }
         //updates the Player -> called in Main.ts update Loop
         update(deltaTimeSeconds) {
@@ -229,6 +297,16 @@ var CastleV;
             this.playerSpeed = new ƒ.Vector3(0, 0, 0);
             this.fallingSpeed = 0;
             this.alucard.mtxLocal.translation = new ƒ.Vector3(0, 1, 0); //TODO: Change to spawnpoint
+        }
+        setAnimation(animation) {
+            // if(this.animation == animation){
+            //     return;
+            // }
+            this.animation = animation;
+            this.pivot.getComponent(ƒ.ComponentAnimator).animation = this.animation;
+        }
+        getSpeed() {
+            return this.playerSpeed;
         }
         input() {
             let isGrounded = true;
@@ -245,11 +323,9 @@ var CastleV;
             // console.log(CollisionDetection.lastCollisionY);
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]) && !(CastleV.CollisionDetection.check(this.alucard.mtxWorld).find(e => e == CastleV.Collision.RIGHT) == CastleV.Collision.RIGHT)) {
                 this.playerSpeed = new ƒ.Vector3(this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);
-                this.updatePlayerAnim(WalkDirection.RIGHT);
             }
             else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]) && !(CastleV.CollisionDetection.check(this.alucard.mtxWorld).find(e => e == CastleV.Collision.LEFT) == CastleV.Collision.LEFT)) {
                 this.playerSpeed = new ƒ.Vector3(-this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);
-                this.updatePlayerAnim(WalkDirection.LEFT);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
                 this.fallingSpeed = 10;
@@ -285,24 +361,7 @@ var CastleV;
                 this.alucard.mtxLocal.translate(this.playerSpeed);
             }
         }
-        updatePlayerAnim(direction) {
-            this.elapsedTimeAnim += ƒ.Loop.timeFrameGame / 1000;
-            if (this.elapsedTimeAnim >= this.updateTime && direction == WalkDirection.RIGHT) {
-                this.material.mtxPivot.translateX(0.0625);
-                this.elapsedTimeAnim = 0;
-            }
-            else if (this.elapsedTimeAnim >= this.updateTime && direction == WalkDirection.LEFT) {
-                this.material.mtxPivot.translateX(-0.0625);
-                //TODO:Rotate Alucards TexturedMesh
-                this.elapsedTimeAnim = 0;
-            }
-        }
     }
     CastleV.Player = Player;
-    let WalkDirection;
-    (function (WalkDirection) {
-        WalkDirection[WalkDirection["LEFT"] = 0] = "LEFT";
-        WalkDirection[WalkDirection["RIGHT"] = 1] = "RIGHT";
-    })(WalkDirection || (WalkDirection = {}));
 })(CastleV || (CastleV = {}));
 //# sourceMappingURL=Script.js.map

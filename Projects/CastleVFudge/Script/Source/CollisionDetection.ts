@@ -4,10 +4,22 @@ namespace CastleV {
         public static tiles: ƒ.Node[] = [];
         public static lastCollision: ƒ.Vector3 = new ƒ.Vector3(0, 0, 0);
 
+
+        public static setupCollision(floor : ƒ.Node){
+            let tiles: ƒ.Node[] = new Array<ƒ.Node>();
+            for (let floorChild of floor.getChildren()) {
+                for (let tileChild of floorChild.getChildren()) {
+                    tiles.push(tileChild);
+                }
+            }
+            CollisionDetection.updateTiles(tiles);
+        }
+
         public static updateTiles(tiles: ƒ.Node[]): void {
             this.tiles = tiles;
         }
 
+                    //TODO: add offset of player speed / 2
         public static check(playerMtxWorld: ƒ.Matrix4x4): Collision[] {
             let collision: Collision[] = [Collision.NONE];
 
@@ -39,7 +51,7 @@ namespace CastleV {
                         playerWorldPos.multiply(tile.mtxWorld);
                         this.lastCollision = playerWorldPos.translation.clone;
                     }
-                    
+
                     //TODO: Check upper Collision -> prevent drive through walls
                     if ((distanceY <= 1 && distanceY >= 0) && (distanceX >= -0.8 && distanceX <= 0)) {
                         //collision.push(Collision.UP);
