@@ -1,49 +1,58 @@
 "use strict";
+var CastleV;
+(function (CastleV) {
+    class AnimController {
+    }
+    CastleV.AnimController = AnimController;
+    let ANIMATION_STATES;
+    (function (ANIMATION_STATES) {
+        ANIMATION_STATES[ANIMATION_STATES["Idleing"] = 0] = "Idleing";
+        ANIMATION_STATES[ANIMATION_STATES["StartWalking"] = 1] = "StartWalking";
+        ANIMATION_STATES[ANIMATION_STATES["Walking"] = 2] = "Walking";
+    })(ANIMATION_STATES = CastleV.ANIMATION_STATES || (CastleV.ANIMATION_STATES = {}));
+})(CastleV || (CastleV = {}));
 /*
-namespace CastleV{
-    import ƒ = FudgeCore;
-    export class AnimController{
-        private animations:ƒ.ComponentAnimator[];
-        private plaingAnim:ANIMATION_INDEX= null;
-        private plaingDirection:ANIMATION_DIRECTION = null;
-        private alucardAnimator:ƒ.ComponentAnimator;
+private animations:ƒ.ComponentAnimator[];
+private plaingAnim:ANIMATION_INDEX= null;
+private plaingDirection:ANIMATION_DIRECTION = null;
+private alucardAnimator:ƒ.ComponentAnimator;
 
-        constructor(animator:ƒ.ComponentAnimator){
-            this.init(animator)
-        }
+constructor(animator:ƒ.ComponentAnimator){
+    this.init(animator)
+}
 
-        public init(animator:ƒ.ComponentAnimator){
-            this.setAnimator(animator);
-            this.getAnimationsFromResurses();
-        }
-        
-        private getAnimationsFromResurses(){
-            this.animations = [
-                ƒ.Project.getResourcesByName("Anim_Idl")[0],
-                ƒ.Project.getResourcesByName("Anim_StartWalking")[0],
-                ƒ.Project.getResourcesByName("Anim_Walking")[0],
-            ]
-        }
-        private setAnimator(animator:ƒ.ComponentAnimator){
-            this.alucardAnimator = animator;
-        }
-        public playAnimation(play:ANIMATION_INDEX,direction:ANIMATION_DIRECTION){
-            if((this.plaingAnim == null||this.plaingAnim==play) && (this.plaingDirection == null || this.plaingDirection == direction)){
-                this.plaingAnim = play;
-                this.plaingDirection = direction;
-                this.alucardAnimator = this.animations[ANIMATION_INDEX.Anim_StartWalking];//TODO: Change alucards animator not animations sprite
-            }
-        }
+public init(animator:ƒ.ComponentAnimator){
+    this.setAnimator(animator);
+    this.getAnimationsFromResurses();
+}
+
+private getAnimationsFromResurses(){
+    this.animations = [
+        ƒ.Project.getResourcesByName("Anim_Idl")[0],
+        ƒ.Project.getResourcesByName("Anim_StartWalking")[0],
+        ƒ.Project.getResourcesByName("Anim_Walking")[0],
+    ]
+}
+private setAnimator(animator:ƒ.ComponentAnimator){
+    this.alucardAnimator = animator;
+}
+public playAnimation(play:ANIMATION_INDEX,direction:ANIMATION_DIRECTION){
+    if((this.plaingAnim == null||this.plaingAnim==play) && (this.plaingDirection == null || this.plaingDirection == direction)){
+        this.plaingAnim = play;
+        this.plaingDirection = direction;
+        this.alucardAnimator = this.animations[ANIMATION_INDEX.Anim_StartWalking];//TODO: Change alucards animator not animations sprite
     }
-    export enum ANIMATION_INDEX{
-        Anim_Idl,
-        Anim_StartWalking,
-        Anim_Walking
-    }
-    export enum ANIMATION_DIRECTION{
-        Forward,
-        Beckwards
-    }
+}
+}
+export enum ANIMATION_INDEX{
+Anim_Idl,
+Anim_StartWalking,
+Anim_Walking
+}
+export enum ANIMATION_DIRECTION{
+Forward,
+Beckwards
+}
 }
 */ 
 var CastleV;
@@ -267,6 +276,7 @@ var CastleV;
         maxWalkSpeed = 3;
         gravity = -30;
         fallingSpeed = 0;
+        maxFallingSpeed = 40;
         //--> maxFallSpeed is used below, //TODO: check implementation of fall speed
         //If the player falls too fast on a slow computer, the player will fall trough a block.
         //private maxFallSpeed: number = 0.2;
@@ -330,20 +340,16 @@ var CastleV;
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
                 this.fallingSpeed = 10;
                 isGrounded = false;
-                /*
-                //fixes unlimited upwards speed
-                if (this.maxFallSpeed <= this.fallingSpeed) {
-                    this.maxFallSpeed = this.fallingSpeed + 0.1;
+                //fixes unlimited upwards speed 
+                if (this.fallingSpeed > this.maxFallingSpeed) {
+                    this.fallingSpeed = this.maxFallingSpeed;
                 }
-                */
             }
             if (!isGrounded) {
                 //limits the speed of falling
-                /*
-                if (Math.abs(this.fallingSpeed) <= this.maxFallSpeed) {
-                    this.fallingSpeed += this.gravity;
+                if (Math.abs(this.fallingSpeed) > this.maxFallingSpeed) {
+                    this.fallingSpeed = this.maxFallingSpeed;
                 }
-                */
                 this.fallingSpeed += this.gravity * this.deltaTimeSeconds;
                 this.playerSpeed = new ƒ.Vector3(this.playerSpeed.x, this.fallingSpeed * this.deltaTimeSeconds, this.playerSpeed.z);
             }
@@ -364,4 +370,24 @@ var CastleV;
     }
     CastleV.Player = Player;
 })(CastleV || (CastleV = {}));
+/*
+//TODO:Remove old implementation of Animation
+private updatePlayerAnim(direction: WalkDirection): void {
+    this.elapsedTimeAnim += ƒ.Loop.timeFrameGame / 1000;
+
+    if (this.elapsedTimeAnim >= this.updateTime && direction == WalkDirection.RIGHT) {
+
+        this.material.mtxPivot.translateX(0.0625);
+
+        this.elapsedTimeAnim = 0;
+
+    } else if (this.elapsedTimeAnim >= this.updateTime && direction == WalkDirection.LEFT) {
+
+        this.material.mtxPivot.translateX(-0.0625);
+
+        this.elapsedTimeAnim = 0;
+    }
+}
+
+*/ 
 //# sourceMappingURL=Script.js.map

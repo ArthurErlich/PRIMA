@@ -1,7 +1,16 @@
-/*
+
 namespace CastleV{
     import ƒ = FudgeCore;
     export class AnimController{
+
+    }
+    export enum ANIMATION_STATES{
+        Idleing,
+        StartWalking,
+        Walking
+    }
+}
+        /*
         private animations:ƒ.ComponentAnimator[];
         private plaingAnim:ANIMATION_INDEX= null;
         private plaingDirection:ANIMATION_DIRECTION = null;

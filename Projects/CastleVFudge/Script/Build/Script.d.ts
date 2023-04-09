@@ -1,4 +1,13 @@
 declare namespace CastleV {
+    class AnimController {
+    }
+    enum ANIMATION_STATES {
+        Idleing = 0,
+        StartWalking = 1,
+        Walking = 2
+    }
+}
+declare namespace CastleV {
     import ƒ = FudgeCore;
     class CollisionDetection {
         static tiles: ƒ.Node[];
@@ -35,6 +44,7 @@ declare namespace CastleV {
         private maxWalkSpeed;
         private gravity;
         private fallingSpeed;
+        private maxFallingSpeed;
         private playerSpeed;
         private material;
         private animation;

@@ -3,11 +3,13 @@ namespace CastleV {
 
     export class Player {
         public alucard: ƒ.Node = null;
-        public pivot: ƒ.Node = null;
+        // public pivot: ƒ.Node = null;
+        public meshNode: ƒ.Node = null;
 
         private maxWalkSpeed: number = 3;
         private gravity: number = -30;
         private fallingSpeed: number = 0;
+        private maxFallingSpeed: number = 40;
         //--> maxFallSpeed is used below, //TODO: check implementation of fall speed
         //If the player falls too fast on a slow computer, the player will fall trough a block.
         //private maxFallSpeed: number = 0.2;
@@ -33,11 +35,12 @@ namespace CastleV {
 
         constructor(viewport: ƒ.Viewport) {
             this.alucard = viewport.getBranch().getChildrenByName("Character")[0];
+            this.meshNode = this.alucard.getChild(0);
 
-            this.pivot = this.alucard.getChildrenByName("Alucard")[0]
-            this.material = this.pivot.getComponent(ƒ.ComponentMaterial);
+            // this.pivot = this.alucard.getChildrenByName("Alucard")[0];
 
-            this.animation = this.pivot.getComponent(ƒ.ComponentAnimator).animation;
+            this.material = this.meshNode.getComponent(ƒ.ComponentMaterial);
+            this.animation = this.meshNode.getComponent(ƒ.ComponentAnimator).animation;
                         
         }
 
@@ -59,11 +62,15 @@ namespace CastleV {
             //     return;
             // }
             this.animation = animation;
-            this.pivot.getComponent(ƒ.ComponentAnimator).animation = this.animation;            
+            this.meshNode.getComponent(ƒ.ComponentAnimator).animation = this.animation;
+            //TODO: change animation direction by changin the rotation of the mesh component            
         }
 
         public getSpeed():ƒ.Vector3{
             return this.playerSpeed;
+        }
+        public getMaterial():ƒ.ComponentMaterial{
+            return this.material;
         }
 
         private input(): void {
@@ -91,22 +98,22 @@ namespace CastleV {
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
                 this.fallingSpeed = 10;
                 isGrounded = false;
-                /*
+                
                 //fixes unlimited upwards speed 
-                if (this.maxFallSpeed <= this.fallingSpeed) {
-                    this.maxFallSpeed = this.fallingSpeed + 0.1;
+                if (this.fallingSpeed > this.maxFallingSpeed) {
+                    this.fallingSpeed = this.maxFallingSpeed
                 }
-                */
+                
             }
 
             if (!isGrounded) {
                 //limits the speed of falling
-                /*
-                if (Math.abs(this.fallingSpeed) <= this.maxFallSpeed) {
-                    this.fallingSpeed += this.gravity;
+                
+                if (Math.abs(this.fallingSpeed) > this.maxFallingSpeed) {
+                    this.fallingSpeed = this.maxFallingSpeed;
                 }
-                */
                 this.fallingSpeed += this.gravity * this.deltaTimeSeconds;
+                
                 this.playerSpeed = new ƒ.Vector3(this.playerSpeed.x, this.fallingSpeed * this.deltaTimeSeconds, this.playerSpeed.z);
             }
 
@@ -125,7 +132,9 @@ namespace CastleV {
                 this.alucard.mtxLocal.translate(this.playerSpeed);
             }
         }
-
+    }
+}
+        
         
 
         /*
@@ -148,5 +157,3 @@ namespace CastleV {
         }
 
         */
-    }
-}

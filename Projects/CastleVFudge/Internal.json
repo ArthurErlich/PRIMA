@@ -1498,44 +1498,13 @@
                   "name": "Alucard",
                   "active": true,
                   "components": {
-                    "ComponentMesh": [
-                      {
-                        "ƒ.ComponentMesh": {
-                          "idMesh": "MeshSprite|2023-03-29T16:49:43.639Z|77441",
-                          "pivot": {
-                            "translation": "[-0.20000000298023224, -0.5, 0]",
-                            "rotation": "[0, 0, 0]",
-                            "scaling": "[1, 1, 1]"
-                          },
-                          "Component": {
-                            "active": true
-                          }
-                        }
-                      }
-                    ],
-                    "ComponentMaterial": [
-                      {
-                        "ƒ.ComponentMaterial": {
-                          "sortForAlpha": false,
-                          "clrPrimary": "[1, 1, 1, 1]",
-                          "clrSecondary": "[1, 1, 1, 1]",
-                          "pivot": {
-                            "translation": "[0.22608695924282074, 0.05068027228116989]",
-                            "rotation": 0,
-                            "scaling": "[0.017391303554177284, 0.020408162847161293]"
-                          },
-                          "Component": {
-                            "active": true
-                          },
-                          "idMaterial": "Material|2023-03-29T16:49:22.830Z|31520"
-                        }
-                      }
-                    ],
+                    "ComponentMesh": [],
+                    "ComponentMaterial": [],
                     "ComponentTransform": [
                       {
                         "ƒ.ComponentTransform": {
                           "local": {
-                            "translation": "[0, 0.5, 0]",
+                            "translation": "[0, 0, 0]",
                             "rotation": "[0, 0, 0]",
                             "scaling": "[1, 1, 1]"
                           },
@@ -1545,23 +1514,81 @@
                         }
                       }
                     ],
-                    "ComponentAnimator": [
-                      {
-                        "ƒ.ComponentAnimator": {
-                          "Component": {
-                            "active": true
-                          },
-                          "idAnimation": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
-                          "playmode": "loop",
-                          "quantization": "discrete",
-                          "scale": 1,
-                          "scaleWithGameTime": true,
-                          "animateInEditor": false
-                        }
-                      }
-                    ]
+                    "ComponentAnimator": []
                   },
-                  "children": []
+                  "children": [
+                    {
+                      "ƒ.Node": {
+                        "name": "MeshNode",
+                        "active": true,
+                        "components": {
+                          "ComponentMesh": [
+                            {
+                              "ƒ.ComponentMesh": {
+                                "idMesh": "MeshSprite|2023-03-29T16:49:43.639Z|77441",
+                                "pivot": {
+                                  "translation": "[-0.20000000298023224, -0.5, 0]",
+                                  "rotation": "[0, 0, 0]",
+                                  "scaling": "[1, 1, 1]"
+                                },
+                                "Component": {
+                                  "active": true
+                                }
+                              }
+                            }
+                          ],
+                          "ComponentMaterial": [
+                            {
+                              "ƒ.ComponentMaterial": {
+                                "sortForAlpha": false,
+                                "clrPrimary": "[1, 1, 1, 1]",
+                                "clrSecondary": "[1, 1, 1, 1]",
+                                "pivot": {
+                                  "translation": "[0.22608695924282074, 0.05068027228116989]",
+                                  "rotation": 0,
+                                  "scaling": "[0.017391303554177284, 0.020408162847161293]"
+                                },
+                                "Component": {
+                                  "active": true
+                                },
+                                "idMaterial": "Material|2023-03-29T16:49:22.830Z|31520"
+                              }
+                            }
+                          ],
+                          "ComponentTransform": [
+                            {
+                              "ƒ.ComponentTransform": {
+                                "local": {
+                                  "translation": "[0, 0.5, 0]",
+                                  "rotation": "[0, 0, 0]",
+                                  "scaling": "[1, 1, 1]"
+                                },
+                                "Component": {
+                                  "active": true
+                                }
+                              }
+                            }
+                          ],
+                          "ComponentAnimator": [
+                            {
+                              "ƒ.ComponentAnimator": {
+                                "Component": {
+                                  "active": true
+                                },
+                                "idAnimation": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
+                                "playmode": "loop",
+                                "quantization": "discrete",
+                                "scale": 1,
+                                "scaleWithGameTime": true,
+                                "animateInEditor": false
+                              }
+                            }
+                          ]
+                        },
+                        "children": []
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -2229,7 +2256,7 @@
       "wrap": "[0, 80]",
       "Animation": {
         "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
-        "name": "Anim_2",
+        "name": "Anim_Walking_Inverted",
         "labels": {},
         "events": {},
         "framesPerSecond": 15,
@@ -2254,6 +2281,17 @@
         "events": {},
         "framesPerSecond": 15,
         "animationStructure": {}
+      }
+    }
+  },
+  "TextureImage|2023-04-07T23:06:03.413Z|82078": {
+    "ƒ.TextureImage": {
+      "url": "Texture\\SourceSpriteMap\\AlucardInv.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-04-07T23:06:03.413Z|82078",
+        "name": "Texture\\SourceSpriteMap\\AlucardInv.png",
+        "mipmap": "CRISP"
       }
     }
   }

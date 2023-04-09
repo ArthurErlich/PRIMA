@@ -35,7 +35,7 @@ namespace CastleV {
     //attach the camera to the player node
     let cNode = new ƒ.Node("Camera");
     cNode.addComponent(viewport.camera);
-    player.pivot.addChild(cNode);
+    player.alucard.addChild(cNode);
 
     animation = [
       ƒ.Project.getResourcesByName("Anim_Idl")[0] as ƒ.AnimationSprite,
@@ -77,7 +77,7 @@ namespace CastleV {
 
     //Respawn Player if he falls down
     if (player.alucard.mtxLocal.translation.y <= -10) {
-      player.alucard.mtxLocal.translation = new ƒ.Vector3(player.pivot.mtxWorld.translation.x, 2, player.pivot.mtxWorld.translation.z);
+      player.alucard.mtxLocal.translation = new ƒ.Vector3(player.alucard.mtxWorld.translation.x, 2, player.alucard.mtxWorld.translation.z);
       player.resetPlayer();
     }
 
@@ -86,10 +86,12 @@ namespace CastleV {
     //TODO: Create Animation in Fliped Direction!!
     if ((player.getSpeed().x) > 0) {
       player.setAnimation(animation[1]);
+      console.log(player.meshNode.mtxLocal);
     } else if (player.getSpeed().x == 0.0) {
       player.setAnimation(animation[0]);
     } else if (player.getSpeed().x < 0) {
       player.setAnimation(animation[1]);
+      console.log(player.meshNode.mtxLocal);
     }
 
     //-------------------------------------------------------------------------------------------------------------------------\\
