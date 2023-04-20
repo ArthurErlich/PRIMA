@@ -191,3 +191,158 @@ Leider ist im Fudge ein Problem mit diesen AnimationsFrame auswhal
 You can get Recourses by FudgeCore.getResurcesByName???
 
 ActionSequence-> AktivityDiagram ![](assets/IMG_20230406_154433.jpg)
+
+# Fudge :date: 20.04.2023
+
+Using Audio like that
+
+```typescript
+   ƒ.AudioManager.default.listenWith(graph.getComponent(ƒ.ComponentAudioListener));
+    ƒ.AudioManager.default.listenTo(graph);
+```
+
+Update audio at last point in the Audio UpdateFunction
+
+```typescript
+   viewport.draw();
+    ƒ.AudioManager.default.update();
+  }
+```
+
+The graph for the audio manager
+
+```typescript
+  let graph: ƒ.Graph = <ƒ.Graph>viewport.getBranch();
+```
+
+Be aware that the code snippets are not sorted!
+
+## For animations
+
+Look into Avel code He did something amazing wiht changing materails for animation:
+
+```typescript
+ /**
+         * right or left
+         * @param {string} side
+         */
+        setSide(side: string) {
+            let newRotation = this.node.mtxLocal.rotation;
+            newRotation.y = side === 'right' ? 0 : 180;
+            this.node.mtxLocal.rotation = newRotation;
+        }
+
+        move() {
+            this.speedX += timeBased(this.accX);
+            this.speedY += timeBased(this.accY);
+
+            // If the speed is negativ, sonic is going to the left so we change his side
+            if (this.speedX < 0) {
+                this.setSide('left');
+            } else if (this.speedX > 0) {
+                this.setSide('right');
+            }
+
+            // abs because the side is changed for the node
+            this.node.mtxLocal.translateX(timeBased(Math.abs(this.speedX)));
+            this.node.mtxLocal.translateY(timeBased(this.speedY));
+
+            // So sonic don't go under 1 in y
+            // let posY = this.getY()
+            // if (posY < 1) {
+            //     this.setY(1);
+            //     this.isJumping = false;
+            //     this.speedY = 0;
+            // }
+        }
+
+        anim() {
+            const currentAnimation = this.visual.getComponent(ƒ.ComponentAnimator)
+            let nextAnimationName = null
+            if (this.isJumping) {
+                nextAnimationName = 'SonicJump'
+            } else if (this.speedX !== 0) {
+                nextAnimationName = 'SonicRun'
+            } else {
+                nextAnimationName = 'SonicIdle'
+            }
+
+            if (currentAnimation.animation.name !== nextAnimationName) {
+                const nextAnimation = ƒ.Project.getResourcesByName(nextAnimationName)[0] as ƒ.AnimationSprite
+                currentAnimation.animation = nextAnimation
+            }
+        }
+```
+
+quelle: [GitHub](https://github.com/easzyyyyy/prima/https:/) and [Sprite.TS](https://github.com/easzyyyyy/prima/blob/main/Projects/Sonic/Script/Source/Sprite.ts)
+
+Also he did the sound
+
+````typescript
+jump() {
+            if (!this.isJumping) {
+                this.speedY = 10;
+                this.isJumping = true;
+                this.playSound('jump.mp3');
+            }
+````
+
+Taks: Adding sound to the Project. Jump and background sound.
+
+More tips to Animation and Sound:
+
+![](assets/20230420_144225_image.png)
+
+## Zbuffer sorting
+
+Problem we have a windwo infront of sonic. The window is half Transparent How can we fix that?
+
+* If we overlap twoe half transparent objects, nobody will win the fight if they have the same Z hight.
+* Also if we have a window, we cannot see trough that window and see tha backgground.
+* Fix: We tacke all objects who needs sorting. So everyting what is transparet will rendered after everything is rendered.
+
+Set up in the Editor:
+
+![](assets/20230420_144758_image.png)
+
+--
+
+
+### Fixing position
+
+pos' = T2^-1 * pos
+
+correct pos' to upper edge -> pos'' T2 * pos'
+
+in code:
+
+```typescript
+//node is the origin point of Sonic / Alucard
+pos = f.Vector3.TRANSFORMATION(pos, node.mtxWorld, true);
+```
+
+# Create -> MINEACRAFT"!!!
+
+Basic stuff to understand
+
+* Flat shader means:  The flat shader just uses the Normals too look up how "light" the face will be.
+  * The angle and the face normal shows the birgtness of the face if the light hits 180° agains the face it is the lightest. if the vectors align perfecty, there is no light.
+* Gourod shading
+  * [Gouraud shading - Wikipedia](https://en.wikipedia.org/wiki/Gouraud_shading)
+  * ![A Gouraud-shaded sphere-like mesh - note the poor behaviour of the specular highlight.](https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Gouraud_low_anim.gif/180px-Gouraud_low_anim.gif)
+  * ![Another sphere-like mesh rendered with a very high polygon count.](https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Gouraud_high.gif/180px-Gouraud_high.gif)
+  * ![](https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/D3D_Shading_Modes.png/300px-D3D_Shading_Modes.png)
+* The Phong shader
+  * [Phong shading - Wikipedia](https://en.wikipedia.org/wiki/Phong_shading)
+  * ![](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Phong_components_version_4.png/655px-Phong_components_version_4.png)
+
+Thats are the task:
+
+* [ ] Generate a world A perfect CUBE! world!
+* [ ] Save Obects "CUBE" as a graph
+  * [ ] Add node as a Father then add a transform to the father
+  * [ ] Use the Grap as an instance to do a lot of diffrent cubes!
+* [ ] Make Minecraft a real Fudge thing!
+* [ ] You can create more cubes in Runtime or you can create instances in the editor.
+  * [ ] -> Resources create instances -> Add child adjust property...
+  * [ ] Best to add a node bevor the instance to add Transform
