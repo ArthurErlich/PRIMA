@@ -1,8 +1,12 @@
 declare namespace CastleV {
     class AnimController {
     }
+    enum ANIMATION_DIRECTION {
+        Left = 0,
+        Right = 1
+    }
     enum ANIMATION_STATES {
-        Idleing = 0,
+        Idling = 0,
         StartWalking = 1,
         Walking = 2
     }
@@ -40,7 +44,7 @@ declare namespace CastleV {
     import ƒ = FudgeCore;
     class Player {
         alucard: ƒ.Node;
-        pivot: ƒ.Node;
+        meshNode: ƒ.Node;
         private maxWalkSpeed;
         private gravity;
         private fallingSpeed;
@@ -48,13 +52,17 @@ declare namespace CastleV {
         private playerSpeed;
         private material;
         private animation;
+        private animationSprite;
+        private soundTrack;
+        private soundListener;
         private deltaTimeSeconds;
-        private animationDirection;
         constructor(viewport: ƒ.Viewport);
         update(deltaTimeSeconds: number): void;
         resetPlayer(): void;
-        setAnimation(animation: ƒ.Animation): void;
+        setAnimation(animation: ƒ.Animation, direction: ANIMATION_DIRECTION): void;
+        rotateMesh(rotation: number): void;
         getSpeed(): ƒ.Vector3;
+        getMaterial(): ƒ.ComponentMaterial;
         private input;
         private movement;
     }

@@ -6,6 +6,7 @@ namespace CastleV {
         // public pivot: ƒ.Node = null;
         public meshNode: ƒ.Node = null;
 
+        ///Movement\\\
         private maxWalkSpeed: number = 3;
         private gravity: number = -30;
         private fallingSpeed: number = 0;
@@ -13,34 +14,46 @@ namespace CastleV {
         //--> maxFallSpeed is used below, //TODO: check implementation of fall speed
         //If the player falls too fast on a slow computer, the player will fall trough a block.
         //private maxFallSpeed: number = 0.2;
-
         private playerSpeed: ƒ.Vector3 = new ƒ.Vector3(0, 0, 0);
-        
+
+        ///Material\\\
         private material: ƒ.ComponentMaterial = null;
 
         ///Animation\\\
         private animation: ƒ.Animation = null;
 
-     
+        ///AnimationSprite\\\
+        private animationSprite: ƒ.AnimationSprite[] = new Array();
+
+        ///Audio\\\
+        private soundTrack: ƒ.ComponentAudio = null;
+        private soundListener: ƒ.ComponentAudioListener = null;
+
 
         //deltaTime
         private deltaTimeSeconds: number = 0;
         
-        //animation
-        private animationDirection: number;
-        /*
-        private updateTime: number = 0.045;
-        private elapsedTimeAnim: number = 0;
-        */
+
 
         constructor(viewport: ƒ.Viewport) {
             this.alucard = viewport.getBranch().getChildrenByName("Character")[0];
-            this.meshNode = this.alucard.getChild(0);
+            this.meshNode = this.alucard.getChild(0).getChild(0);
 
             // this.pivot = this.alucard.getChildrenByName("Alucard")[0];
-
             this.material = this.meshNode.getComponent(ƒ.ComponentMaterial);
             this.animation = this.meshNode.getComponent(ƒ.ComponentAnimator).animation;
+
+            // audio setup
+            this.soundListener = this.alucard.getChild(0).getComponent(ƒ.ComponentAudioListener);
+            this.soundTrack = this.alucard.getChild(0).getComponent(ƒ.ComponentAudio);
+
+            //animation
+            this.animationSprite = [
+                ƒ.Project.getResourcesByName("Anim_Idl")[0] as ƒ.AnimationSprite,
+                ƒ.Project.getResourcesByName("Anim_Walking")[0] as ƒ.AnimationSprite,
+                ƒ.Project.getResourcesByName("Anim_StartWalk")[0] as ƒ.AnimationSprite,
+                ƒ.Project.getResourcesByName("Anim_Falling")[0] as ƒ.AnimationSprite,
+              ];
                         
         }
 
@@ -48,6 +61,10 @@ namespace CastleV {
         public update(deltaTimeSeconds: number): void {
             this.deltaTimeSeconds = deltaTimeSeconds;
             this.input();
+
+            if (this.getSpeed().x == 0.0) {
+                this.setAnimation(this.animationSprite[0], ANIMATION_DIRECTION.Right);
+            }
         }
 
         public resetPlayer(): void {
@@ -57,13 +74,26 @@ namespace CastleV {
             this.alucard.mtxLocal.translation = new ƒ.Vector3(0, 1, 0);//TODO: Change to spawnpoint
         }
 
-        public setAnimation(animation: ƒ.Animation):void{
-            // if(this.animation == animation){
-            //     return;
-            // }
+        public setAnimation(animation: ƒ.Animation, direction:ANIMATION_DIRECTION):void{
+            if(this.animation == animation){
+                return;
+            }
+            if(direction == null){
+                direction = ANIMATION_DIRECTION.Right;
+            }
+            if(direction == ANIMATION_DIRECTION.Right){
+                this.meshNode.mtxLocal.rotation = new ƒ.Vector3(0, 0, 0);
+            }
+            if(direction == ANIMATION_DIRECTION.Left){
+                this.meshNode.mtxLocal.rotation = new ƒ.Vector3(0, 180, 0);
+            }
+
             this.animation = animation;
             this.meshNode.getComponent(ƒ.ComponentAnimator).animation = this.animation;
-            //TODO: change animation direction by changin the rotation of the mesh component            
+            //TODO: change animation direction by changing the rotation of the mesh component            
+        }
+        public rotateMesh(rotation: number): void {
+            this.meshNode.mtxLocal.rotation.set(0, rotation, 0);
         }
 
         public getSpeed():ƒ.Vector3{
@@ -90,16 +120,19 @@ namespace CastleV {
 
 
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]) && !(CollisionDetection.check(this.alucard.mtxWorld).find(e => e == Collision.RIGHT) == Collision.RIGHT)) {
-                this.playerSpeed = new ƒ.Vector3(this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);                
+                this.playerSpeed = new ƒ.Vector3(this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);
+                this.setAnimation(this.animationSprite[1], ANIMATION_DIRECTION.Right);                
             }
             else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]) && !(CollisionDetection.check(this.alucard.mtxWorld).find(e => e == Collision.LEFT) == Collision.LEFT)) {
                 this.playerSpeed = new ƒ.Vector3(-this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);
+                this.setAnimation(this.animationSprite[1], ANIMATION_DIRECTION.Left);                
+
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
                 this.fallingSpeed = 10;
                 isGrounded = false;
                 
-                //fixes unlimited upwards speed 
+                //fixes unlimited upwards speed bug and sloows down the player when he falls
                 if (this.fallingSpeed > this.maxFallingSpeed) {
                     this.fallingSpeed = this.maxFallingSpeed
                 }

@@ -11,9 +11,8 @@ namespace CastleV {
   ///Player\\\
   let player: Player;
 
-  ///AnimationSprite\\\
-  let animation: ƒ.AnimationSprite[] = new Array();
-
+  ///Audio\\\
+  //TODO:AUDIO
 
 
   //Keyboard input! Bubble Hirachie... Fudge Docu
@@ -27,23 +26,23 @@ namespace CastleV {
     player = new Player(viewport);
 
 
-    //move the Cam to the right position
+    //move the Cam to the right position\\
     console.log("moved cam");
     viewport.camera.mtxPivot.translateZ(9);
     viewport.camera.mtxPivot.rotateY(180);
 
-    //attach the camera to the player node
+    //attach the camera to the player node\\
     let cNode = new ƒ.Node("Camera");
     cNode.addComponent(viewport.camera);
     player.alucard.addChild(cNode);
 
-    animation = [
-      ƒ.Project.getResourcesByName("Anim_Idl")[0] as ƒ.AnimationSprite,
-      ƒ.Project.getResourcesByName("Anim_Walking")[0] as ƒ.AnimationSprite,
-    ];
+    //audio setup\\
+    //TODO:AUDIO
 
-    player.setAnimation(animation[0]);
-    console.log(animation);
+
+
+    // player.setAnimation(animation[0], ANIMATION_DIRECTION.Right);
+    // console.log(animation);
 
 
 
@@ -81,19 +80,16 @@ namespace CastleV {
       player.resetPlayer();
     }
 
-    console.log(player.getSpeed().toString());
+    // console.log(player.getSpeed().toString());
 
     //TODO: Create Animation in Fliped Direction!!
-    if ((player.getSpeed().x) > 0) {
-      player.setAnimation(animation[1]);
-      console.log(player.meshNode.mtxLocal);
-    } else if (player.getSpeed().x == 0.0) {
-      player.setAnimation(animation[0]);
-    } else if (player.getSpeed().x < 0) {
-      player.setAnimation(animation[1]);
-      console.log(player.meshNode.mtxLocal);
-    }
-
+    // if ((player.getSpeed().x) > 0) {
+    //   player.setAnimation(animation[1], ANIMATION_DIRECTION.Right);
+    // } else if (player.getSpeed().x == 0.0) {
+    //   player.setAnimation(animation[0], ANIMATION_DIRECTION.Right);
+    // } else if (player.getSpeed().x < 0) {
+    //   player.setAnimation(animation[1], ANIMATION_DIRECTION.Left);
+    // }
     //-------------------------------------------------------------------------------------------------------------------------\\
 
     viewport.draw();

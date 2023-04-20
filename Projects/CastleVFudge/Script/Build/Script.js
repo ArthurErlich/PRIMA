@@ -4,9 +4,14 @@ var CastleV;
     class AnimController {
     }
     CastleV.AnimController = AnimController;
+    let ANIMATION_DIRECTION;
+    (function (ANIMATION_DIRECTION) {
+        ANIMATION_DIRECTION[ANIMATION_DIRECTION["Left"] = 0] = "Left";
+        ANIMATION_DIRECTION[ANIMATION_DIRECTION["Right"] = 1] = "Right";
+    })(ANIMATION_DIRECTION = CastleV.ANIMATION_DIRECTION || (CastleV.ANIMATION_DIRECTION = {}));
     let ANIMATION_STATES;
     (function (ANIMATION_STATES) {
-        ANIMATION_STATES[ANIMATION_STATES["Idleing"] = 0] = "Idleing";
+        ANIMATION_STATES[ANIMATION_STATES["Idling"] = 0] = "Idling";
         ANIMATION_STATES[ANIMATION_STATES["StartWalking"] = 1] = "StartWalking";
         ANIMATION_STATES[ANIMATION_STATES["Walking"] = 2] = "Walking";
     })(ANIMATION_STATES = CastleV.ANIMATION_STATES || (CastleV.ANIMATION_STATES = {}));
@@ -49,10 +54,7 @@ Anim_Idl,
 Anim_StartWalking,
 Anim_Walking
 }
-export enum ANIMATION_DIRECTION{
-Forward,
-Beckwards
-}
+
 }
 */ 
 var CastleV;
@@ -206,28 +208,26 @@ var CastleV;
     let viewport;
     ///Player\\\
     let player;
-    ///AnimationSprite\\\
-    let animation = new Array();
+    ///Audio\\\
+    //TODO:AUDIO
     //Keyboard input! Bubble Hirachie... Fudge Docu
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
         ///Create Player\\\
         player = new CastleV.Player(viewport);
-        //move the Cam to the right position
+        //move the Cam to the right position\\
         console.log("moved cam");
         viewport.camera.mtxPivot.translateZ(9);
         viewport.camera.mtxPivot.rotateY(180);
-        //attach the camera to the player node
+        //attach the camera to the player node\\
         let cNode = new ƒ.Node("Camera");
         cNode.addComponent(viewport.camera);
-        player.pivot.addChild(cNode);
-        animation = [
-            ƒ.Project.getResourcesByName("Anim_Idl")[0],
-            ƒ.Project.getResourcesByName("Anim_Walking")[0],
-        ];
-        player.setAnimation(animation[0]);
-        console.log(animation);
+        player.alucard.addChild(cNode);
+        //audio setup\\
+        //TODO:AUDIO
+        // player.setAnimation(animation[0], ANIMATION_DIRECTION.Right);
+        // console.log(animation);
         ///Gets Tiles and set them into Collision List\\\
         CastleV.CollisionDetection.setupCollision(viewport.getBranch().getChildrenByName("Floor")[0]);
         //CollisionDetection.updateTiles(tiles.map(x => x));
@@ -248,20 +248,18 @@ var CastleV;
         //------------------T-E-S-T-------------------------------------------------------T-E-S-T--------------------------------\\
         //Respawn Player if he falls down
         if (player.alucard.mtxLocal.translation.y <= -10) {
-            player.alucard.mtxLocal.translation = new ƒ.Vector3(player.pivot.mtxWorld.translation.x, 2, player.pivot.mtxWorld.translation.z);
+            player.alucard.mtxLocal.translation = new ƒ.Vector3(player.alucard.mtxWorld.translation.x, 2, player.alucard.mtxWorld.translation.z);
             player.resetPlayer();
         }
-        console.log(player.getSpeed().toString());
+        // console.log(player.getSpeed().toString());
         //TODO: Create Animation in Fliped Direction!!
-        if ((player.getSpeed().x) > 0) {
-            player.setAnimation(animation[1]);
-        }
-        else if (player.getSpeed().x == 0.0) {
-            player.setAnimation(animation[0]);
-        }
-        else if (player.getSpeed().x < 0) {
-            player.setAnimation(animation[1]);
-        }
+        // if ((player.getSpeed().x) > 0) {
+        //   player.setAnimation(animation[1], ANIMATION_DIRECTION.Right);
+        // } else if (player.getSpeed().x == 0.0) {
+        //   player.setAnimation(animation[0], ANIMATION_DIRECTION.Right);
+        // } else if (player.getSpeed().x < 0) {
+        //   player.setAnimation(animation[1], ANIMATION_DIRECTION.Left);
+        // }
         //-------------------------------------------------------------------------------------------------------------------------\\
         viewport.draw();
         // ƒ.AudioManager.default.update();
@@ -272,7 +270,9 @@ var CastleV;
     var ƒ = FudgeCore;
     class Player {
         alucard = null;
-        pivot = null;
+        // public pivot: ƒ.Node = null;
+        meshNode = null;
+        ///Movement\\\
         maxWalkSpeed = 3;
         gravity = -30;
         fallingSpeed = 0;
@@ -281,42 +281,72 @@ var CastleV;
         //If the player falls too fast on a slow computer, the player will fall trough a block.
         //private maxFallSpeed: number = 0.2;
         playerSpeed = new ƒ.Vector3(0, 0, 0);
+        ///Material\\\
         material = null;
         ///Animation\\\
         animation = null;
+        ///AnimationSprite\\\
+        animationSprite = new Array();
+        ///Audio\\\
+        soundTrack = null;
+        soundListener = null;
         //deltaTime
         deltaTimeSeconds = 0;
-        //animation
-        animationDirection;
-        /*
-        private updateTime: number = 0.045;
-        private elapsedTimeAnim: number = 0;
-        */
         constructor(viewport) {
             this.alucard = viewport.getBranch().getChildrenByName("Character")[0];
-            this.pivot = this.alucard.getChildrenByName("Alucard")[0];
-            this.material = this.pivot.getComponent(ƒ.ComponentMaterial);
-            this.animation = this.pivot.getComponent(ƒ.ComponentAnimator).animation;
+            this.meshNode = this.alucard.getChild(0).getChild(0);
+            // this.pivot = this.alucard.getChildrenByName("Alucard")[0];
+            this.material = this.meshNode.getComponent(ƒ.ComponentMaterial);
+            this.animation = this.meshNode.getComponent(ƒ.ComponentAnimator).animation;
+            // audio setup
+            this.soundListener = this.alucard.getChild(0).getComponent(ƒ.ComponentAudioListener);
+            this.soundTrack = this.alucard.getChild(0).getComponent(ƒ.ComponentAudio);
+            //animation
+            this.animationSprite = [
+                ƒ.Project.getResourcesByName("Anim_Idl")[0],
+                ƒ.Project.getResourcesByName("Anim_Walking")[0],
+                ƒ.Project.getResourcesByName("Anim_StartWalk")[0],
+                ƒ.Project.getResourcesByName("Anim_Falling")[0],
+            ];
         }
         //updates the Player -> called in Main.ts update Loop
         update(deltaTimeSeconds) {
             this.deltaTimeSeconds = deltaTimeSeconds;
             this.input();
+            if (this.getSpeed().x == 0.0) {
+                this.setAnimation(this.animationSprite[0], CastleV.ANIMATION_DIRECTION.Right);
+            }
         }
         resetPlayer() {
             this.playerSpeed = new ƒ.Vector3(0, 0, 0);
             this.fallingSpeed = 0;
             this.alucard.mtxLocal.translation = new ƒ.Vector3(0, 1, 0); //TODO: Change to spawnpoint
         }
-        setAnimation(animation) {
-            // if(this.animation == animation){
-            //     return;
-            // }
+        setAnimation(animation, direction) {
+            if (this.animation == animation) {
+                return;
+            }
+            if (direction == null) {
+                direction = CastleV.ANIMATION_DIRECTION.Right;
+            }
+            if (direction == CastleV.ANIMATION_DIRECTION.Right) {
+                this.meshNode.mtxLocal.rotation = new ƒ.Vector3(0, 0, 0);
+            }
+            if (direction == CastleV.ANIMATION_DIRECTION.Left) {
+                this.meshNode.mtxLocal.rotation = new ƒ.Vector3(0, 180, 0);
+            }
             this.animation = animation;
-            this.pivot.getComponent(ƒ.ComponentAnimator).animation = this.animation;
+            this.meshNode.getComponent(ƒ.ComponentAnimator).animation = this.animation;
+            //TODO: change animation direction by changing the rotation of the mesh component            
+        }
+        rotateMesh(rotation) {
+            this.meshNode.mtxLocal.rotation.set(0, rotation, 0);
         }
         getSpeed() {
             return this.playerSpeed;
+        }
+        getMaterial() {
+            return this.material;
         }
         input() {
             let isGrounded = true;
@@ -333,14 +363,16 @@ var CastleV;
             // console.log(CollisionDetection.lastCollisionY);
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]) && !(CastleV.CollisionDetection.check(this.alucard.mtxWorld).find(e => e == CastleV.Collision.RIGHT) == CastleV.Collision.RIGHT)) {
                 this.playerSpeed = new ƒ.Vector3(this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);
+                this.setAnimation(this.animationSprite[1], CastleV.ANIMATION_DIRECTION.Right);
             }
             else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]) && !(CastleV.CollisionDetection.check(this.alucard.mtxWorld).find(e => e == CastleV.Collision.LEFT) == CastleV.Collision.LEFT)) {
                 this.playerSpeed = new ƒ.Vector3(-this.maxWalkSpeed * this.deltaTimeSeconds, this.playerSpeed.y, this.playerSpeed.z);
+                this.setAnimation(this.animationSprite[1], CastleV.ANIMATION_DIRECTION.Left);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE, ƒ.KEYBOARD_CODE.W]) && isGrounded) {
                 this.fallingSpeed = 10;
                 isGrounded = false;
-                //fixes unlimited upwards speed 
+                //fixes unlimited upwards speed bug and sloows down the player when he falls
                 if (this.fallingSpeed > this.maxFallingSpeed) {
                     this.fallingSpeed = this.maxFallingSpeed;
                 }

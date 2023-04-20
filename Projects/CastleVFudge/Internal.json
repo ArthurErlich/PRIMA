@@ -170,18 +170,18 @@
     "ƒ.AnimationSprite": {
       "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
       "idTexture": "TextureImage|2023-04-06T20:56:47.640Z|93948",
-      "frames": 16,
+      "frames": 3,
       "wrapAfter": 23,
-      "start": "[44, 249]",
+      "start": "[757, 942]",
       "size": "[40, 60]",
       "next": "[119, 0]",
       "wrap": "[0, 80]",
       "Animation": {
         "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
-        "name": "Anim_Walking",
+        "name": "Anim_Falling",
         "labels": {},
         "events": {},
-        "framesPerSecond": 15,
+        "framesPerSecond": 25,
         "animationStructure": {}
       }
     }
@@ -1498,8 +1498,6 @@
                   "name": "Alucard",
                   "active": true,
                   "components": {
-                    "ComponentMesh": [],
-                    "ComponentMaterial": [],
                     "ComponentTransform": [
                       {
                         "ƒ.ComponentTransform": {
@@ -1514,7 +1512,24 @@
                         }
                       }
                     ],
-                    "ComponentAnimator": []
+                    "ComponentAudio": [
+                      {
+                        "ƒ.ComponentAudio": {
+                          "active": true,
+                          "idResource": "Audio|2023-04-19T13:14:34.776Z|93530",
+                          "playing": true,
+                          "loop": true,
+                          "volume": 1
+                        }
+                      }
+                    ],
+                    "ComponentAudioListener": [
+                      {
+                        "ƒ.ComponentAudioListener": {
+                          "active": true
+                        }
+                      }
+                    ]
                   },
                   "children": [
                     {
@@ -1544,7 +1559,7 @@
                                 "clrPrimary": "[1, 1, 1, 1]",
                                 "clrSecondary": "[1, 1, 1, 1]",
                                 "pivot": {
-                                  "translation": "[0.22608695924282074, 0.05068027228116989]",
+                                  "translation": "[0.3808695673942566, 0.3204081654548645]",
                                   "rotation": 0,
                                   "scaling": "[0.017391303554177284, 0.020408162847161293]"
                                 },
@@ -1580,7 +1595,7 @@
                                 "quantization": "discrete",
                                 "scale": 1,
                                 "scaleWithGameTime": true,
-                                "animateInEditor": false
+                                "animateInEditor": true
                               }
                             }
                           ]
@@ -2244,26 +2259,6 @@
       }
     }
   },
-  "AnimationSprite|2023-04-06T21:16:55.591Z|61182": {
-    "ƒ.AnimationSprite": {
-      "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
-      "idTexture": "TextureImage|2023-04-06T20:56:47.640Z|93948",
-      "frames": 15,
-      "wrapAfter": 23,
-      "start": "[44, 150]",
-      "size": "[40, 60]",
-      "next": "[119, 0]",
-      "wrap": "[0, 80]",
-      "Animation": {
-        "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
-        "name": "Anim_Walking_Inverted",
-        "labels": {},
-        "events": {},
-        "framesPerSecond": 15,
-        "animationStructure": {}
-      }
-    }
-  },
   "AnimationSprite|2023-04-06T21:17:01.772Z|47521": {
     "ƒ.AnimationSprite": {
       "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
@@ -2293,6 +2288,34 @@
         "name": "Texture\\SourceSpriteMap\\AlucardInv.png",
         "mipmap": "CRISP"
       }
+    }
+  },
+  "AnimationSprite|2023-04-19T12:45:00.121Z|18298": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
+      "idTexture": "TextureImage|2023-04-06T20:56:47.640Z|93948",
+      "frames": 3,
+      "wrapAfter": 23,
+      "start": "[757, 942]",
+      "size": "[40, 60]",
+      "next": "[119, 0]",
+      "wrap": "[0, 80]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-04-06T21:11:12.218Z|91753",
+        "name": "Anim_Falling",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 25,
+        "animationStructure": {}
+      }
+    }
+  },
+  "Audio|2023-04-19T13:14:34.776Z|93530": {
+    "ƒ.Audio": {
+      "url": "sounds\\background\\25. Requiem of the Gods.mp3",
+      "idResource": "Audio|2023-04-19T13:14:34.776Z|93530",
+      "name": "Sound_BackgroundMusic",
+      "type": "Audio"
     }
   }
 }

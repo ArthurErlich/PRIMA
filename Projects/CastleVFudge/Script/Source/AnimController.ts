@@ -4,8 +4,12 @@ namespace CastleV{
     export class AnimController{
 
     }
+    export enum ANIMATION_DIRECTION{
+        Left,
+        Right
+    }
     export enum ANIMATION_STATES{
-        Idleing,
+        Idling,
         StartWalking,
         Walking
     }
@@ -48,9 +52,6 @@ namespace CastleV{
         Anim_StartWalking,
         Anim_Walking
     }
-    export enum ANIMATION_DIRECTION{
-        Forward,
-        Beckwards
-    }
+    
 }
 */
