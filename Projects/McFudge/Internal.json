@@ -62,68 +62,6 @@
               },
               {
                 "ƒ.Node": {
-                  "name": "TransfromNode",
-                  "active": true,
-                  "components": {
-                    "ComponentTransform": [
-                      {
-                        "ƒ.ComponentTransform": {
-                          "local": {
-                            "translation": "[0, 0, 0]",
-                            "rotation": "[0, 0, 0]",
-                            "scaling": "[1, 1, 1]"
-                          },
-                          "Component": {
-                            "active": true
-                          }
-                        }
-                      }
-                    ]
-                  },
-                  "children": [
-                    {
-                      "ƒ.GraphInstance": {
-                        "deserializeFromSource": true,
-                        "name": "Graph_TestCube",
-                        "idSource": "Graph|2023-04-20T13:20:33.233Z|09344"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "ƒ.Node": {
-                  "name": "TransfromNode",
-                  "active": true,
-                  "components": {
-                    "ComponentTransform": [
-                      {
-                        "ƒ.ComponentTransform": {
-                          "local": {
-                            "translation": "[1, 0, 0]",
-                            "rotation": "[0, 0, 0]",
-                            "scaling": "[1, 1, 1]"
-                          },
-                          "Component": {
-                            "active": true
-                          }
-                        }
-                      }
-                    ]
-                  },
-                  "children": [
-                    {
-                      "ƒ.GraphInstance": {
-                        "deserializeFromSource": true,
-                        "name": "Graph_TestCube",
-                        "idSource": "Graph|2023-04-20T13:20:33.233Z|09344"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "ƒ.Node": {
                   "name": "AmbianteLight",
                   "active": true,
                   "components": {
