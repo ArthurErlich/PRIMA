@@ -82,6 +82,9 @@ var McFudge;
                 for (let z = 0; z < 3; z++) {
                     let cubeColor = ƒ.Color.CSS("white");
                     let instance = new McFudge.Block(new ƒ.Vector3(x, y, z), cubeColor);
+                    //set color
+                    //look at fudge test-> Picking and rays
+                    instance.mtxLocal.scale(new ƒ.Vector3(0.97, 0.97, 0.97));
                     viewport.getBranch().addChild(instance);
                 }
             }
