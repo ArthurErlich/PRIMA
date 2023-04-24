@@ -1,4 +1,4 @@
-# rFudge Basics
+# Fudge Basics
 
 ## Coordinates in Fudge
 
