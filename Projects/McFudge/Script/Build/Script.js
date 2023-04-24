@@ -1,4 +1,20 @@
 "use strict";
+var McFudge;
+(function (McFudge) {
+    var ƒ = FudgeCore;
+    class Block extends ƒ.Node {
+        constructor() {
+            super("Block"); // always call super!
+            let meshCube = new ƒ.MeshCube();
+            let materialCube = new ƒ.Material("mtr", ƒ.ShaderFlat, new ƒ.CoatRemissive()); // you can also grab the Matrial from the resources!
+            //now we add them to the Componnets
+            this.addComponent(new ƒ.ComponentTransform());
+            this.addComponent(new ƒ.ComponentMesh(meshCube));
+            this.addComponent(new ƒ.ComponentMaterial(materialCube));
+        }
+    }
+    McFudge.Block = Block;
+})(McFudge || (McFudge = {}));
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
@@ -58,8 +74,14 @@ var McFudge;
         minecraftGraph = viewport.getBranch();
         worldNode = minecraftGraph.getChildrenByName("World")[0];
         ///init world creation GraphInstance
-        initWorldCreation(30); // my computer can manage 8*8*8 cubes
-        console.warn(30 * 30 * 30 + " Cubes are generated");
+        let worldSize = 0;
+        initWorldCreation(worldSize); // my computer can manage 8*8*8 cubes
+        console.warn(worldSize * worldSize * worldSize + " Cubes are generated");
+        // creating a block instance
+        let instance = new McFudge.Block();
+        viewport.getBranch().addChild(instance);
+        console.log(instance);
+        // end crating a block instance
         //------------------------T-E-S-T---A-R-E-A----------------------\\
         //-----------------------------------------------------------------\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);

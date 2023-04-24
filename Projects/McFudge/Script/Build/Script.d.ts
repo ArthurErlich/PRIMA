@@ -1,3 +1,9 @@
+declare namespace McFudge {
+    import ƒ = FudgeCore;
+    class Block extends ƒ.Node {
+        constructor();
+    }
+}
 declare namespace Script {
     import ƒ = FudgeCore;
     class CustomComponentScript extends ƒ.ComponentScript {

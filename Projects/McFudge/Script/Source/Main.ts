@@ -28,9 +28,16 @@ namespace McFudge {
     worldNode = minecraftGraph.getChildrenByName("World")[0];
 
     ///init world creation GraphInstance
-    initWorldCreation(8); // my computer can manage 8*8*8 cubes
+    let worldSize:number=0;
+    initWorldCreation(worldSize); // my computer can manage 8*8*8 cubes
 
-    console.warn(8*8*8+" Cubes are generated");
+    console.warn(worldSize*worldSize*worldSize+" Cubes are generated");
+
+    // creating a block instance
+    let instance: Block = new Block();
+    viewport.getBranch().addChild(instance);
+    console.log(instance);
+    // end crating a block instance
     
 
     //------------------------T-E-S-T---A-R-E-A----------------------\\

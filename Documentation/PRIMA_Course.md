@@ -1,4 +1,4 @@
-# Fudge Basics
+# rFudge Basics
 
 ## Coordinates in Fudge
 
@@ -307,7 +307,6 @@ Set up in the Editor:
 
 --
 
-
 ### Fixing position
 
 pos' = T2^-1 * pos
@@ -346,3 +345,96 @@ Thats are the task:
 * [ ] You can create more cubes in Runtime or you can create instances in the editor.
   * [ ] -> Resources create instances -> Add child adjust property...
   * [ ] Best to add a node bevor the instance to add Transform
+
+# How to make a referenc of a graph
+
+Getting the Graph
+
+```typescript
+testCubeGraph = ƒ.Project.resources["Graph|2023-04-20T13:20:33.233Z|09344"] as ƒ.Graph;
+```
+
+or
+
+```typescript
+testCubeGraph = <ƒ.Graph> ƒ.Project.resources["Graph|2023-04-20T13:20:33.233Z|09344"];
+```
+
+getting the instance of the Graph.
+
+```typescript
+ testCubeInstances[i] = await ƒ.Project.createGraphInstance(testCubeGraph);
+```
+
+Be aware that  the function is async
+
+you can fix the stuff with
+
+```typescript
+@ts-ignore
+```
+
+by shuting TS up. So it cannot nag on you on the next line.
+
+After you finished getting the instances you can use that instace for more.
+
+## Lights
+
+We can these lights in Fudge
+
+* Ambiante light
+  * Atmo
+  * cheap on the GPU
+* Direction light
+  * Sun/Paralell light
+  * Cheaper than the Spot and the Point light
+* Point light
+  * Lamp/lightBulp has an area wher it lights the object around
+  * Use the PivotMTX to Rotate/Scale the Point light
+* Spot light
+  * Like a flash light Emmits in a cone
+  * use teh PovotMTX to ratate the light. Standard is Shining to Z
+  * Scale Z to lenghten the cone and use the x,y achses for
+
+Why makes it sense to do Phong shading on the pixel basis.
+
+* You will see the liniear fall of of the light.
+
+## EXTENDS and SCRIPTCOMPONENT
+
+is for orgenazing the code. We did all the Programming more or less in one Node and in the Main.ts
+We can make it so:
+
+* Subclass of a NODE
+  * Now the node is connectet to the script and the script is actually a code
+  * We can also attach code to a node!
+
+Now make a File and call it Block.TS and extend the class with f.Node
+
+do in the constructer ,crate Mesh ,create Matreial ,create Transfrom ,add to this
+This is a block createt in the script:
+
+```typescript
+namespace McFudge{
+    import ƒ = FudgeCore;
+    export class Block extends ƒ.Node{
+        constructor(){
+            super("Block");// always call super!
+            let meshCube:ƒ.Mesh = new ƒ.MeshCube();
+            let materialCube: ƒ.Material = new ƒ.Material("mtr",ƒ.ShaderFlat,new ƒ.CoatRemissive());// you can also grab the Matrial from the resources!
+            //now we add them to the Componnets
+  
+            this.addComponent(new ƒ.ComponentTransform());
+            this.addComponent(new ƒ.ComponentMesh(meshCube));
+            this.addComponent(new ƒ.ComponentMaterial(materialCube));
+
+        }
+    }
+}
+```
+
+dont forget to add the cube into tha viewport graph!
+```typescript
+    let instance: Block = new Block();
+    viewport.getBranch().addChild(instance);
+```
