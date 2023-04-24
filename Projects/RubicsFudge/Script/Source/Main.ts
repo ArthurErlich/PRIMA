@@ -10,6 +10,12 @@ namespace McFudge {
   let worldNode: ƒ.Node = null;
 
   /// colorers \\\
+  let cubeColorList: ƒ.Color[]=[
+    ƒ.Color.CSS("white"),
+    ƒ.Color.CSS("green"),
+    ƒ.Color.CSS("blue"),
+    ƒ.Color.CSS("yellow")
+  ];
 
 
 
@@ -29,12 +35,14 @@ namespace McFudge {
     // let instance: Block = new Block(new ƒ.Vector3(0,0,0), ƒ.Color.CSS("red"));
     // viewport.getBranch().addChild(instance);
 
-
+    
+    
 
     for(let x:number = 0; x < 3; x++){
       for(let y:number = 0; y < 3; y++){
         for(let z:number = 0; z < 3; z++){
-          let cubeColor: ƒ.Color = ƒ.Color.CSS("white");
+          let randomCubeColorIndex:number = Math.floor(Math.random() * (cubeColorList.length));
+          let cubeColor: ƒ.Color = cubeColorList[randomCubeColorIndex];          
           let instance: Block = new Block(new ƒ.Vector3(x,y,z), cubeColor);
           //set color
           //look at fudge test-> Picking and rays

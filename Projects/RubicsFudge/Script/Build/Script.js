@@ -67,6 +67,12 @@ var McFudge;
     let gameGraph = null;
     let worldNode = null;
     /// colorers \\\
+    let cubeColorList = [
+        ƒ.Color.CSS("white"),
+        ƒ.Color.CSS("green"),
+        ƒ.Color.CSS("blue"),
+        ƒ.Color.CSS("yellow")
+    ];
     function start(_event) {
         viewport = _event.detail;
         //-----------------------T-E-S-T---A-R-E-A-----------------------\\
@@ -80,7 +86,8 @@ var McFudge;
         for (let x = 0; x < 3; x++) {
             for (let y = 0; y < 3; y++) {
                 for (let z = 0; z < 3; z++) {
-                    let cubeColor = ƒ.Color.CSS("white");
+                    let randomCubeColorIndex = Math.floor(Math.random() * (cubeColorList.length));
+                    let cubeColor = cubeColorList[randomCubeColorIndex];
                     let instance = new McFudge.Block(new ƒ.Vector3(x, y, z), cubeColor);
                     //set color
                     //look at fudge test-> Picking and rays
