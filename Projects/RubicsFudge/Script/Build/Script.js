@@ -6,12 +6,16 @@ var McFudge;
         //used onesce
         static meshCube = new ƒ.MeshCube();
         static materialCube = new ƒ.Material("mtr", ƒ.ShaderFlat, new ƒ.CoatRemissive()); // you can also grab the Matrial from the resources!
-        constructor() {
+        constructor(_position, _color) {
             super("Block"); // always call super!
             //now we add them to the Componnets
-            this.addComponent(new ƒ.ComponentTransform());
-            this.addComponent(new ƒ.ComponentMesh(Block.meshCube));
-            this.addComponent(new ƒ.ComponentMaterial(Block.materialCube));
+            let transform = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position));
+            let mesh = new ƒ.ComponentMesh(Block.meshCube);
+            let material = new ƒ.ComponentMaterial(Block.materialCube);
+            material.clrPrimary = _color;
+            this.addComponent(transform);
+            this.addComponent(mesh);
+            this.addComponent(material);
         }
     }
     McFudge.Block = Block;
@@ -60,29 +64,28 @@ var McFudge;
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
     /// Graphs and Nodes \\\
-    let minecraftGraph = null;
-    let testCubeGraph = null;
+    let gameGraph = null;
     let worldNode = null;
-    /// GraphInstance \\\
-    let testCubeInstances = null;
-    ///WorldParameters\\\
-    let worldHightShift = -2;
+    /// colorers \\\
     function start(_event) {
         viewport = _event.detail;
         //-----------------------T-E-S-T---A-R-E-A-----------------------\\
         //-----------------------------------------------------------------\\
         ///init Graphs
-        minecraftGraph = viewport.getBranch();
-        worldNode = minecraftGraph.getChildrenByName("World")[0];
-        ///init world creation GraphInstance
-        let worldSize = 0;
-        initWorldCreation(worldSize); // my computer can manage 8*8*8 cubes
-        console.warn(worldSize * worldSize * worldSize + " Cubes are generated");
+        gameGraph = viewport.getBranch();
+        worldNode = gameGraph.getChildrenByName("World")[0];
         // creating a block instance
-        let instance = new McFudge.Block();
-        viewport.getBranch().addChild(instance);
-        console.log(instance);
-        // end crating a block instance
+        // let instance: Block = new Block(new ƒ.Vector3(0,0,0), ƒ.Color.CSS("red"));
+        // viewport.getBranch().addChild(instance);
+        for (let x = 0; x < 3; x++) {
+            for (let y = 0; y < 3; y++) {
+                for (let z = 0; z < 3; z++) {
+                    let cubeColor = ƒ.Color.CSS("white");
+                    let instance = new McFudge.Block(new ƒ.Vector3(x, y, z), cubeColor);
+                    viewport.getBranch().addChild(instance);
+                }
+            }
+        }
         //------------------------T-E-S-T---A-R-E-A----------------------\\
         //-----------------------------------------------------------------\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
@@ -92,42 +95,6 @@ var McFudge;
         // ƒ.Physics.simulate();  // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
-    }
-    async function initWorldCreation(size) {
-        testCubeGraph = ƒ.Project.resources["Graph|2023-04-20T13:20:33.233Z|09344"];
-        testCubeInstances = new Array(size * size * size);
-        //crating enough cube instances for the Transform parent later.
-        for (let i = 0; i < (size * size * size); i++) {
-            testCubeInstances[i] = await ƒ.Project.createGraphInstance(testCubeGraph); //TODO: Maybe there is a way to clone the Instance?
-        }
-        let cubeMargin = 1.01;
-        let cubeIndex = 0;
-        let cubeList = new Array(size * size * size);
-        for (let x = 0; x < size; x++) {
-            for (let z = 0; z < size; z++) {
-                worldHightShift = Math.round((Math.random()) - 2);
-                for (let y = 0; y < size; y++) {
-                    cubeList[cubeIndex] = crateCube(cubeIndex, new ƒ.Vector3(x * cubeMargin, (-y + worldHightShift) * cubeMargin, -z * cubeMargin));
-                    cubeIndex++;
-                }
-            }
-        }
-        addCubesToWorld(cubeList);
-    }
-    function crateCube(index, position) {
-        let cubeTransform = new ƒ.Node("INDEX: " + index + " cube");
-        cubeTransform.addComponent(new ƒ.ComponentTransform());
-        cubeTransform.mtxLocal.translation = position;
-        return cubeTransform;
-    }
-    function addCubesToWorld(cubeTransform) {
-        if (testCubeInstances == undefined) {
-            throw "Here is a problem";
-        }
-        for (let index = 0; index < cubeTransform.length; index++) {
-            cubeTransform[index].addChild(testCubeInstances[index]); //TODO: find out how to get the instance of the testCubeInstance. And not the object itself /\/\/DIRTY FIX: crating an array with the instances of the cube
-            worldNode.addChild(cubeTransform[index]);
-        }
     }
 })(McFudge || (McFudge = {}));
 //# sourceMappingURL=Script.js.map

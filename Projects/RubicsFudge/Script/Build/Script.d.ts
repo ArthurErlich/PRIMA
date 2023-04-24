@@ -3,7 +3,7 @@ declare namespace McFudge {
     class Block extends ƒ.Node {
         static meshCube: ƒ.Mesh;
         static materialCube: ƒ.Material;
-        constructor();
+        constructor(_position: ƒ.Vector3, _color: ƒ.Color);
     }
 }
 declare namespace Script {
