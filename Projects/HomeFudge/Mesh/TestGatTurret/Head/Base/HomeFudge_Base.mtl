@@ -1,0 +1,12 @@
+# Blender 3.5.0 MTL File: 'HomeFuge_Destroyser_V_1.0.blend'
+# www.blender.org
+
+newmtl SpaceShip1
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd J:/_EigeneDatein/3D Objekte/2023/SpaceShips/HomeFuge/Textures/SpaceShip1_baseColor.jpg
+map_Ns J:/_EigeneDatein/3D Objekte/2023/SpaceShips/HomeFuge/Textures/SpaceShip1_roughness.jpg
