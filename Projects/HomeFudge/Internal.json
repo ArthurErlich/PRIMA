@@ -81,6 +81,13 @@
       "type": "Graph"
     }
   },
+  "MeshCube|2023-04-25T14:51:45.078Z|34693": {
+    "ƒ.MeshCube": {
+      "idResource": "MeshCube|2023-04-25T14:51:45.078Z|34693",
+      "name": "Mesh_TEMP",
+      "type": "MeshCube"
+    }
+  },
   "Graph|2023-04-25T14:30:46.195Z|98798": {
     "ƒ.Graph": {
       "name": "GameResources",
@@ -89,13 +96,55 @@
       "children": [
         {
           "ƒ.Node": {
-            "name": "GattlingTurret",
+            "name": "GatlingTurretBase",
             "active": true,
             "components": {
               "ComponentMesh": [
                 {
                   "ƒ.ComponentMesh": {
-                    "idMesh": "MeshCube|2023-04-25T14:51:45.078Z|34693",
+                    "idMesh": "MeshObj|2023-04-25T16:48:05.703Z|54473",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-04-21T17:06:52.835Z|19108"
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "GatlingTurretHead",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2023-04-25T16:48:09.298Z|94442",
                     "pivot": {
                       "translation": "[0, 0, 0]",
                       "rotation": "[0, 0, 0]",
@@ -134,11 +183,20 @@
       "type": "Graph"
     }
   },
-  "MeshCube|2023-04-25T14:51:45.078Z|34693": {
-    "ƒ.MeshCube": {
-      "idResource": "MeshCube|2023-04-25T14:51:45.078Z|34693",
-      "name": "Mesh_TEMP",
-      "type": "MeshCube"
+  "MeshObj|2023-04-25T16:48:05.703Z|54473": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-04-25T16:48:05.703Z|54473",
+      "name": "Mesh\\TestGatTurret\\Head\\HomeFudge_Head.obj",
+      "type": "MeshObj",
+      "url": "Mesh\\TestGatTurret\\Head\\HomeFudge_Head.obj"
+    }
+  },
+  "MeshObj|2023-04-25T16:48:09.298Z|94442": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-04-25T16:48:09.298Z|94442",
+      "name": "Mesh\\TestGatTurret\\Head\\Base\\HomeFudge_Base.obj",
+      "type": "MeshObj",
+      "url": "Mesh\\TestGatTurret\\Head\\Base\\HomeFudge_Base.obj"
     }
   }
 }
