@@ -1,10 +1,16 @@
 {
-  "MeshObj|2023-04-21T17:04:44.183Z|62678": {
-    "ƒ.MeshObj": {
-      "idResource": "MeshObj|2023-04-21T17:04:44.183Z|62678",
-      "name": "Mesh\\TestShip\\FudgeMultyObjectTest.obj",
-      "type": "MeshObj",
-      "url": "Mesh\\TestShip\\FudgeMultyObjectTest.obj"
+  "Material|2023-04-21T17:06:52.835Z|19108": {
+    "ƒ.Material": {
+      "name": "Mat_TEMP",
+      "idResource": "Material|2023-04-21T17:06:52.835Z|19108",
+      "shader": "ShaderFlat",
+      "coat": {
+        "ƒ.CoatRemissive": {
+          "color": "[1, 1, 1, 1]",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
     }
   },
   "Graph|2023-04-21T17:05:28.109Z|61452": {
@@ -13,48 +19,6 @@
       "active": true,
       "components": {},
       "children": [
-        {
-          "ƒ.Node": {
-            "name": "TEST",
-            "active": true,
-            "components": {
-              "ComponentMesh": [
-                {
-                  "ƒ.ComponentMesh": {
-                    "idMesh": "MeshObj|2023-04-21T17:04:44.183Z|62678",
-                    "pivot": {
-                      "translation": "[0, 0, 0]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    }
-                  }
-                }
-              ],
-              "ComponentMaterial": [
-                {
-                  "ƒ.ComponentMaterial": {
-                    "sortForAlpha": true,
-                    "clrPrimary": "[1, 1, 1, 1]",
-                    "clrSecondary": "[1, 1, 1, 1]",
-                    "pivot": {
-                      "translation": "[0, 0]",
-                      "rotation": 0,
-                      "scaling": "[1, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    },
-                    "idMaterial": "Material|2023-04-21T17:06:52.835Z|19108"
-                  }
-                }
-              ]
-            },
-            "children": []
-          }
-        },
         {
           "ƒ.Node": {
             "name": "Sun",
@@ -117,18 +81,64 @@
       "type": "Graph"
     }
   },
-  "Material|2023-04-21T17:06:52.835Z|19108": {
-    "ƒ.Material": {
-      "name": "ShaderFlat",
-      "idResource": "Material|2023-04-21T17:06:52.835Z|19108",
-      "shader": "ShaderFlat",
-      "coat": {
-        "ƒ.CoatRemissive": {
-          "color": "[1, 1, 1, 1]",
-          "diffuse": 1,
-          "specular": 0
+  "Graph|2023-04-25T14:30:46.195Z|98798": {
+    "ƒ.Graph": {
+      "name": "GameResources",
+      "active": true,
+      "components": {},
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "GattlingTurret",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshCube|2023-04-25T14:51:45.078Z|34693",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-04-21T17:06:52.835Z|19108"
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
         }
-      }
+      ],
+      "idResource": "Graph|2023-04-25T14:30:46.195Z|98798",
+      "type": "Graph"
+    }
+  },
+  "MeshCube|2023-04-25T14:51:45.078Z|34693": {
+    "ƒ.MeshCube": {
+      "idResource": "MeshCube|2023-04-25T14:51:45.078Z|34693",
+      "name": "Mesh_TEMP",
+      "type": "MeshCube"
     }
   }
 }
