@@ -9,11 +9,35 @@ declare namespace Script {
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
-    class GattlingTurret extends ƒ.Node {
+    class GatTurretHead extends ƒ.Node {
         private node;
         private mesh;
         private material;
-        private shootSpawnPos;
+        private getResources;
+        private setComponents;
+        constructor(_transform: ƒ.Vector3);
+    }
+}
+declare namespace HomeFudge {
+    import ƒ = FudgeCore;
+    class GatlingTurret extends ƒ.Node {
+        private initGatConfigAndAllNodes;
+        constructor(_transform: ƒ.Vector3);
+    }
+    interface GatlingTurretConfig {
+        headPosition: ƒ.Vector3;
+        shootNodePosition: ƒ.Vector3;
+        graphID: string;
+        [key: string]: ƒ.Vector3 | string;
+    }
+    let gatlingConfig: GatlingTurretConfig;
+}
+declare namespace HomeFudge {
+    import ƒ = FudgeCore;
+    class GatlingTurretBase extends ƒ.Node {
+        private node;
+        private mesh;
+        private material;
         private getResources;
         private setComponents;
         constructor(_transform: ƒ.Vector3);
