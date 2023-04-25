@@ -1,10 +1,10 @@
-namespace HomeFudge{
+namespace HomeFudge {
     import ƒ = FudgeCore;
-    export class Player extends ƒ.Node{
-        
-        constructor(){
+    export class Player extends ƒ.Node {
+
+        constructor() {
             super("Player");
-            
+
         }
     }
 
