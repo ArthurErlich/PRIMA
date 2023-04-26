@@ -2,11 +2,13 @@ declare namespace HomeFudge {
     import ƒ = FudgeCore;
     abstract class Bullet extends ƒ.Node {
         abstract lifeTime: number;
-        abstract speed: number;
+        abstract maxSpeed: number;
+        abstract graph: ƒ.Graph;
         abstract update(deltaSeconds: number): void;
         abstract alive(): boolean;
+        abstract kill(): void;
         abstract toString(): string;
-        constructor(id: string);
+        constructor(idString: string);
     }
 }
 declare namespace Script {
@@ -19,13 +21,17 @@ declare namespace Script {
     }
 }
 declare namespace HomeFudge {
+    import ƒ = FudgeCore;
     class GatlingBullet extends Bullet {
         lifeTime: number;
-        speed: number;
+        maxSpeed: number;
+        graph: ƒ.Graph;
+        worldNode: ƒ.Node;
         update(deltaSeconds: number): void;
         alive(): boolean;
         toString(): string;
-        constructor(lifeTime: number, id: number);
+        kill(): void;
+        constructor(lifeTime: number, spawnTransform: ƒ.Matrix4x4);
     }
 }
 declare namespace HomeFudge {
@@ -39,7 +45,7 @@ declare namespace HomeFudge {
         private createNode;
         private createShootPosNode;
         moveTurret(xRot: number, yRot: number): void;
-        shoot(lifeTime: number, id: number): void;
+        shoot(worldNode: ƒ.Node): void;
         constructor();
     }
 }
@@ -60,6 +66,8 @@ declare namespace HomeFudge {
     }
 }
 declare namespace HomeFudge {
+    import ƒ = FudgeCore;
+    let viewport: ƒ.Viewport;
     let bulletList: Bullet[];
 }
 declare namespace HomeFudge {

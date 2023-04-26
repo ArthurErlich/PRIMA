@@ -2,7 +2,8 @@ namespace HomeFudge {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Main Program Template running!");
 
-  let viewport: ƒ.Viewport;
+  //TODO:remove temporary exprotetd Viewport
+  export let viewport: ƒ.Viewport;
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
 
@@ -11,6 +12,7 @@ namespace HomeFudge {
 
   //Bullet list, every bullet wil riegister itselfe here for the update Methode.
   export let bulletList: Bullet[] = null;
+
   /// ------------T-E-S-T--A-R-E-A------------------\\\
 
 
@@ -20,9 +22,6 @@ namespace HomeFudge {
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     gatTurret = new GatlingTurret();//TODO:Check if mesh is correct
     bulletList = new Array();
-    for (let index = 0; index < 10; index++) {
-      gatTurret.shoot(Math.random()*5,index);
-    }
     viewport.getBranch().addChild(gatTurret);
     // console.log(" Gatling Turret Node: ");
     // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0]);
@@ -41,23 +40,31 @@ namespace HomeFudge {
   function update(_event: Event): void {
     // ƒ.Physics.simulate();  // if physics is included and used
     let deltaSeconds: number = ƒ.Loop.timeFrameGame / 1000;
-
+  
 
 
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
+    //TODO: fix "time frameGame is not a valid option for time based shooting"...
+    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])&& (ƒ.Loop.timeFrameGame % 0.5) == 0){
+      gatTurret.shoot(viewport.getBranch());
+    }
+
 
     let rotX = 0;
     rotX += 1 * deltaSeconds;
     gatTurret.moveTurret(rotX * 2, rotX * 3)
 
     //Updates all bullets
+    //TODO: make a function or method out of that and update it
     for (let index: number = 0; index < bulletList.length; index++) {
       bulletList[index].update(deltaSeconds);
       if (!bulletList[index].alive()) {
+        bulletList[index].kill();
         bulletList[index] = null;
       }
     }
+    //removes bullet from the update array
     bulletList = bulletList.filter(elements => {
       return (elements != null && elements !== undefined);
     });

@@ -3,8 +3,8 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class Bullet extends ƒ.Node {
-        constructor(id) {
-            super("Bullet" + id);
+        constructor(idString) {
+            super("Bullet" + idString);
             //register to updater list
             HomeFudge.bulletList.push(this);
         }
@@ -53,13 +53,16 @@ var HomeFudge;
     var ƒ = FudgeCore;
     class GatlingBullet extends HomeFudge.Bullet {
         lifeTime;
-        speed;
+        maxSpeed;
+        graph;
+        worldNode;
         // faction: string;
         //TODO: implement bullet updating
         update(deltaSeconds) {
             // console.warn("Method not implemented.");
-            //TODO:implement bullet lifetime degradation
+            //TODO:implement bullet lifetime degradation and speed from Interface
             this.lifeTime -= deltaSeconds;
+            this.mtxLocal.translateX(200 * deltaSeconds);
         }
         alive() {
             return this.lifeTime >= 0;
@@ -67,10 +70,19 @@ var HomeFudge;
         toString() {
             return this.name + "POSITION:";
         }
-        constructor(lifeTime, id) {
-            super(id.toString());
+        kill() {
+            //remove bullet from viewGraph
+            //TODO:Verify if it is a valid approach
+            this.getParent().removeChild(this);
+        }
+        constructor(lifeTime, spawnTransform) {
+            super("Gatling");
             this.lifeTime = lifeTime;
-            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(id / 10, 0, 0))));
+            //TODO: load components from graph and not crate them on the fly.
+            this.addComponent(new ƒ.ComponentTransform(spawnTransform)); // right place
+            this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshPyramid())); //needs to be laoded from the recources graph
+            this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("test", ƒ.ShaderLit))); //needs to be laoded from the recources graph
+            console.warn("Shoot " + this.name);
         }
     }
     HomeFudge.GatlingBullet = GatlingBullet;
@@ -79,9 +91,9 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class GatlingTurret extends ƒ.Node {
-        headNode;
-        baseNode;
-        shootNode;
+        headNode = null;
+        baseNode = null;
+        shootNode = null;
         async initGatConfigAndAllNodes() {
             let response = await fetch("Configs/gatTurretConfig.json");
             let gatlingConfig = await response.json();
@@ -127,10 +139,9 @@ var HomeFudge;
             this.headNode.mtxLocal.rotateZ(xRot);
         }
         //spawns every n-seconds a bullet
-        shoot(lifeTime, id) {
-            let testBullet = new HomeFudge.GatlingBullet(lifeTime, id);
-            //TODO:remove test parant
-            this.addChild(testBullet);
+        shoot(worldNode) {
+            //TODO:find a way to create bullet and remove it after hit/lifetime loss.
+            worldNode.addChild(new HomeFudge.GatlingBullet(3, this.shootNode.mtxWorld.clone));
         }
         constructor() {
             super("GatlingTurret");
@@ -168,7 +179,6 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
-    let viewport;
     document.addEventListener("interactiveViewportStarted", start);
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     let gatTurret = null;
@@ -176,14 +186,11 @@ var HomeFudge;
     HomeFudge.bulletList = null;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     function start(_event) {
-        viewport = _event.detail;
+        HomeFudge.viewport = _event.detail;
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         gatTurret = new HomeFudge.GatlingTurret(); //TODO:Check if mesh is correct
         HomeFudge.bulletList = new Array();
-        for (let index = 0; index < 10; index++) {
-            gatTurret.shoot(Math.random() * 5, index);
-        }
-        viewport.getBranch().addChild(gatTurret);
+        HomeFudge.viewport.getBranch().addChild(gatTurret);
         // console.log(" Gatling Turret Node: ");
         // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0]);
         // console.log(" First child of Gatling Turret: ");
@@ -197,21 +204,28 @@ var HomeFudge;
         // ƒ.Physics.simulate();  // if physics is included and used
         let deltaSeconds = ƒ.Loop.timeFrameGame / 1000;
         /// ------------T-E-S-T--A-R-E-A------------------\\\
+        //TODO: fix "time frameGame is not a valid option for time based shooting"...
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]) && (ƒ.Loop.timeFrameGame % 0.5) == 0) {
+            gatTurret.shoot(HomeFudge.viewport.getBranch());
+        }
         let rotX = 0;
         rotX += 1 * deltaSeconds;
         gatTurret.moveTurret(rotX * 2, rotX * 3);
         //Updates all bullets
+        //TODO: make a function or method out of that and update it
         for (let index = 0; index < HomeFudge.bulletList.length; index++) {
             HomeFudge.bulletList[index].update(deltaSeconds);
             if (!HomeFudge.bulletList[index].alive()) {
+                HomeFudge.bulletList[index].kill();
                 HomeFudge.bulletList[index] = null;
             }
         }
+        //removes bullet from the update array
         HomeFudge.bulletList = HomeFudge.bulletList.filter(elements => {
             return (elements != null && elements !== undefined);
         });
         /// ------------T-E-S-T--A-R-E-A------------------\\\
-        viewport.draw();
+        HomeFudge.viewport.draw();
         ƒ.AudioManager.default.update();
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\

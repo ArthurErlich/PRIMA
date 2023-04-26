@@ -2,9 +2,9 @@ namespace HomeFudge {
     import ƒ = FudgeCore;
     export class GatlingTurret extends ƒ.Node {
 
-        private headNode: ƒ.Node
-        private baseNode: ƒ.Node
-        private shootNode: ƒ.Node
+        private headNode: ƒ.Node = null;
+        private baseNode: ƒ.Node= null;
+        private shootNode: ƒ.Node= null;
 
         private async initGatConfigAndAllNodes(): Promise<void> {
             let response: Response = await fetch("Configs/gatTurretConfig.json");
@@ -57,11 +57,10 @@ namespace HomeFudge {
         }
 
         //spawns every n-seconds a bullet
-        public shoot(lifeTime: number, id: number) {
-            let testBullet:GatlingBullet = new GatlingBullet(lifeTime,id);
-            
-            //TODO:remove test parant
-            this.addChild(testBullet);
+        public shoot(worldNode:ƒ.Node) {
+            //TODO:find a way to create bullet and remove it after hit/lifetime loss.
+            worldNode.addChild(new GatlingBullet(3,this.shootNode.mtxWorld.clone));
+
         }
         constructor() {
             super("GatlingTurret");
