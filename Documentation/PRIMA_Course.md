@@ -402,7 +402,7 @@ Why makes it sense to do Phong shading on the pixel basis.
 
 ## EXTENDS and SCRIPTCOMPONENT
 
-is for orgenazing the code. We did all the Programming more or less in one Node and in the Main.ts
+is for orgenazing the code. We did all the Programming bevore more or less in one Node and in the `Main.ts`
 We can make it so:
 
 * Subclass of a NODE
