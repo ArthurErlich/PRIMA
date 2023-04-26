@@ -1,9 +1,11 @@
 {
     "graphID": "Graph|2023-04-25T14:30:46.195Z|98798",
-    "rotSpeed": null,
+    "maxRotSpeed": null,
+    "maxPitch" : 90,
+    "minPitch" : 7.85, 
     "headPosition": [
-        0,
-        0,
+        -0.007236,
+        1.5738,
         0
     ],
     "basePosition": [
@@ -12,8 +14,8 @@
         0
     ],
     "shootNodePosition": [
-        0,
-        0,
+        6.7871,
+        0.479092,
         0
     ]
 }
