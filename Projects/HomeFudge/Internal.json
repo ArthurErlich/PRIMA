@@ -88,6 +88,22 @@
       "type": "MeshCube"
     }
   },
+  "MeshObj|2023-04-25T16:48:05.703Z|54473": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-04-25T16:48:05.703Z|54473",
+      "name": "Mesh\\TestGatTurret\\Head\\HomeFudge_Head.obj",
+      "type": "MeshObj",
+      "url": "Mesh\\TestGatTurret\\Head\\HomeFudge_Head.obj"
+    }
+  },
+  "MeshObj|2023-04-25T16:48:09.298Z|94442": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-04-25T16:48:09.298Z|94442",
+      "name": "Mesh\\TestGatTurret\\Head\\Base\\HomeFudge_Base.obj",
+      "type": "MeshObj",
+      "url": "Mesh\\TestGatTurret\\Head\\Base\\HomeFudge_Base.obj"
+    }
+  },
   "Graph|2023-04-25T14:30:46.195Z|98798": {
     "ƒ.Graph": {
       "name": "GameResources",
@@ -177,26 +193,84 @@
             },
             "children": []
           }
+        },
+        {
+          "ƒ.Node": {
+            "name": "GatlingBullet",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2023-04-26T14:25:28.306Z|19816",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-04-26T14:44:25.193Z|05381"
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
         }
       ],
       "idResource": "Graph|2023-04-25T14:30:46.195Z|98798",
       "type": "Graph"
     }
   },
-  "MeshObj|2023-04-25T16:48:05.703Z|54473": {
+  "MeshObj|2023-04-26T14:25:28.306Z|19816": {
     "ƒ.MeshObj": {
-      "idResource": "MeshObj|2023-04-25T16:48:05.703Z|54473",
-      "name": "Mesh\\TestGatTurret\\Head\\HomeFudge_Head.obj",
+      "idResource": "MeshObj|2023-04-26T14:25:28.306Z|19816",
+      "name": "Mesh_TempBullet",
       "type": "MeshObj",
-      "url": "Mesh\\TestGatTurret\\Head\\HomeFudge_Head.obj"
+      "url": "Mesh\\TestGatTurret\\Bullet\\HomeFuge_GatlingBullet.obj"
     }
   },
-  "MeshObj|2023-04-25T16:48:09.298Z|94442": {
-    "ƒ.MeshObj": {
-      "idResource": "MeshObj|2023-04-25T16:48:09.298Z|94442",
-      "name": "Mesh\\TestGatTurret\\Head\\Base\\HomeFudge_Base.obj",
-      "type": "MeshObj",
-      "url": "Mesh\\TestGatTurret\\Head\\Base\\HomeFudge_Base.obj"
+  "TextureImage|2023-04-26T14:26:14.544Z|39959": {
+    "ƒ.TextureImage": {
+      "url": "Mesh\\TestGatTurret\\Bullet\\GatBulletTexture.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-04-26T14:26:14.544Z|39959",
+        "name": "Text_GatlingBullet",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Material|2023-04-26T14:44:25.193Z|05381": {
+    "ƒ.Material": {
+      "name": "Mat_LitGatlingBullet",
+      "idResource": "Material|2023-04-26T14:44:25.193Z|05381",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-04-26T14:26:14.544Z|39959"
+        }
+      }
     }
   }
 }

@@ -1,3 +1,14 @@
+declare namespace HomeFudge {
+    import ƒ = FudgeCore;
+    abstract class Bullet extends ƒ.Node {
+        abstract lifeTime: number;
+        abstract speed: number;
+        abstract update(deltaSeconds: number): void;
+        abstract alive(): boolean;
+        abstract toString(): string;
+        constructor(id: string);
+    }
+}
 declare namespace Script {
     import ƒ = FudgeCore;
     class CustomComponentScript extends ƒ.ComponentScript {
@@ -8,39 +19,34 @@ declare namespace Script {
     }
 }
 declare namespace HomeFudge {
-    import ƒ = FudgeCore;
-    class GatTurretHead extends ƒ.Node {
-        private node;
-        private mesh;
-        private material;
-        private getResources;
-        private setComponents;
-        constructor(_transform: ƒ.Vector3);
+    class GatlingBullet extends Bullet {
+        lifeTime: number;
+        speed: number;
+        update(deltaSeconds: number): void;
+        alive(): boolean;
+        toString(): string;
+        constructor(lifeTime: number, id: number);
     }
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class GatlingTurret extends ƒ.Node {
+        private headNode;
+        private baseNode;
+        private shootNode;
         private initGatConfigAndAllNodes;
-        constructor(_transform: ƒ.Vector3);
+        private getGraphResources;
+        private createNode;
+        private createShootPosNode;
+        moveTurret(xRot: number, yRot: number): void;
+        shoot(lifeTime: number, id: number): void;
+        constructor();
     }
-    interface GatlingTurretConfig {
-        headPosition: ƒ.Vector3;
-        shootNodePosition: ƒ.Vector3;
-        graphID: string;
-        [key: string]: ƒ.Vector3 | string;
-    }
-    let gatlingConfig: GatlingTurretConfig;
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
-    class GatlingTurretBase extends ƒ.Node {
-        private node;
-        private mesh;
-        private material;
-        private getResources;
-        private setComponents;
-        constructor(_transform: ƒ.Vector3);
+    class JSONparser {
+        static toVector3(value: number[]): ƒ.Vector3;
     }
 }
 declare namespace HomeFudge {
@@ -54,10 +60,12 @@ declare namespace HomeFudge {
     }
 }
 declare namespace HomeFudge {
+    let bulletList: Bullet[];
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class Player extends ƒ.Node {
+        update(deltaSeconds: number): void;
         constructor();
     }
 }

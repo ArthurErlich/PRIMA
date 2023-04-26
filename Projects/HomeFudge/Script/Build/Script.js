@@ -1,4 +1,16 @@
 "use strict";
+var HomeFudge;
+(function (HomeFudge) {
+    var ƒ = FudgeCore;
+    class Bullet extends ƒ.Node {
+        constructor(id) {
+            super("Bullet" + id);
+            //register to updater list
+            HomeFudge.bulletList.push(this);
+        }
+    }
+    HomeFudge.Bullet = Bullet;
+})(HomeFudge || (HomeFudge = {}));
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
@@ -39,68 +51,89 @@ var Script;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
-    //TODO:remove class and put it to class GatlingTurret
-    class GatTurretHead extends ƒ.Node {
-        node = null;
-        mesh = null;
-        material = null;
-        //Getting all resource here
-        getResources() {
-            let graphID = HomeFudge.gatlingConfig.graphID; //From gatConfig.json
-            let graph = ƒ.Project.resources[graphID];
-            if (graph == null) {
-                console.warn(graph + " not found with ID: " + graphID);
-            }
-            let nodeName = "GatlingTurretHead";
-            this.node = graph.getChildrenByName(nodeName)[0];
-            if (this.node == null) {
-                console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
-            }
+    class GatlingBullet extends HomeFudge.Bullet {
+        lifeTime;
+        speed;
+        // faction: string;
+        //TODO: implement bullet updating
+        update(deltaSeconds) {
+            // console.warn("Method not implemented.");
+            //TODO:implement bullet lifetime degradation
+            this.lifeTime -= deltaSeconds;
         }
-        //Sets the Mesh- and Material - Component.
-        setComponents() {
-            this.mesh = this.node.getComponent(ƒ.ComponentMesh);
-            this.material = this.node.getComponent(ƒ.ComponentMaterial);
-            //TODO:remove log
-            // console.warn(this.mesh);
-            // console.warn(this.material);
+        alive() {
+            return this.lifeTime >= 0;
         }
-        constructor(_transform) {
-            super("GatTurretHead");
-            this.getResources();
-            this.setComponents();
-            this.addComponent(this.mesh);
-            this.addComponent(this.material);
-            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_transform)));
-            let shootPosNode = new ƒ.Node("ShootSpawnPos");
-            //Grab the Location from Blender\\
-            shootPosNode.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(HomeFudge.gatlingConfig.shootNodePosition))); //From gatConfig.json
-            this.addChild(shootPosNode);
+        toString() {
+            return this.name + "POSITION:";
+        }
+        constructor(lifeTime, id) {
+            super(id.toString());
+            this.lifeTime = lifeTime;
+            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(id / 10, 0, 0))));
         }
     }
-    HomeFudge.GatTurretHead = GatTurretHead;
+    HomeFudge.GatlingBullet = GatlingBullet;
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class GatlingTurret extends ƒ.Node {
+        headNode;
+        baseNode;
+        shootNode;
         async initGatConfigAndAllNodes() {
             let response = await fetch("Configs/gatTurretConfig.json");
-            HomeFudge.gatlingConfig = await response.json();
-            //TODO:remove Debug
-            console.warn(HomeFudge.gatlingConfig);
-            // console.warn(gatlingConfig.graphID);
-            //TODO: put the classes here and make functions out of it. 
-            let base = new HomeFudge.GatlingTurretBase(new ƒ.Vector3(0, 0, 0));
-            let head = new HomeFudge.GatTurretHead(HomeFudge.gatlingConfig.headPosition); //From gatConfig.json
-            //TODO:remove Debug
-            // console.warn(head);
-            base.addChild(head);
-            this.addChild(base);
+            let gatlingConfig = await response.json();
+            let graph = await this.getGraphResources(gatlingConfig.graphID);
+            this.headNode = this.createNode("GatlingTurretHead", HomeFudge.JSONparser.toVector3(gatlingConfig.headPosition), graph);
+            this.baseNode = this.createNode("GatlingTurretBase", HomeFudge.JSONparser.toVector3(gatlingConfig.basePosition), graph);
+            this.shootNode = this.createShootPosNode(HomeFudge.JSONparser.toVector3(gatlingConfig.shootNodePosition));
+            this.headNode.addChild(this.shootNode);
+            this.baseNode.addChild(this.headNode);
+            this.addChild(this.baseNode);
         }
-        constructor(_transform) {
+        async getGraphResources(graphID) {
+            let graph = ƒ.Project.resources[graphID];
+            if (graph == null) {
+                console.warn(graph + " not found with ID: " + graphID);
+            }
+            return graph;
+        }
+        createNode(nodeName, transform, graph) {
+            let node = graph.getChildrenByName(nodeName)[0];
+            if (node == null) {
+                console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
+            }
+            node.addComponent(node.getComponent(ƒ.ComponentMesh));
+            node.addComponent(node.getComponent(ƒ.ComponentMaterial));
+            node.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform)));
+            return node;
+        }
+        createShootPosNode(transform) {
+            let shootPosNode = new ƒ.Node("ShootSpawnPos");
+            shootPosNode.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform))); //From gatConfig.json
+            return shootPosNode;
+        }
+        //Base rotates on the Y-Aches, Positiv number for up
+        //Head rotates on the Z-Aches
+        moveTurret(xRot, yRot) {
+            if (this.baseNode == null || this.headNode == null) {
+                return;
+            }
+            //TODO:Add clamp for Y-Aches
+            this.baseNode.mtxLocal.rotateY(yRot);
+            //TODO:Add clamp for Z-Aches
+            this.headNode.mtxLocal.rotateZ(xRot);
+        }
+        //spawns every n-seconds a bullet
+        shoot(lifeTime, id) {
+            let testBullet = new HomeFudge.GatlingBullet(lifeTime, id);
+            //TODO:remove test parant
+            this.addChild(testBullet);
+        }
+        constructor() {
             super("GatlingTurret");
-            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_transform)));
             this.initGatConfigAndAllNodes();
         }
     }
@@ -108,41 +141,13 @@ var HomeFudge;
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
-    //TODO:remove class and put it to class GatlingTurret
     var ƒ = FudgeCore;
-    class GatlingTurretBase extends ƒ.Node {
-        //Grab the Location from Blender\\
-        node = null;
-        mesh = null;
-        material = null;
-        //Getting all resource here
-        getResources() {
-            let graphID = HomeFudge.gatlingConfig.graphID; //From gatConfig.json
-            let graph = ƒ.Project.resources[graphID];
-            if (graph == null) {
-                console.warn(graph + " not found with ID: " + graphID);
-            }
-            let nodeName = "GatlingTurretBase";
-            this.node = graph.getChildrenByName(nodeName)[0];
-            if (this.node == null) {
-                console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
-            }
-        }
-        //Sets the Mesh- and Material - Component.
-        setComponents() {
-            this.mesh = this.node.getComponent(ƒ.ComponentMesh);
-            this.material = this.node.getComponent(ƒ.ComponentMaterial);
-        }
-        constructor(_transform) {
-            super("GatlingTurretBase");
-            this.getResources();
-            this.setComponents();
-            this.addComponent(this.mesh);
-            this.addComponent(this.material);
-            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_transform)));
+    class JSONparser {
+        static toVector3(value) {
+            return new ƒ.Vector3(value[0], value[1], value[2]);
         }
     }
-    HomeFudge.GatlingTurretBase = GatlingTurretBase;
+    HomeFudge.JSONparser = JSONparser;
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
@@ -165,12 +170,19 @@ var HomeFudge;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
-    ///interface for Blender positions for Gatling\\\
-    //TODO: Make a config class for loading Gatling configs
+    /// ------------T-E-S-T--A-R-E-A------------------\\\
+    let gatTurret = null;
+    //Bullet list, every bullet wil riegister itselfe here for the update Methode.
+    HomeFudge.bulletList = null;
+    /// ------------T-E-S-T--A-R-E-A------------------\\\
     function start(_event) {
         viewport = _event.detail;
         /// ------------T-E-S-T--A-R-E-A------------------\\\
-        let gatTurret = new HomeFudge.GatlingTurret(new ƒ.Vector3(0, 0, 0)); //TODO:Check if mesh is correct
+        gatTurret = new HomeFudge.GatlingTurret(); //TODO:Check if mesh is correct
+        HomeFudge.bulletList = new Array();
+        for (let index = 0; index < 10; index++) {
+            gatTurret.shoot(Math.random() * 5, index);
+        }
         viewport.getBranch().addChild(gatTurret);
         // console.log(" Gatling Turret Node: ");
         // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0]);
@@ -178,11 +190,26 @@ var HomeFudge;
         // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0].getChild(0));
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
-        // ƒ.Loop.start();  // start the game loop to continuously draw the viewport, update the audiosystem and drive the physics i/a
+        //TODO:look at ƒ.LOOP_MODE.TIME_GAME, 30
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30); // start the game loop to continuously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
+        let deltaSeconds = ƒ.Loop.timeFrameGame / 1000;
         /// ------------T-E-S-T--A-R-E-A------------------\\\
+        let rotX = 0;
+        rotX += 1 * deltaSeconds;
+        gatTurret.moveTurret(rotX * 2, rotX * 3);
+        //Updates all bullets
+        for (let index = 0; index < HomeFudge.bulletList.length; index++) {
+            HomeFudge.bulletList[index].update(deltaSeconds);
+            if (!HomeFudge.bulletList[index].alive()) {
+                HomeFudge.bulletList[index] = null;
+            }
+        }
+        HomeFudge.bulletList = HomeFudge.bulletList.filter(elements => {
+            return (elements != null && elements !== undefined);
+        });
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         viewport.draw();
         ƒ.AudioManager.default.update();
@@ -194,6 +221,8 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class Player extends ƒ.Node {
+        update(deltaSeconds) {
+        }
         constructor() {
             super("Player");
         }

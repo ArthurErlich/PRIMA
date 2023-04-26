@@ -2,40 +2,82 @@ namespace HomeFudge {
     import ƒ = FudgeCore;
     export class GatlingTurret extends ƒ.Node {
 
+        private headNode: ƒ.Node
+        private baseNode: ƒ.Node
+        private shootNode: ƒ.Node
+
         private async initGatConfigAndAllNodes(): Promise<void> {
             let response: Response = await fetch("Configs/gatTurretConfig.json");
-            gatlingConfig = await response.json();
+            let gatlingConfig: GatlingTurretConfig = await response.json();
 
-            //TODO:remove Debug
-             console.warn(gatlingConfig);
-            // console.warn(gatlingConfig.graphID);
+            let graph: ƒ.Graph = await this.getGraphResources(gatlingConfig.graphID);
+            this.headNode = this.createNode("GatlingTurretHead", JSONparser.toVector3(gatlingConfig.headPosition), graph);
+            this.baseNode = this.createNode("GatlingTurretBase", JSONparser.toVector3(gatlingConfig.basePosition), graph);
+            this.shootNode = this.createShootPosNode(JSONparser.toVector3(gatlingConfig.shootNodePosition));
 
-            //TODO: put the classes here and make functions out of it. 
-            let base: GatlingTurretBase = new GatlingTurretBase(new ƒ.Vector3(0, 0, 0));
-            let head: GatTurretHead = new GatTurretHead(gatlingConfig.headPosition);//From gatConfig.json
-
-            //TODO:remove Debug
-            // console.warn(head);
-
-            base.addChild(head);
-            this.addChild(base);
+            this.headNode.addChild(this.shootNode);
+            this.baseNode.addChild(this.headNode);
+            this.addChild(this.baseNode);
         }
 
-        constructor(_transform: ƒ.Vector3) {
+        private async getGraphResources(graphID: string): Promise<ƒ.Graph> {
+            let graph: ƒ.Graph = <ƒ.Graph>ƒ.Project.resources[graphID]
+            if (graph == null) {
+                console.warn(graph + " not found with ID: " + graphID);
+            }
+            return graph;
+        }
+        private createNode(nodeName: string, transform: ƒ.Vector3, graph: ƒ.Graph): ƒ.Node {
+            let node = graph.getChildrenByName(nodeName)[0];
+            if (node == null) {
+                console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
+            }
+            node.addComponent(node.getComponent(ƒ.ComponentMesh));
+            node.addComponent(node.getComponent(ƒ.ComponentMaterial));
+            node.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform)));
+            return node;
+        }
+        private createShootPosNode(transform: ƒ.Vector3): ƒ.Node {
+            let shootPosNode: ƒ.Node = new ƒ.Node("ShootSpawnPos");
+            shootPosNode.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform))); //From gatConfig.json
+            return shootPosNode;
+        }
+
+        //Base rotates on the Y-Aches, Positiv number for up
+        //Head rotates on the Z-Aches
+        public moveTurret(xRot: number, yRot: number):void {
+            if(this.baseNode == null||this.headNode == null){
+                return;
+            }
+            //TODO:Add clamp for Y-Aches
+            this.baseNode.mtxLocal.rotateY(yRot);
+
+            //TODO:Add clamp for Z-Aches
+            this.headNode.mtxLocal.rotateZ(xRot);
+        }
+
+        //spawns every n-seconds a bullet
+        public shoot(lifeTime: number, id: number) {
+            let testBullet:GatlingBullet = new GatlingBullet(lifeTime,id);
+            
+            //TODO:remove test parant
+            this.addChild(testBullet);
+        }
+        constructor() {
             super("GatlingTurret");
-            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_transform)));
-            this.initGatConfigAndAllNodes()
+            this.initGatConfigAndAllNodes();
         }
-
     }
-    export interface GatlingTurretConfig {
-        headPosition: ƒ.Vector3;
-        shootNodePosition: ƒ.Vector3;
+    ///interface for Blender positions and configs for GatlingTurret\\\
+    interface GatlingTurretConfig {
+        headPosition: number[];
+        basePosition: number[];
+        shootNodePosition: number[];
+        maxRotSpeed: number;
+        maxPitch: number;
+        minPitch: number;
         graphID: string;
 
-        [key: string]: ƒ.Vector3 | string;
+        [key: string]: number[] | number | string;
     }
-    export let gatlingConfig: GatlingTurretConfig;
-
-
 }
