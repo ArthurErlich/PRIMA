@@ -39,7 +39,7 @@ if (collision) {
 
 In this example, `Collision.detectCollision` takes two `CollisionBox` components and returns a `Collision` object if a collision is detected. You can then use the `Collision` object to get more information about the collision, such as the direction of the collision and the point of contact.
 
-# Can I get a bounding box of a mehs inside a node?
+# Can I get a bounding box of a mesh inside a node?
 
 Yes, you can get the bounding box of a mesh inside a node in Fudge.
 
