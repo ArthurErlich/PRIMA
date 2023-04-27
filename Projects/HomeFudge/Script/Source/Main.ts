@@ -10,6 +10,10 @@ namespace HomeFudge {
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   let gatTurret: GatlingTurret = null;
 
+  ///camera setup for worldsize of 25km\\\
+  //TODO:create camera Class
+  let camera: ƒ.ComponentCamera;
+
   //Bullet list, every bullet wil riegister itselfe here for the update Methode.
   export let bulletList: Bullet[] = null;
 
@@ -23,6 +27,14 @@ namespace HomeFudge {
     gatTurret = new GatlingTurret();//TODO:Check if mesh is correct
     bulletList = new Array();
     viewport.getBranch().addChild(gatTurret);
+
+    //TODO move camera to its own class
+    camera = viewport.camera;
+    console.warn(camera.getNear(), camera.getFar());
+    camera.projectCentral(camera.getAspect(), camera.getFieldOfView(), ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+
+
+    //TODO:remove unused log!
     // console.log(" Gatling Turret Node: ");
     // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0]);
     // console.log(" First child of Gatling Turret: ");
@@ -40,13 +52,13 @@ namespace HomeFudge {
   function update(_event: Event): void {
     // ƒ.Physics.simulate();  // if physics is included and used
     let deltaSeconds: number = ƒ.Loop.timeFrameGame / 1000;
-  
+
 
 
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     //TODO: fix "time frameGame is not a valid option for time based shooting"...
-    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])&& (ƒ.Loop.timeFrameGame % 0.5) == 0){
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]) && (ƒ.Loop.timeFrameGame % 0.5) == 0) {
       gatTurret.shoot(viewport.getBranch());
     }
 
@@ -68,7 +80,7 @@ namespace HomeFudge {
     bulletList = bulletList.filter(elements => {
       return (elements != null && elements !== undefined);
     });
-  
+
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
