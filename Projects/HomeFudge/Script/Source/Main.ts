@@ -2,14 +2,16 @@ namespace HomeFudge {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Main Program Template running!");
 
-  //TODO:remove temporary exprotetd Viewport
-  export let viewport: ƒ.Viewport;
+
+  let viewport: ƒ.Viewport;
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   let gatTurret: GatlingTurret = null;
+  export let worldNode: ƒ.Node = null;
 
+  //Bullet list, every bullet wil register itself here for the update Method.
   ///camera setup for worldsize of 25km\\\
   //TODO:create camera Class
   let camera: ƒ.ComponentCamera;
@@ -22,9 +24,10 @@ namespace HomeFudge {
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
+    worldNode = viewport.getBranch();
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    gatTurret = new GatlingTurret();//TODO:Check if mesh is correct
+    gatTurret = new GatlingTurret();
     bulletList = new Array();
     viewport.getBranch().addChild(gatTurret);
 
@@ -45,7 +48,6 @@ namespace HomeFudge {
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-    //TODO:look at ƒ.LOOP_MODE.TIME_GAME, 30
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30);  // start the game loop to continuously draw the viewport, update the audiosystem and drive the physics i/a
   }
 
@@ -53,35 +55,20 @@ namespace HomeFudge {
     // ƒ.Physics.simulate();  // if physics is included and used
     let deltaSeconds: number = ƒ.Loop.timeFrameGame / 1000;
 
-
-
-
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    //TODO: fix "time frameGame is not a valid option for time based shooting"...
-    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]) && (ƒ.Loop.timeFrameGame % 0.5) == 0) {
-      gatTurret.shoot(viewport.getBranch());
+    gatTurret.update(deltaSeconds);
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
+      //TODO: Logic needs to be moved to GatTurret
+      gatTurret.shoot();
+      
     }
+    if (ƒ.Loop.fpsGameAverage <= 20) {
+      console.warn("Active bullets in scene: " + bulletList.length);
+      console.warn(ƒ.Loop.fpsGameAverage);
+    }else{
+      updateBulletList(deltaSeconds);
 
-
-    let rotX = 0;
-    rotX += 1 * deltaSeconds;
-    gatTurret.moveTurret(rotX * 2, rotX * 3)
-
-    //Updates all bullets
-    //TODO: make a function or method out of that and update it
-    for (let index: number = 0; index < bulletList.length; index++) {
-      bulletList[index].update(deltaSeconds);
-      if (!bulletList[index].alive()) {
-        bulletList[index].kill();
-        bulletList[index] = null;
-      }
     }
-    //removes bullet from the update array
-    bulletList = bulletList.filter(elements => {
-      return (elements != null && elements !== undefined);
-    });
-
-
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     viewport.draw();
@@ -91,5 +78,30 @@ namespace HomeFudge {
   /// ------------T-E-S-T--A-R-E-A------------------\\\
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
+
+  //Updates all bullets
+  //TODO:put alive check inside bullet update function
+  /**
+   * This function updates a list of bullets by calling their update method and removing any bullets
+   * that are no longer alive.
+   * 
+   * @param deltaSeconds The time elapsed since the last update of the bullet list, measured in
+   * seconds. This parameter is used to update the position and state of each bullet in the list.
+   */
+  function updateBulletList(deltaSeconds: number) {
+    for (let index: number = 0; index < bulletList.length; index++) {
+      bulletList[index].update(deltaSeconds);
+      if (!bulletList[index].alive()) {
+        bulletList[index].destroyNode();
+        bulletList[index] = null;
+      }
+    }
+    //removes bullet from the update array
+    bulletList = bulletList.filter(elements => {
+      return (elements != null && elements !== undefined);
+    });
+    viewport.draw();
+    ƒ.AudioManager.default.update();
+  }
 
 }

@@ -3,6 +3,9 @@
     "maxRotSpeed": null,
     "maxPitch" : 90,
     "minPitch" : 7.85, 
+    "roundsPerSeconds": 0.2,
+    "reloadTime": 3,
+    "magazineCapacity": 30,
     "headPosition": [
         -0.007236,
         1.5738,
