@@ -1,9 +1,10 @@
 namespace McFudge {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Main McFudge running!");
-
   let viewport: ƒ.Viewport;
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
+
+
 
   /// Graphs and Nodes \\\
   let minecraftGraph: ƒ.Graph = null;
@@ -23,22 +24,30 @@ namespace McFudge {
     //-----------------------T-E-S-T---A-R-E-A-----------------------\\
     //-----------------------------------------------------------------\\
 
+    //@ts-ignore
+    viewport.canvas.addEventListener("mouseup", pick);
+    //@ts-ignore
+    viewport.getBranch().addEventListener("mouseup", <ƒ.EventListenerUnified>hit);
+
+
     ///init Graphs
     minecraftGraph = viewport.getBranch() as ƒ.Graph;
     worldNode = minecraftGraph.getChildrenByName("World")[0];
 
     ///init world creation GraphInstance
-    let worldSize:number=0;
+    let worldSize: number = 1;
     initWorldCreation(worldSize); // my computer can manage 8*8*8 cubes
 
-    console.warn(worldSize*worldSize*worldSize+" Cubes are generated");
+    console.warn(worldSize * worldSize * worldSize + " Cubes are generated");
 
     // creating a block instance
     let instance: Block = new Block();
     viewport.getBranch().addChild(instance);
     console.log(instance);
     // end crating a block instance
-    
+
+
+
 
     //------------------------T-E-S-T---A-R-E-A----------------------\\
     //-----------------------------------------------------------------\\
@@ -50,8 +59,8 @@ namespace McFudge {
 
   function update(_event: Event): void {
     // ƒ.Physics.simulate();  // if physics is included and used
-    viewport.draw();
-    ƒ.AudioManager.default.update();
+    // viewport.draw();
+    // ƒ.AudioManager.default.update();
   }
 
   async function initWorldCreation(size: number): Promise<void> {
@@ -64,21 +73,33 @@ namespace McFudge {
     }
 
 
-    let cubeMargin:number=  1.01;
-    let cubeIndex:number = 0;
-    let cubeList:ƒ.Node[] = new Array(size * size * size);
+    let cubeMargin: number = 1.01;
+    let cubeIndex: number = 0;
+    let cubeList: ƒ.Node[] = new Array(size * size * size);
 
     for (let x: number = 0; x < size; x++) {
       for (let z: number = 0; z < size; z++) {
         worldHightShift = Math.round((Math.random()) - 2);
         for (let y: number = 0; y < size; y++) {
-          cubeList[cubeIndex] = crateCube(cubeIndex, new ƒ.Vector3(x * cubeMargin, (-y + worldHightShift)* cubeMargin, -z * cubeMargin));
+          cubeList[cubeIndex] = crateCube(cubeIndex, new ƒ.Vector3(x * cubeMargin, (-y + worldHightShift) * cubeMargin, -z * cubeMargin));
           cubeIndex++;
         }
       }
     }
     addCubesToWorld(cubeList);
   }
+
+  function pick(_event: Event): void {
+    viewport.draw;
+    viewport.dispatchEvent(_event);
+  }
+  function hit(event: Event): void {
+    let node: ƒ.Node = (event.target as ƒ.Node);
+    let cmpPick: ƒ.ComponentPick = node.getComponent(ƒ.ComponentPick);
+    console.warn(cmpPick);
+
+  }
+
   function crateCube(index: number, position: ƒ.Vector3): ƒ.Node {
     let cubeTransform: ƒ.Node = new ƒ.Node("INDEX: " + index + " cube");
     cubeTransform.addComponent(new ƒ.ComponentTransform());
@@ -93,6 +114,6 @@ namespace McFudge {
       cubeTransform[index].addChild(testCubeInstances[index]); //TODO: find out how to get the instance of the testCubeInstance. And not the object itself /\/\/DIRTY FIX: crating an array with the instances of the cube
       worldNode.addChild(cubeTransform[index]);
     }
-
   }
+
 }

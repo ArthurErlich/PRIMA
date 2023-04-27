@@ -71,11 +71,15 @@ var McFudge;
         viewport = _event.detail;
         //-----------------------T-E-S-T---A-R-E-A-----------------------\\
         //-----------------------------------------------------------------\\
+        //@ts-ignore
+        viewport.canvas.addEventListener("mouseup", pick);
+        //@ts-ignore
+        viewport.getBranch().addEventListener("mouseup", hit);
         ///init Graphs
         minecraftGraph = viewport.getBranch();
         worldNode = minecraftGraph.getChildrenByName("World")[0];
         ///init world creation GraphInstance
-        let worldSize = 0;
+        let worldSize = 1;
         initWorldCreation(worldSize); // my computer can manage 8*8*8 cubes
         console.warn(worldSize * worldSize * worldSize + " Cubes are generated");
         // creating a block instance
@@ -90,8 +94,8 @@ var McFudge;
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
-        viewport.draw();
-        ƒ.AudioManager.default.update();
+        // viewport.draw();
+        // ƒ.AudioManager.default.update();
     }
     async function initWorldCreation(size) {
         testCubeGraph = ƒ.Project.resources["Graph|2023-04-20T13:20:33.233Z|09344"];
@@ -113,6 +117,15 @@ var McFudge;
             }
         }
         addCubesToWorld(cubeList);
+    }
+    function pick(_event) {
+        viewport.draw;
+        viewport.dispatchEvent(_event);
+    }
+    function hit(event) {
+        let node = event.target;
+        let cmpPick = node.getComponent(ƒ.ComponentPick);
+        console.warn(cmpPick);
     }
     function crateCube(index, position) {
         let cubeTransform = new ƒ.Node("INDEX: " + index + " cube");
