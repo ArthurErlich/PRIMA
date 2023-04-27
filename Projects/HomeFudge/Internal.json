@@ -13,6 +13,38 @@
       }
     }
   },
+  "MeshObj|2023-04-27T09:49:37.194Z|95685": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-04-27T09:49:37.194Z|95685",
+      "name": "Mesh\\TestSkySphere\\SkySphere.obj",
+      "type": "MeshObj",
+      "url": "Mesh\\TestSkySphere\\SkySphere.obj"
+    }
+  },
+  "Material|2023-04-27T09:50:25.186Z|15747": {
+    "ƒ.Material": {
+      "name": "Mat_SkySphere",
+      "idResource": "Material|2023-04-27T09:50:25.186Z|15747",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-04-27T09:49:41.672Z|34876"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-04-27T09:49:41.672Z|34876": {
+    "ƒ.TextureImage": {
+      "url": "Mesh\\TestSkySphere\\SkySphereTexture.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-04-27T09:49:41.672Z|34876",
+        "name": "Text_SkySpeher",
+        "mipmap": "CRISP"
+      }
+    }
+  },
   "Graph|2023-04-21T17:05:28.109Z|61452": {
     "ƒ.Graph": {
       "name": "Game",
@@ -47,7 +79,7 @@
             "children": [
               {
                 "ƒ.Node": {
-                  "name": "Sun",
+                  "name": "Ambient",
                   "active": true,
                   "components": {
                     "ComponentLight": [
@@ -74,6 +106,48 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "SkySphere",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2023-04-27T09:49:37.194Z|95685",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": true,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-04-27T09:50:25.186Z|15747"
+                  }
+                }
+              ]
+            },
+            "children": []
           }
         }
       ],
@@ -102,6 +176,38 @@
       "name": "Mesh\\TestGatTurret\\Head\\Base\\HomeFudge_Base.obj",
       "type": "MeshObj",
       "url": "Mesh\\TestGatTurret\\Head\\Base\\HomeFudge_Base.obj"
+    }
+  },
+  "MeshObj|2023-04-26T14:25:28.306Z|19816": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-04-26T14:25:28.306Z|19816",
+      "name": "Mesh_TempBullet",
+      "type": "MeshObj",
+      "url": "Mesh\\TestGatTurret\\Bullet\\HomeFuge_GatlingBullet.obj"
+    }
+  },
+  "Material|2023-04-26T14:44:25.193Z|05381": {
+    "ƒ.Material": {
+      "name": "Mat_LitGatlingBullet",
+      "idResource": "Material|2023-04-26T14:44:25.193Z|05381",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-04-26T14:26:14.544Z|39959"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-04-26T14:26:14.544Z|39959": {
+    "ƒ.TextureImage": {
+      "url": "Mesh\\TestGatTurret\\Bullet\\GatBulletTexture.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-04-26T14:26:14.544Z|39959",
+        "name": "Text_GatlingBullet",
+        "mipmap": "CRISP"
+      }
     }
   },
   "Graph|2023-04-25T14:30:46.195Z|98798": {
@@ -239,38 +345,6 @@
       ],
       "idResource": "Graph|2023-04-25T14:30:46.195Z|98798",
       "type": "Graph"
-    }
-  },
-  "MeshObj|2023-04-26T14:25:28.306Z|19816": {
-    "ƒ.MeshObj": {
-      "idResource": "MeshObj|2023-04-26T14:25:28.306Z|19816",
-      "name": "Mesh_TempBullet",
-      "type": "MeshObj",
-      "url": "Mesh\\TestGatTurret\\Bullet\\HomeFuge_GatlingBullet.obj"
-    }
-  },
-  "TextureImage|2023-04-26T14:26:14.544Z|39959": {
-    "ƒ.TextureImage": {
-      "url": "Mesh\\TestGatTurret\\Bullet\\GatBulletTexture.png",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2023-04-26T14:26:14.544Z|39959",
-        "name": "Text_GatlingBullet",
-        "mipmap": "CRISP"
-      }
-    }
-  },
-  "Material|2023-04-26T14:44:25.193Z|05381": {
-    "ƒ.Material": {
-      "name": "Mat_LitGatlingBullet",
-      "idResource": "Material|2023-04-26T14:44:25.193Z|05381",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-04-26T14:26:14.544Z|39959"
-        }
-      }
     }
   }
 }

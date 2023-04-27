@@ -12,6 +12,11 @@ namespace HomeFudge {
   export let worldNode: ƒ.Node = null;
 
   //Bullet list, every bullet wil register itself here for the update Method.
+  ///camera setup for worldsize of 25km\\\
+  //TODO:create camera Class
+  let camera: ƒ.ComponentCamera;
+
+  //Bullet list, every bullet wil riegister itselfe here for the update Methode.
   export let bulletList: Bullet[] = null;
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
@@ -25,6 +30,14 @@ namespace HomeFudge {
     gatTurret = new GatlingTurret();
     bulletList = new Array();
     viewport.getBranch().addChild(gatTurret);
+
+    //TODO move camera to its own class
+    camera = viewport.camera;
+    console.warn(camera.getNear(), camera.getFar());
+    camera.projectCentral(camera.getAspect(), camera.getFieldOfView(), ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+
+
+    //TODO:remove unused log!
     // console.log(" Gatling Turret Node: ");
     // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0]);
     // console.log(" First child of Gatling Turret: ");
@@ -42,7 +55,6 @@ namespace HomeFudge {
     // ƒ.Physics.simulate();  // if physics is included and used
     let deltaSeconds: number = ƒ.Loop.timeFrameGame / 1000;
 
-
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     gatTurret.update(deltaSeconds);
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
@@ -55,11 +67,8 @@ namespace HomeFudge {
       console.warn(ƒ.Loop.fpsGameAverage);
     }else{
       updateBulletList(deltaSeconds);
+
     }
-
-
-
-
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     viewport.draw();
@@ -91,6 +100,8 @@ namespace HomeFudge {
     bulletList = bulletList.filter(elements => {
       return (elements != null && elements !== undefined);
     });
+    viewport.draw();
+    ƒ.AudioManager.default.update();
   }
 
 }

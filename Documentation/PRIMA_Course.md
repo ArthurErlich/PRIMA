@@ -1,8 +1,6 @@
-# Fudge Basics
+# ahFudge Basics
 
 ## Coordinates in Fudge
-
-20.03.23
 
 ### Point 2
 
@@ -434,7 +432,69 @@ namespace McFudge{
 ```
 
 dont forget to add the cube into tha viewport graph!
+
 ```typescript
     let instance: Block = new Block();
     viewport.getBranch().addChild(instance);
 ```
+
+# Picker MC like Building and destryoing
+
+What do we need?
+
+* Blocks
+* clickEvent from the Mouse
+* A ray from the camera to the courser
+
+  * what is a ray?
+    * Position Vector + Direction Vector
+* The ray may have a lenght. (To stop calculation after some distance)
+
+  * they are some ways to do the ray
+  * simple aproxomation of the cube with a Sphere
+    * if the ray passes the inside the sphere (r of the sphere) 'Bounding sphere'<- Every node hase one!
+      ![RADIUS PICKING](assets/20230427_142007_image.png)RADIUS PICKING
+    * The Pryamide has a Phisics picker
+  * So there a three picking algorthms in fudge
+    1. Radius
+    2. Phisics
+    3. Camera (uses shader)
+* when you use shader pickeing Fudge will create a picture .... ??? it need a picking frame and it is super accurate.
+
+Sample code for picking with the event system inside the DOOM by bubbling the picking:****
+
+```typescript
+function pick(_event: Event): void {
+    viewport.draw;
+    viewport.dispatchEvent(_event);
+  }
+  function hit(event: Event): void {
+    let node: ƒ.Node = (event.target as ƒ.Node);
+    let cmpPick: ƒ.ComponentPick = node.getComponent(ƒ.ComponentPick);
+    console.warn(cmpPick);
+
+  }
+```
+
+pleas note that you needt to add a 'new ƒ.ComponentPick()' and the pick system!
+
+```typescript
+let cmpPick:ƒ.ComponentPick = new ƒ.ComponentPick();
+cmpPick.pick = ƒ.PICK.RADIUS;
+
+this.addComponent(cmpPick);
+```
+
+##### Picking with the picker instand of the pickComponent
+
+* Uing the ray:
+  [Picker | Fudge Core (jirkadelloro.github.io)](https://jirkadelloro.github.io/FUDGE/Documentation/Reference/Core/classes/FudgeCore.Picker.html)
+  [Ray | Fudge Core (jirkadelloro.github.io)](https://jirkadelloro.github.io/FUDGE/Documentation/Reference/Core/classes/FudgeCore.Ray.html)
+
+example of checking it wiht a ray:
+
+```typescript
+
+```
+
+
