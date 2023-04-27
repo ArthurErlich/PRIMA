@@ -182,6 +182,9 @@ var HomeFudge;
     document.addEventListener("interactiveViewportStarted", start);
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     let gatTurret = null;
+    ///camera setup for worldsize of 25km\\\
+    //TODO:create camera Class
+    let camera;
     //Bullet list, every bullet wil riegister itselfe here for the update Methode.
     HomeFudge.bulletList = null;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
@@ -191,6 +194,11 @@ var HomeFudge;
         gatTurret = new HomeFudge.GatlingTurret(); //TODO:Check if mesh is correct
         HomeFudge.bulletList = new Array();
         HomeFudge.viewport.getBranch().addChild(gatTurret);
+        //TODO move camera to its own class
+        camera = HomeFudge.viewport.camera;
+        console.warn(camera.getNear(), camera.getFar());
+        camera.projectCentral(camera.getAspect(), camera.getFieldOfView(), ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+        //TODO:remove unused log!
         // console.log(" Gatling Turret Node: ");
         // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0]);
         // console.log(" First child of Gatling Turret: ");
