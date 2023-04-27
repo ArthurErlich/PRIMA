@@ -9,6 +9,10 @@ namespace HomeFudge {
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   let gatTurret: GatlingTurret = null;
+  
+  ///camera setup for worldsize of 25km\\\
+  //TODO:create camera Class
+  let camera: ƒ.ComponentCamera;
 
   //Bullet list, every bullet wil riegister itselfe here for the update Methode.
   export let bulletList: Bullet[] = null;
@@ -23,6 +27,12 @@ namespace HomeFudge {
     gatTurret = new GatlingTurret();//TODO:Check if mesh is correct
     bulletList = new Array();
     viewport.getBranch().addChild(gatTurret);
+
+    //TODO move camera to its own class
+    camera = viewport.camera;
+    camera.setClipping
+
+    //TODO:remove unused log!
     // console.log(" Gatling Turret Node: ");
     // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0]);
     // console.log(" First child of Gatling Turret: ");
