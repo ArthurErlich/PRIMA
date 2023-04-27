@@ -83,7 +83,7 @@ var Script;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
-    //TODO:create a logic for Hit detection.
+    //TODO:create a logic for Hit detection. Using a physics engine of Fudge
     class GatlingBullet extends HomeFudge.Bullet {
         maxLifeTime = null;
         maxSpeed = null;
@@ -150,13 +150,25 @@ var HomeFudge;
         headNode = null;
         baseNode = null;
         shootNode = null;
-        async initGatConfigAndAllNodes() {
+        roundsPerSecond = null;
+        reloadsEverySecond = null;
+        roundsTimer = 0;
+        reloadTimer = 0;
+        magazineCapacity = null;
+        magazineRounds = null;
+        static gatlingConfig = null;
+        async initConfigAndAllNodes() {
             let response = await fetch("Configs/gatTurretConfig.json");
             let gatlingConfig = await response.json();
+            GatlingTurret.gatlingConfig = gatlingConfig;
             let graph = await this.getGraphResources(gatlingConfig.graphID);
             this.headNode = this.createNode("GatlingTurretHead", HomeFudge.JSONparser.toVector3(gatlingConfig.headPosition), graph);
             this.baseNode = this.createNode("GatlingTurretBase", HomeFudge.JSONparser.toVector3(gatlingConfig.basePosition), graph);
             this.shootNode = this.createShootPosNode(HomeFudge.JSONparser.toVector3(gatlingConfig.shootNodePosition));
+            this.roundsPerSecond = GatlingTurret.gatlingConfig.roundsPerSeconds;
+            this.reloadsEverySecond = GatlingTurret.gatlingConfig.reloadTime;
+            this.magazineCapacity = GatlingTurret.gatlingConfig.magazineCapacity;
+            this.magazineRounds = this.magazineCapacity;
             this.headNode.addChild(this.shootNode);
             this.baseNode.addChild(this.headNode);
             this.addChild(this.baseNode);
@@ -183,8 +195,26 @@ var HomeFudge;
             shootPosNode.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform))); //From gatConfig.json
             return shootPosNode;
         }
+        /**
+         *
+         * @param deltaSeconds
+         * Dont forget to call this function in the UpdateMethode!!!
+         */
+        update(deltaSeconds) {
+            if (this.roundsPerSecond == null || this.reloadsEverySecond == null || this.magazineCapacity == 0) {
+                return;
+            }
+            if (this.roundsTimer <= this.roundsPerSecond) {
+                this.roundsTimer += deltaSeconds;
+            }
+            //TODO: think about a reload function
+            if (this.reloadTimer <= this.reloadsEverySecond) {
+                this.reloadTimer += deltaSeconds;
+            }
+        }
         //Base rotates on the Y-Aches, Positive number for up
         //Head rotates on the Z-Aches
+        //TODO:create a moveToFunction which is public
         moveTurret(xRot, yRot) {
             if (this.baseNode == null || this.headNode == null) {
                 return;
@@ -195,13 +225,15 @@ var HomeFudge;
             this.headNode.mtxLocal.rotateZ(xRot);
         }
         //spawns every n-seconds a bullet
-        shoot(worldNode) {
-            //TODO:move "shootRPM" and "shootReloadTime" to GatlingTurret Class
-            worldNode.addChild(new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone));
+        shoot() {
+            if (this.roundsTimer >= this.roundsPerSecond) {
+                HomeFudge.worldNode.addChild(new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone));
+                this.roundsTimer = 0;
+            }
         }
         constructor() {
             super("GatlingTurret");
-            this.initGatConfigAndAllNodes();
+            this.initConfigAndAllNodes();
         }
     }
     HomeFudge.GatlingTurret = GatlingTurret;
@@ -256,7 +288,6 @@ var HomeFudge;
     document.addEventListener("interactiveViewportStarted", start);
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     let gatTurret = null;
-    let shootTime = 0;
     HomeFudge.worldNode = null;
     //Bullet list, every bullet wil register itself here for the update Method.
     HomeFudge.bulletList = null;
@@ -265,7 +296,7 @@ var HomeFudge;
         viewport = _event.detail;
         HomeFudge.worldNode = viewport.getBranch();
         /// ------------T-E-S-T--A-R-E-A------------------\\\
-        gatTurret = new HomeFudge.GatlingTurret(); //TODO:Check if mesh is correct
+        gatTurret = new HomeFudge.GatlingTurret();
         HomeFudge.bulletList = new Array();
         viewport.getBranch().addChild(gatTurret);
         // console.log(" Gatling Turret Node: ");
@@ -274,28 +305,40 @@ var HomeFudge;
         // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0].getChild(0));
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
-        //TODO:look at ƒ.LOOP_MODE.TIME_GAME, 30
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30); // start the game loop to continuously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
         let deltaSeconds = ƒ.Loop.timeFrameGame / 1000;
         /// ------------T-E-S-T--A-R-E-A------------------\\\
-        //TODO: fix "time frameGame is not a valid option for time based shooting"...
-        shootTime += deltaSeconds;
+        gatTurret.update(deltaSeconds);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
             //TODO: Logic needs to be moved to GatTurret
-            if (shootTime >= 0.2) {
-                gatTurret.shoot(viewport.getBranch());
-                shootTime = 0;
-            }
+            gatTurret.shoot();
         }
-        let rotX = 0;
-        rotX += 1 * deltaSeconds;
-        gatTurret.moveTurret(rotX * 2, rotX * 3);
-        //Updates all bullets
-        //TODO: make a function or method out of that and update it
-        //TODO:put alive check inside bullet update function
+        if (ƒ.Loop.fpsGameAverage <= 20) {
+            console.warn("Active bullets in scene: " + HomeFudge.bulletList.length);
+            console.warn(ƒ.Loop.fpsGameAverage);
+        }
+        else {
+            updateBulletList(deltaSeconds);
+        }
+        /// ------------T-E-S-T--A-R-E-A------------------\\\
+        viewport.draw();
+        ƒ.AudioManager.default.update();
+    }
+    /// ------------T-E-S-T--A-R-E-A------------------\\\
+    /// ------------T-E-S-T--A-R-E-A------------------\\\
+    //Updates all bullets
+    //TODO:put alive check inside bullet update function
+    /**
+     * This function updates a list of bullets by calling their update method and removing any bullets
+     * that are no longer alive.
+     *
+     * @param deltaSeconds The time elapsed since the last update of the bullet list, measured in
+     * seconds. This parameter is used to update the position and state of each bullet in the list.
+     */
+    function updateBulletList(deltaSeconds) {
         for (let index = 0; index < HomeFudge.bulletList.length; index++) {
             HomeFudge.bulletList[index].update(deltaSeconds);
             if (!HomeFudge.bulletList[index].alive()) {
@@ -307,16 +350,7 @@ var HomeFudge;
         HomeFudge.bulletList = HomeFudge.bulletList.filter(elements => {
             return (elements != null && elements !== undefined);
         });
-        if (ƒ.Loop.fpsGameAverage <= 20) {
-            console.warn("Active bullets in scene: " + HomeFudge.bulletList.length);
-            console.warn(ƒ.Loop.fpsGameAverage);
-        }
-        /// ------------T-E-S-T--A-R-E-A------------------\\\
-        viewport.draw();
-        ƒ.AudioManager.default.update();
     }
-    /// ------------T-E-S-T--A-R-E-A------------------\\\
-    /// ------------T-E-S-T--A-R-E-A------------------\\\
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
