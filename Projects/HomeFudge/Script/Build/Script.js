@@ -2,8 +2,16 @@
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
+    /* This is a TypeScript class definition for an abstract class called `Bullet` that extends the
+    `ƒ.Node` class. The `export` keyword makes the class available for use in other modules. */
     class Bullet extends ƒ.Node {
-        //TODO:create static reference to the Component, Mesh and Material
+        /**
+         * This function retrieves a graph resource from a project in TypeScript.
+         *
+         * @param graphID A string representing the ID of the graph resource that needs to be
+         * retrieved.
+         * @return a Promise that resolves to a ƒ.Graph object.
+         */
         static async getGraphResources(graphID) {
             let graph = ƒ.Project.resources[graphID];
             if (graph == null) {
@@ -11,6 +19,15 @@ var HomeFudge;
             }
             return graph;
         }
+        /**
+         * This function retrieves a specific node from a graph and returns it as a promise.
+         *
+         * @param nodeName A string representing the name of the node that is being searched for in the
+         * graph.
+         * @param graph A ƒ.Graph object, which is a container for nodes and their connections in a
+         * scene or game world.
+         * @return a Promise that resolves to a ƒ.Node object.
+         */
         static async getComponentNode(nodeName, graph) {
             let node = graph.getChildrenByName(nodeName)[0];
             if (node == null) {
@@ -66,6 +83,7 @@ var Script;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
+    //TODO:create a logic for Hit detection.
     class GatlingBullet extends HomeFudge.Bullet {
         maxLifeTime = null;
         maxSpeed = null;
@@ -75,15 +93,13 @@ var HomeFudge;
         static mesh = null;
         static material = null;
         static bulletConfig = null;
+        //TODO: try faction out.
         // faction: string="FACTION.A";
-        //TODO: implement bullet updating
         update(deltaSeconds) {
-            //gose out of the update loop as long the date is received into the config variable
+            //goes out of the update loop as long the date is received into the config variable
             if (this.maxLifeTime == null || this.maxSpeed == null) {
                 return;
             }
-            // console.warn("Method not implemented.");
-            //TODO:implement bullet lifetime degradation and speed from Interface
             this.maxLifeTime -= deltaSeconds;
             this.mtxLocal.translateX(this.maxSpeed * deltaSeconds);
         }
@@ -121,7 +137,6 @@ var HomeFudge;
         }
         constructor(spawnTransform) {
             super("Gatling");
-            //TODO: load components from graph and not crate them on the fly.
             this.addComponent(new ƒ.ComponentTransform(spawnTransform));
             this.initBulletConfig();
         }
@@ -181,7 +196,7 @@ var HomeFudge;
         }
         //spawns every n-seconds a bullet
         shoot(worldNode) {
-            //TODO:find a way to create bullet and remove it after hit/lifetime loss.
+            //TODO:move "shootRPM" and "shootReloadTime" to GatlingTurret Class
             worldNode.addChild(new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone));
         }
         constructor() {
@@ -191,10 +206,27 @@ var HomeFudge;
     }
     HomeFudge.GatlingTurret = GatlingTurret;
 })(HomeFudge || (HomeFudge = {}));
+/* This code defines a namespace called `HomeFudge` and exports a class called `JSONparser` with a
+static method `toVector3`. The method takes an array of numbers and returns a new instance of the
+`ƒ.Vector3` class from the `FudgeCore` library, using the values from the array as its x, y, and z
+components. */
 var HomeFudge;
+/* This code defines a namespace called `HomeFudge` and exports a class called `JSONparser` with a
+static method `toVector3`. The method takes an array of numbers and returns a new instance of the
+`ƒ.Vector3` class from the `FudgeCore` library, using the values from the array as its x, y, and z
+components. */
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class JSONparser {
+        /**
+         * This function takes an array of three numbers and returns a new Vector3 object with those
+         * values.
+         *
+         * @param value An array of three numbers representing the x, y, and z components of a vector.
+         * @return A new instance of the ƒ.Vector3 class with the x, y, and z values set to the values
+         * in the input array.
+         * @author Arthur Erlich <arthur.erlich@hs-furtwangen.de>
+         */
         static toVector3(value) {
             return new ƒ.Vector3(value[0], value[1], value[2]);
         }
@@ -290,6 +322,7 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class Player extends ƒ.Node {
+        //TODO:Crate the player ship
         update(deltaSeconds) {
         }
         constructor() {

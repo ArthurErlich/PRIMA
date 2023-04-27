@@ -1,5 +1,6 @@
 namespace HomeFudge {
     import ƒ = FudgeCore;
+    //TODO:create a logic for Hit detection.
     export class GatlingBullet extends Bullet {
         maxLifeTime: number = null;
         maxSpeed: number = null;
@@ -11,16 +12,14 @@ namespace HomeFudge {
         static material: ƒ.Material = null;
         static bulletConfig: BulletConfig = null;
 
+        //TODO: try faction out.
         // faction: string="FACTION.A";
 
-        //TODO: implement bullet updating
         public update(deltaSeconds: number): void {
-            //gose out of the update loop as long the date is received into the config variable
+            //goes out of the update loop as long the date is received into the config variable
             if(this.maxLifeTime == null || this.maxSpeed == null){
                 return
             }
-            // console.warn("Method not implemented.");
-            //TODO:implement bullet lifetime degradation and speed from Interface
             this.maxLifeTime -= deltaSeconds;
             this.mtxLocal.translateX(this.maxSpeed *deltaSeconds);
         }
@@ -62,13 +61,10 @@ namespace HomeFudge {
         }
         constructor(spawnTransform:ƒ.Matrix4x4) {
             super("Gatling");
-            //TODO: load components from graph and not crate them on the fly.
             this.addComponent(new ƒ.ComponentTransform(spawnTransform));
             this.initBulletConfig();
         }
     }
-    //TODO:find a better way for interfaces. Maybe just once in a interface class?
-    //TODO:create GatlingBulletConfig
     interface BulletConfig {
         graphID: string;
         maxLifeTime: number;

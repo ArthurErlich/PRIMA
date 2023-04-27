@@ -5,7 +5,7 @@ namespace HomeFudge {
         private headNode: ƒ.Node = null;
         private baseNode: ƒ.Node= null;
         private shootNode: ƒ.Node= null;
-
+        
         private async initGatConfigAndAllNodes(): Promise<void> {
             let response: Response = await fetch("Configs/gatTurretConfig.json");
             let gatlingConfig: GatlingTurretConfig = await response.json();
@@ -58,9 +58,8 @@ namespace HomeFudge {
 
         //spawns every n-seconds a bullet
         public shoot(worldNode:ƒ.Node) {
-            //TODO:find a way to create bullet and remove it after hit/lifetime loss.
+            //TODO:move "shootRPM" and "shootReloadTime" to GatlingTurret Class
             worldNode.addChild(new GatlingBullet(this.shootNode.mtxWorld.clone));
-
         }
         constructor() {
             super("GatlingTurret");
