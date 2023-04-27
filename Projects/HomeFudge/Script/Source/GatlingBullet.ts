@@ -1,47 +1,79 @@
 namespace HomeFudge {
     import ƒ = FudgeCore;
     export class GatlingBullet extends Bullet {
-        lifeTime: number;
-        maxSpeed: number;
-        graph:ƒ.Graph;
-        worldNode:ƒ.Node;
-        // faction: string;
+        maxLifeTime: number = null;
+        maxSpeed: number = null;
+        spreadRadius: number = null;
+
+        static graph:ƒ.Graph = null;
+        static worldNode:ƒ.Node = null;
+        static mesh: ƒ.Mesh = null;
+        static material: ƒ.Material = null;
+        static bulletConfig: BulletConfig = null;
+
+        // faction: string="FACTION.A";
 
         //TODO: implement bullet updating
         public update(deltaSeconds: number): void {
+            //gose out of the update loop as long the date is received into the config variable
+            if(this.maxLifeTime == null || this.maxSpeed == null){
+                return
+            }
             // console.warn("Method not implemented.");
             //TODO:implement bullet lifetime degradation and speed from Interface
-            this.lifeTime -= deltaSeconds;
-            this.mtxLocal.translateX(200 *deltaSeconds);
+            this.maxLifeTime -= deltaSeconds;
+            this.mtxLocal.translateX(this.maxSpeed *deltaSeconds);
         }
+        private async initBulletConfig():Promise<void>{
+            let response: Response = await fetch("Configs/gatBulletConfig.json");
+            GatlingBullet.bulletConfig = await response.json();
+            GatlingBullet.graph = await Bullet.getGraphResources(GatlingBullet.bulletConfig.graphID);
+
+            ///initAttributes\\\
+            this.maxLifeTime = GatlingBullet.bulletConfig.maxLifeTime;
+            this.maxSpeed = GatlingBullet.bulletConfig.maxSpeed;
+
+            let node: ƒ.Node = await Bullet.getComponentNode("GatlingBullet", GatlingBullet.graph);
+            if(GatlingBullet.mesh == null){
+                GatlingBullet.mesh = node.getComponent(ƒ.ComponentMesh).mesh;
+            }
+            if(GatlingBullet.material == null){
+                GatlingBullet.material = node.getComponent(ƒ.ComponentMaterial).material;
+            }
+
+            this.addComponent(new ƒ.ComponentMesh(GatlingBullet.mesh));
+            this.addComponent(new ƒ.ComponentMaterial(GatlingBullet.material));
+        }
+
         public alive(): boolean {
-            return this.lifeTime >= 0;
+            //TODO:put alive check inside bullet update function
+            if(this.maxLifeTime == null){
+                return true;
+            }
+            return this.maxLifeTime >= 0;
         }
         public toString(): string {
-            return this.name + "POSITION:";
+            return this.name + "POSITION: " + this.mtxWorld.translation.toString();
         }
-        public kill(): void {
+        public destroyNode(): void {
             //remove bullet from viewGraph
             //TODO:Verify if it is a valid approach
             this.getParent().removeChild(this);
         }
-        constructor(lifeTime: number,spawnTransform:ƒ.Matrix4x4) {
+        constructor(spawnTransform:ƒ.Matrix4x4) {
             super("Gatling");
-            this.lifeTime = lifeTime;
-
             //TODO: load components from graph and not crate them on the fly.
-            this.addComponent(new ƒ.ComponentTransform(spawnTransform));// right place
-            this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshPyramid()));//needs to be laoded from the recources graph
-            this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("test",ƒ.ShaderLit))); //needs to be laoded from the recources graph
-            console.warn("Shoot "+ this.name);
+            this.addComponent(new ƒ.ComponentTransform(spawnTransform));
+            this.initBulletConfig();
         }
     }
     //TODO:find a better way for interfaces. Maybe just once in a interface class?
-    //TODO:create GattlincBulletConfig
-    interface GatlingBulletConfig {
+    //TODO:create GatlingBulletConfig
+    interface BulletConfig {
         graphID: string;
-        lifeTime: number;
+        maxLifeTime: number;
         maxSpeed: number;
+        spreadRadius: number;
         [key: string]: string|number;
     }
 }

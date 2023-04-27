@@ -3,6 +3,8 @@
     "maxRotSpeed": null,
     "maxPitch" : 90,
     "minPitch" : 7.85, 
+    "roundsPerSeconds": 0.2,
+    "reloadTime": 1,
     "headPosition": [
         -0.007236,
         1.5738,

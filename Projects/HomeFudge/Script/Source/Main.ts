@@ -2,15 +2,17 @@ namespace HomeFudge {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Main Program Template running!");
 
-  //TODO:remove temporary exprotetd Viewport
-  export let viewport: ƒ.Viewport;
+  
+  let viewport: ƒ.Viewport;
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   let gatTurret: GatlingTurret = null;
+  let shootTime:number = 0;
+  export let worldNode:ƒ.Node = null;
 
-  //Bullet list, every bullet wil riegister itselfe here for the update Methode.
+  //Bullet list, every bullet wil register itself here for the update Method.
   export let bulletList: Bullet[] = null;
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
@@ -18,6 +20,7 @@ namespace HomeFudge {
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
+    worldNode = viewport.getBranch();
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     gatTurret = new GatlingTurret();//TODO:Check if mesh is correct
@@ -46,8 +49,13 @@ namespace HomeFudge {
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     //TODO: fix "time frameGame is not a valid option for time based shooting"...
-    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])&& (ƒ.Loop.timeFrameGame % 0.5) == 0){
-      gatTurret.shoot(viewport.getBranch());
+    shootTime+= deltaSeconds;
+    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])){
+      //TODO: Logic needs to be moved to GatTurret
+      if(shootTime >= 0.2){
+        gatTurret.shoot(viewport.getBranch());
+        shootTime = 0;
+      }
     }
 
 
@@ -57,10 +65,11 @@ namespace HomeFudge {
 
     //Updates all bullets
     //TODO: make a function or method out of that and update it
+    //TODO:put alive check inside bullet update function
     for (let index: number = 0; index < bulletList.length; index++) {
       bulletList[index].update(deltaSeconds);
       if (!bulletList[index].alive()) {
-        bulletList[index].kill();
+        bulletList[index].destroyNode();
         bulletList[index] = null;
       }
     }
@@ -68,6 +77,12 @@ namespace HomeFudge {
     bulletList = bulletList.filter(elements => {
       return (elements != null && elements !== undefined);
     });
+    if(ƒ.Loop.fpsGameAverage <= 20){
+      console.warn("Active bullets in scene: " + bulletList.length);
+      console.warn(ƒ.Loop.fpsGameAverage);
+    }
+
+    
   
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\

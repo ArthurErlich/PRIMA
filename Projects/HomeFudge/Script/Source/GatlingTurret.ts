@@ -43,7 +43,7 @@ namespace HomeFudge {
             return shootPosNode;
         }
 
-        //Base rotates on the Y-Aches, Positiv number for up
+        //Base rotates on the Y-Aches, Positive number for up
         //Head rotates on the Z-Aches
         public moveTurret(xRot: number, yRot: number):void {
             if(this.baseNode == null||this.headNode == null){
@@ -59,7 +59,7 @@ namespace HomeFudge {
         //spawns every n-seconds a bullet
         public shoot(worldNode:ƒ.Node) {
             //TODO:find a way to create bullet and remove it after hit/lifetime loss.
-            worldNode.addChild(new GatlingBullet(3,this.shootNode.mtxWorld.clone));
+            worldNode.addChild(new GatlingBullet(this.shootNode.mtxWorld.clone));
 
         }
         constructor() {

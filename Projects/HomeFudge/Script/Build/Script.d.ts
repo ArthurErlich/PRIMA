@@ -1,13 +1,14 @@
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
     abstract class Bullet extends ƒ.Node {
-        abstract lifeTime: number;
+        abstract maxLifeTime: number;
         abstract maxSpeed: number;
-        abstract graph: ƒ.Graph;
         abstract update(deltaSeconds: number): void;
         abstract alive(): boolean;
-        abstract kill(): void;
+        abstract destroyNode(): void;
         abstract toString(): string;
+        protected static getGraphResources(graphID: string): Promise<ƒ.Graph>;
+        protected static getComponentNode(nodeName: string, graph: ƒ.Graph): Promise<ƒ.Node>;
         constructor(idString: string);
     }
 }
@@ -22,17 +23,30 @@ declare namespace Script {
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
-    class GatlingBullet extends Bullet {
-        lifeTime: number;
+    export class GatlingBullet extends Bullet {
+        maxLifeTime: number;
         maxSpeed: number;
-        graph: ƒ.Graph;
-        worldNode: ƒ.Node;
+        spreadRadius: number;
+        static graph: ƒ.Graph;
+        static worldNode: ƒ.Node;
+        static mesh: ƒ.Mesh;
+        static material: ƒ.Material;
+        static bulletConfig: BulletConfig;
         update(deltaSeconds: number): void;
+        private initBulletConfig;
         alive(): boolean;
         toString(): string;
-        kill(): void;
-        constructor(lifeTime: number, spawnTransform: ƒ.Matrix4x4);
+        destroyNode(): void;
+        constructor(spawnTransform: ƒ.Matrix4x4);
     }
+    interface BulletConfig {
+        graphID: string;
+        maxLifeTime: number;
+        maxSpeed: number;
+        spreadRadius: number;
+        [key: string]: string | number;
+    }
+    export {};
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -67,7 +81,7 @@ declare namespace HomeFudge {
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
-    let viewport: ƒ.Viewport;
+    let worldNode: ƒ.Node;
     let bulletList: Bullet[];
 }
 declare namespace HomeFudge {
