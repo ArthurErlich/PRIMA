@@ -8,7 +8,7 @@
     "magazineCapacity": 30,
     "headPosition": [
         -0.007236,
-        1.5738,
+        -1.5738,
         0
     ],
     "basePosition": [
@@ -17,8 +17,8 @@
         0
     ],
     "shootNodePosition": [
-        6.7871,
-        0.479092,
+        6.7799,
+        2.05289,
         0
     ]
 }

@@ -15,11 +15,12 @@ namespace HomeFudge {
   ///camera setup for worldsize of 25km\\\
   //TODO:create camera Class
   let camera: ƒ.ComponentCamera;
-
-  //Bullet list, every bullet wil riegister itselfe here for the update Methode.
-  export let bulletList: Bullet[] = null;
-
+  
   /// ------------T-E-S-T--A-R-E-A------------------\\\
+
+  //Bullet list, every bullet wil register itself here for the update Method.
+  export let bulletList: Bullet[] = new Array();
+  export let shipsList:Ship[] = new Array();
 
 
   function start(_event: CustomEvent): void {
@@ -28,7 +29,8 @@ namespace HomeFudge {
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     gatTurret = new GatlingTurret();
-    bulletList = new Array();
+    console.warn(gatTurret);
+    
     viewport.getBranch().addChild(gatTurret);
 
     //TODO move camera to its own class
@@ -98,6 +100,21 @@ namespace HomeFudge {
     }
     //removes bullet from the update array
     bulletList = bulletList.filter(elements => {
+      return (elements != null && elements !== undefined);
+    });
+    viewport.draw();
+    ƒ.AudioManager.default.update();
+  }
+  function updateShipsList(deltaSeconds: number) {
+    for (let index: number = 0; index < bulletList.length; index++) {
+      shipsList[index].update(deltaSeconds);
+      if (!shipsList[index].alive()) {
+        shipsList[index].destroyNode();
+        shipsList[index] = null;
+      }
+    }
+    //removes bullet from the update array
+    shipsList = shipsList.filter(elements => {
       return (elements != null && elements !== undefined);
     });
     viewport.draw();

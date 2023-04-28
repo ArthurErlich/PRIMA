@@ -60,7 +60,7 @@ namespace HomeFudge {
         /**
          * 
          * @param deltaSeconds 
-         * Dont forget to call this function in the UpdateMethode!!!
+         * Don't forget to call this function in the UpdateMethod!!!
          */
         public update(deltaSeconds: number):void {
             if (this.roundsPerSecond == null || this.reloadsEverySecond == null || this.magazineCapacity == 0) {

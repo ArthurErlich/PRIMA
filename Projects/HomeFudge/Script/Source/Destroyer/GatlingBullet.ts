@@ -2,28 +2,28 @@ namespace HomeFudge {
     import ƒ = FudgeCore;
     //TODO:create a logic for Hit detection. Using a physics engine of Fudge
     export class GatlingBullet extends Bullet {
-        maxLifeTime: number = null;
-        maxSpeed: number = null;
-        spreadRadius: number = null;
+        protected maxLifeTime: number = null;
+        protected maxSpeed: number = null;
+        protected spreadRadius: number = null;
 
-        static graph:ƒ.Graph = null;
-        static worldNode:ƒ.Node = null;
+        static graph: ƒ.Graph = null;
+        static worldNode: ƒ.Node = null;
         static mesh: ƒ.Mesh = null;
         static material: ƒ.Material = null;
         static bulletConfig: BulletConfig = null;
 
         //TODO: try faction out.
-        // faction: string="FACTION.A";
+        // faction: FACTION="FACTION.A";
 
         public update(deltaSeconds: number): void {
             //goes out of the update loop as long the date is received into the config variable
-            if(this.maxLifeTime == null || this.maxSpeed == null){
+            if (this.maxLifeTime == null || this.maxSpeed == null) {
                 return
             }
             this.maxLifeTime -= deltaSeconds;
-            this.mtxLocal.translateX(this.maxSpeed *deltaSeconds);
+            this.mtxLocal.translateX(this.maxSpeed * deltaSeconds);
         }
-        private async initBulletConfig():Promise<void>{
+        private async initBulletConfig(): Promise<void> {
             let response: Response = await fetch("Configs/gatBulletConfig.json");
             GatlingBullet.bulletConfig = await response.json();
             GatlingBullet.graph = await Bullet.getGraphResources(GatlingBullet.bulletConfig.graphID);
@@ -33,10 +33,10 @@ namespace HomeFudge {
             this.maxSpeed = GatlingBullet.bulletConfig.maxSpeed;
 
             let node: ƒ.Node = await Bullet.getComponentNode("GatlingBullet", GatlingBullet.graph);
-            if(GatlingBullet.mesh == null){
+            if (GatlingBullet.mesh == null) {
                 GatlingBullet.mesh = node.getComponent(ƒ.ComponentMesh).mesh;
             }
-            if(GatlingBullet.material == null){
+            if (GatlingBullet.material == null) {
                 GatlingBullet.material = node.getComponent(ƒ.ComponentMaterial).material;
             }
 
@@ -46,7 +46,7 @@ namespace HomeFudge {
 
         public alive(): boolean {
             //TODO:put alive check inside bullet update function
-            if(this.maxLifeTime == null){
+            if (this.maxLifeTime == null) {
                 return true;
             }
             return this.maxLifeTime >= 0;
@@ -59,7 +59,7 @@ namespace HomeFudge {
             //TODO:Verify if it is a valid approach
             this.getParent().removeChild(this);
         }
-        constructor(spawnTransform:ƒ.Matrix4x4) {
+        constructor(spawnTransform: ƒ.Matrix4x4) {
             super("Gatling");
             this.addComponent(new ƒ.ComponentTransform(spawnTransform));
             this.initBulletConfig();
@@ -70,6 +70,6 @@ namespace HomeFudge {
         maxLifeTime: number;
         maxSpeed: number;
         spreadRadius: number;
-        [key: string]: string|number;
+        [key: string]: string | number;
     }
 }

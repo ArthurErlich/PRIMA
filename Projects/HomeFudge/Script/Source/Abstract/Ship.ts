@@ -1,16 +1,12 @@
-namespace HomeFudge {
+namespace HomeFudge{
     import ƒ = FudgeCore;
-    /* This is a TypeScript class definition for an abstract class called `Bullet` that extends the
-    `ƒ.Node` class. The `export` keyword makes the class available for use in other modules. */
-    export abstract class Bullet extends ƒ.Node {
-        abstract maxLifeTime:number;
-        abstract maxSpeed:number;
+    export abstract class Ship extends ƒ.Node{
+        protected abstract velocity:ƒ.Vector3; 
 
-        //abstract faction:string; //may be used later for multiple turrets
-        abstract update(deltaSeconds:number):void;
-        abstract alive():boolean;
-        abstract destroyNode():void; 
-        abstract toString():string;
+        public abstract update(deltaSeconds: number):void;
+        public abstract alive():boolean;
+        public abstract destroyNode():void; 
+        public abstract toString():string;
 
         /**
          * This function retrieves a graph resource from a project in TypeScript.
@@ -43,11 +39,10 @@ namespace HomeFudge {
             }
             return node;
         }
-
-        constructor(idString:string){
-            super("Bullet" + idString);
-            //register to updater list
-            bulletList.push(this);
+        constructor(name:string){
+            super("Ship_" + name);
+            
         }
     }
+
 }

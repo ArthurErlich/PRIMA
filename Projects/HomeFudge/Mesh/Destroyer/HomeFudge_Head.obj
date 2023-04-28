@@ -1,6 +1,6 @@
 # Blender 3.5.0
 # www.blender.org
-mtllib HomeFudge_Base.mtl
+mtllib HomeFudge_Head.mtl
 o GattlingGun.BodyAndBarrel
 v -1.415455 -0.428953 1.396534
 v -2.682050 1.438047 0.756622
