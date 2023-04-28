@@ -11,7 +11,6 @@ namespace McFudge{
 
 
 
-            
             this.addComponent(new ƒ.ComponentTransform());
             this.addComponent(new ƒ.ComponentMesh(Block.meshCube));
             this.addComponent(new ƒ.ComponentMaterial(Block.materialCube));

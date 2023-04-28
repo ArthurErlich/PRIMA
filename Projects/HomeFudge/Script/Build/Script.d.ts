@@ -70,12 +70,25 @@ declare namespace HomeFudge {
         private headNode;
         private baseNode;
         private shootNode;
-        private initGatConfigAndAllNodes;
+        private roundsPerSecond;
+        private reloadsEverySecond;
+        private roundsTimer;
+        private reloadTimer;
+        private magazineCapacity;
+        private magazineRounds;
+        private static gatlingConfig;
+        private initConfigAndAllNodes;
         private getGraphResources;
         private createNode;
         private createShootPosNode;
+        /**
+         *
+         * @param deltaSeconds
+         * Dont forget to call this function in the UpdateMethode!!!
+         */
+        update(deltaSeconds: number): void;
         moveTurret(xRot: number, yRot: number): void;
-        shoot(worldNode: ƒ.Node): void;
+        shoot(): void;
         constructor();
     }
 }

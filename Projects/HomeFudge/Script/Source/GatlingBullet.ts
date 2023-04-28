@@ -1,6 +1,6 @@
 namespace HomeFudge {
     import ƒ = FudgeCore;
-    //TODO:create a logic for Hit detection.
+    //TODO:create a logic for Hit detection. Using a physics engine of Fudge
     export class GatlingBullet extends Bullet {
         maxLifeTime: number = null;
         maxSpeed: number = null;
