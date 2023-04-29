@@ -1,4 +1,26 @@
 "use strict";
+var HomeFudge;
+(function (HomeFudge) {
+    class Config {
+        static gatlingBullet = null;
+        static gatlingTurret = null;
+        static destroyer = null;
+        static async initConfigs() {
+            let gatTurretResponse = await fetch("Configs/gatTurretConfig.json");
+            let gatBulletResponse = await fetch("Configs/gatBulletConfig.json");
+            let destroyerResponse = await fetch("Configs/destroyerConfig.json");
+            Config.gatlingBullet = await gatBulletResponse.json();
+            Config.gatlingTurret = await gatTurretResponse.json();
+            Config.destroyer = await destroyerResponse.json();
+        }
+    }
+    HomeFudge.Config = Config;
+    let CONFIG;
+    (function (CONFIG) {
+        CONFIG[CONFIG["GATLING_BULLET"] = 0] = "GATLING_BULLET";
+        CONFIG[CONFIG["GATLING_TURRET"] = 1] = "GATLING_TURRET";
+    })(CONFIG = HomeFudge.CONFIG || (HomeFudge.CONFIG = {}));
+})(HomeFudge || (HomeFudge = {}));
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
@@ -68,10 +90,12 @@ var HomeFudge;
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
-    document.addEventListener("interactiveViewportStarted", start);
+    //@ts-ignore
+    document.addEventListener("interactiveViewportStarted", (event) => start(event));
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    let gatTurret = null;
-    HomeFudge.worldNode = null;
+    let destroyer = null;
+    HomeFudge._worldNode = null;
+    HomeFudge._deltaSeconds = null;
     //Bullet list, every bullet wil register itself here for the update Method.
     ///camera setup for worldsize of 25km\\\
     //TODO:create camera Class
@@ -80,86 +104,53 @@ var HomeFudge;
     //Bullet list, every bullet wil register itself here for the update Method.
     HomeFudge.bulletList = new Array();
     HomeFudge.shipsList = new Array();
-    function start(_event) {
+    async function start(_event) {
         viewport = _event.detail;
-        HomeFudge.worldNode = viewport.getBranch();
+        HomeFudge._worldNode = viewport.getBranch();
+        await loadConfig().then(crateShips).then(() => { console.warn("ConfigLoaded"); }); // to create ships. first load configs than the ships etc
         /// ------------T-E-S-T--A-R-E-A------------------\\\
-        gatTurret = new HomeFudge.GatlingTurret();
-        console.warn(gatTurret);
-        viewport.getBranch().addChild(gatTurret);
         //TODO move camera to its own class
         camera = viewport.camera;
-        console.warn(camera.getNear(), camera.getFar());
         camera.projectCentral(camera.getAspect(), camera.getFieldOfView(), ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
         //TODO:remove unused log!
         // console.log(" Gatling Turret Node: ");
         // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0]);
         // console.log(" First child of Gatling Turret: ");
         // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0].getChild(0));
+        console.warn(HomeFudge.shipsList);
+        console.warn(HomeFudge.bulletList);
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30); // start the game loop to continuously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
-        let deltaSeconds = ƒ.Loop.timeFrameGame / 1000;
+        HomeFudge._deltaSeconds = ƒ.Loop.timeFrameGame / 1000;
         /// ------------T-E-S-T--A-R-E-A------------------\\\
-        gatTurret.update(deltaSeconds);
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
-            //TODO: Logic needs to be moved to GatTurret
-            gatTurret.shoot();
-        }
         if (ƒ.Loop.fpsGameAverage <= 20) {
             console.warn("Active bullets in scene: " + HomeFudge.bulletList.length);
             console.warn(ƒ.Loop.fpsGameAverage);
         }
         else {
-            updateBulletList(deltaSeconds);
+            updateShipsList(HomeFudge._deltaSeconds);
+            updateBulletList(HomeFudge._deltaSeconds);
         }
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    /// ------------T-E-S-T--A-R-E-A------------------\\\
-    //Updates all bullets
-    //TODO:put alive check inside bullet update function
-    /**
-     * This function updates a list of bullets by calling their update method and removing any bullets
-     * that are no longer alive.
-     *
-     * @param deltaSeconds The time elapsed since the last update of the bullet list, measured in
-     * seconds. This parameter is used to update the position and state of each bullet in the list.
-     */
-    function updateBulletList(deltaSeconds) {
-        for (let index = 0; index < HomeFudge.bulletList.length; index++) {
-            HomeFudge.bulletList[index].update(deltaSeconds);
-            if (!HomeFudge.bulletList[index].alive()) {
-                HomeFudge.bulletList[index].destroyNode();
-                HomeFudge.bulletList[index] = null;
-            }
-        }
-        //removes bullet from the update array
-        HomeFudge.bulletList = HomeFudge.bulletList.filter(elements => {
-            return (elements != null && elements !== undefined);
-        });
-        viewport.draw();
-        ƒ.AudioManager.default.update();
+    async function loadConfig() {
+        //loads configs
+        performance.now();
+        console.warn("LoadingConfigs");
+        await HomeFudge.Config.initConfigs();
     }
-    function updateShipsList(deltaSeconds) {
-        for (let index = 0; index < HomeFudge.bulletList.length; index++) {
-            HomeFudge.shipsList[index].update(deltaSeconds);
-            if (!HomeFudge.shipsList[index].alive()) {
-                HomeFudge.shipsList[index].destroyNode();
-                HomeFudge.shipsList[index] = null;
-            }
-        }
-        //removes bullet from the update array
-        HomeFudge.shipsList = HomeFudge.shipsList.filter(elements => {
-            return (elements != null && elements !== undefined);
-        });
-        viewport.draw();
-        ƒ.AudioManager.default.update();
+    /// ------------T-E-S-T--A-R-E-A------------------\\\
+    async function crateShips() {
+        destroyer = new HomeFudge.Destroyer(ƒ.Vector3.ZERO());
+        console.warn(destroyer);
+        viewport.getBranch().addChild(destroyer);
     }
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
@@ -175,6 +166,7 @@ var HomeFudge;
          * retrieved.
          * @return a Promise that resolves to a ƒ.Graph object.
          */
+        //TODO:Remove init configs and make a LoadAllConfigsClass!
         static async getGraphResources(graphID) {
             let graph = ƒ.Project.resources[graphID];
             if (graph == null) {
@@ -191,6 +183,7 @@ var HomeFudge;
          * scene or game world.
          * @return a Promise that resolves to a ƒ.Node object.
          */
+        //TODO:Remove getComponentNode configs and make a LoadNode!
         static async getComponentNode(nodeName, graph) {
             let node = graph.getChildrenByName(nodeName)[0];
             if (node == null) {
@@ -200,8 +193,10 @@ var HomeFudge;
         }
         constructor(idString) {
             super("Bullet" + idString);
-            //register to updater list
-            HomeFudge.bulletList.push(this);
+            //register to update event
+            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, () => {
+                this.update();
+            });
         }
     }
     HomeFudge.Bullet = Bullet;
@@ -217,6 +212,7 @@ var HomeFudge;
          * retrieved.
          * @return a Promise that resolves to a ƒ.Graph object.
          */
+        //TODO:Remove init configs and make a LoadAllConfigsClass!
         static async getGraphResources(graphID) {
             let graph = ƒ.Project.resources[graphID];
             if (graph == null) {
@@ -233,6 +229,7 @@ var HomeFudge;
          * scene or game world.
          * @return a Promise that resolves to a ƒ.Node object.
          */
+        //TODO:Remove init configs and make a LoadAllConfigsClass!
         static async getComponentNode(nodeName, graph) {
             let node = graph.getChildrenByName(nodeName)[0];
             if (node == null) {
@@ -242,33 +239,76 @@ var HomeFudge;
         }
         constructor(name) {
             super("Ship_" + name);
+            //register to updater list
+            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, () => {
+                this.update();
+            });
         }
     }
     HomeFudge.Ship = Ship;
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
+    var ƒ = FudgeCore;
     class Destroyer extends HomeFudge.Ship {
-        velocity;
+        velocity = null;
+        healthPoints = null;
+        //TODO:make private
+        gatlingTurret = null;
+        laserTurretLiest = null;
         static graph = null;
         static worldNode = null;
         static mesh = null;
         static material = null;
-        static bulletConfig = null;
-        update(deltaSeconds) {
-            throw new Error("Method not implemented.");
+        //TODO:Remove init configs and make a LoadAllConfigsClass!
+        async initAllConfigs() {
+            Destroyer.graph = await HomeFudge.Ship.getGraphResources(HomeFudge.Config.destroyer.graphID);
+            let node = await Destroyer.getComponentNode("Destroyer", Destroyer.graph);
+            //init mesh and material
+            Destroyer.mesh = node.getComponent(ƒ.ComponentMesh).mesh;
+            Destroyer.material = node.getComponent(ƒ.ComponentMaterial).material;
+            //init configs
+            this.velocity = new ƒ.Vector3(0, 0, 0);
+            //init Weapons
+            this.addWeapons();
+            //init Components
+            this.setAllComponents();
+        }
+        addWeapons() {
+            this.gatlingTurret = new HomeFudge.GatlingTurret();
+            this.addChild(this.gatlingTurret);
+        }
+        setAllComponents() {
+            if (Destroyer.material == null || Destroyer.mesh == null) {
+                console.warn(this.name + " Mesh and/or Material is missing");
+                return;
+            }
+            this.addComponent(new ƒ.ComponentMaterial(Destroyer.material));
+            this.addComponent(new ƒ.ComponentMesh(Destroyer.mesh));
+        }
+        update() {
+            this.gatlingTurret.update(HomeFudge._deltaSeconds);
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
+                console.log("SpaceBarPressed");
+                this.gatlingTurret.shoot();
+            }
         }
         alive() {
-            throw new Error("Method not implemented.");
+            //console.error("Method not implemented.");
+            return true;
         }
         destroyNode() {
-            throw new Error("Method not implemented.");
+            //console.error("Method not implemented.");
+            return null;
         }
         toString() {
-            throw new Error("Method not implemented.");
+            //console.error("Method not implemented.");
+            return null;
         }
-        constructor() {
+        constructor(position) {
             super("Destroyer");
+            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)));
+            this.initAllConfigs();
         }
     }
     HomeFudge.Destroyer = Destroyer;
@@ -285,24 +325,25 @@ var HomeFudge;
         static worldNode = null;
         static mesh = null;
         static material = null;
-        static bulletConfig = null;
         //TODO: try faction out.
         // faction: FACTION="FACTION.A";
-        update(deltaSeconds) {
+        update() {
             //goes out of the update loop as long the date is received into the config variable
             if (this.maxLifeTime == null || this.maxSpeed == null) {
                 return;
             }
-            this.maxLifeTime -= deltaSeconds;
-            this.mtxLocal.translateX(this.maxSpeed * deltaSeconds);
+            this.maxLifeTime -= HomeFudge._deltaSeconds;
+            this.mtxLocal.translateX(this.maxSpeed * HomeFudge._deltaSeconds);
+            if (!this.alive()) {
+                this.destroyNode();
+            }
         }
+        //TODO:Remove init configs and make a LoadAllConfigsClass!
         async initBulletConfig() {
-            let response = await fetch("Configs/gatBulletConfig.json");
-            GatlingBullet.bulletConfig = await response.json();
-            GatlingBullet.graph = await HomeFudge.Bullet.getGraphResources(GatlingBullet.bulletConfig.graphID);
+            GatlingBullet.graph = await HomeFudge.Bullet.getGraphResources(HomeFudge.Config.gatlingBullet.graphID);
             ///initAttributes\\\
-            this.maxLifeTime = GatlingBullet.bulletConfig.maxLifeTime;
-            this.maxSpeed = GatlingBullet.bulletConfig.maxSpeed;
+            this.maxLifeTime = HomeFudge.Config.gatlingBullet.maxLifeTime;
+            this.maxSpeed = HomeFudge.Config.gatlingBullet.maxSpeed;
             let node = await HomeFudge.Bullet.getComponentNode("GatlingBullet", GatlingBullet.graph);
             if (GatlingBullet.mesh == null) {
                 GatlingBullet.mesh = node.getComponent(ƒ.ComponentMesh).mesh;
@@ -349,18 +390,15 @@ var HomeFudge;
         reloadTimer = 0;
         magazineCapacity = null;
         magazineRounds = null;
-        static gatlingConfig = null;
+        //TODO:Remove init configs and make a LoadAllConfigsClass!
         async initConfigAndAllNodes() {
-            let response = await fetch("Configs/gatTurretConfig.json");
-            let gatlingConfig = await response.json();
-            GatlingTurret.gatlingConfig = gatlingConfig;
-            let graph = await this.getGraphResources(gatlingConfig.graphID);
-            this.headNode = this.createNode("GatlingTurretHead", HomeFudge.JSONparser.toVector3(gatlingConfig.headPosition), graph);
-            this.baseNode = this.createNode("GatlingTurretBase", HomeFudge.JSONparser.toVector3(gatlingConfig.basePosition), graph);
-            this.shootNode = this.createShootPosNode(HomeFudge.JSONparser.toVector3(gatlingConfig.shootNodePosition));
-            this.roundsPerSecond = GatlingTurret.gatlingConfig.roundsPerSeconds;
-            this.reloadsEverySecond = GatlingTurret.gatlingConfig.reloadTime;
-            this.magazineCapacity = GatlingTurret.gatlingConfig.magazineCapacity;
+            let graph = await this.getGraphResources(HomeFudge.Config.gatlingTurret.graphID);
+            this.headNode = this.createComponents("GatlingTurretHead", HomeFudge.JSONparser.toVector3(HomeFudge.Config.gatlingTurret.headPosition), graph);
+            this.baseNode = this.createComponents("GatlingTurretBase", HomeFudge.JSONparser.toVector3(HomeFudge.Config.gatlingTurret.basePosition), graph);
+            this.shootNode = this.createShootPosNode(HomeFudge.JSONparser.toVector3(HomeFudge.Config.gatlingTurret.shootNodePosition));
+            this.roundsPerSecond = HomeFudge.Config.gatlingTurret.roundsPerSeconds;
+            this.reloadsEverySecond = HomeFudge.Config.gatlingTurret.reloadTime;
+            this.magazineCapacity = HomeFudge.Config.gatlingTurret.magazineCapacity;
             this.magazineRounds = this.magazineCapacity;
             this.headNode.addChild(this.shootNode);
             this.baseNode.addChild(this.headNode);
@@ -373,7 +411,7 @@ var HomeFudge;
             }
             return graph;
         }
-        createNode(nodeName, transform, graph) {
+        createComponents(nodeName, transform, graph) {
             let node = graph.getChildrenByName(nodeName)[0];
             if (node == null) {
                 console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
@@ -420,7 +458,7 @@ var HomeFudge;
         //spawns every n-seconds a bullet
         shoot() {
             if (this.roundsTimer >= this.roundsPerSecond) {
-                HomeFudge.worldNode.addChild(new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone));
+                HomeFudge._worldNode.addChild(new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone));
                 this.roundsTimer = 0;
             }
         }

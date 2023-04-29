@@ -13,8 +13,6 @@
  * Have fun creating with FUDGE!
  * @author: Jirka Dell'Oro-Friedl, HFU, 2022
  */
-
-
 var ƒ = FudgeCore;
 var ƒAid = FudgeAid;
 window.addEventListener("load", init);
@@ -27,6 +25,7 @@ function init(_event)/* : void */ {
     dialog.close();
     let graphId/* : string */ = document.head.querySelector("meta[autoView]").getAttribute("autoView")
     startInteractiveViewport(graphId);
+
   });
   dialog.showModal();
 }

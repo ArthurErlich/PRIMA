@@ -10,27 +10,28 @@ namespace HomeFudge {
         static worldNode: ƒ.Node = null;
         static mesh: ƒ.Mesh = null;
         static material: ƒ.Material = null;
-        static bulletConfig: BulletConfig = null;
 
         //TODO: try faction out.
         // faction: FACTION="FACTION.A";
 
-        public update(deltaSeconds: number): void {
+        public update(): void {
             //goes out of the update loop as long the date is received into the config variable
             if (this.maxLifeTime == null || this.maxSpeed == null) {
                 return
             }
-            this.maxLifeTime -= deltaSeconds;
-            this.mtxLocal.translateX(this.maxSpeed * deltaSeconds);
+            this.maxLifeTime -= _deltaSeconds;
+            this.mtxLocal.translateX(this.maxSpeed * _deltaSeconds);
+            if(!this.alive()){
+                this.destroyNode();
+            }
         }
+        //TODO:Remove init configs and make a LoadAllConfigsClass!
         private async initBulletConfig(): Promise<void> {
-            let response: Response = await fetch("Configs/gatBulletConfig.json");
-            GatlingBullet.bulletConfig = await response.json();
-            GatlingBullet.graph = await Bullet.getGraphResources(GatlingBullet.bulletConfig.graphID);
+            GatlingBullet.graph = await Bullet.getGraphResources(Config.gatlingBullet.graphID);
 
             ///initAttributes\\\
-            this.maxLifeTime = GatlingBullet.bulletConfig.maxLifeTime;
-            this.maxSpeed = GatlingBullet.bulletConfig.maxSpeed;
+            this.maxLifeTime = Config.gatlingBullet.maxLifeTime;
+            this.maxSpeed = Config.gatlingBullet.maxSpeed;
 
             let node: ƒ.Node = await Bullet.getComponentNode("GatlingBullet", GatlingBullet.graph);
             if (GatlingBullet.mesh == null) {
@@ -42,6 +43,8 @@ namespace HomeFudge {
 
             this.addComponent(new ƒ.ComponentMesh(GatlingBullet.mesh));
             this.addComponent(new ƒ.ComponentMaterial(GatlingBullet.material));
+            
+
         }
 
         public alive(): boolean {
@@ -64,12 +67,5 @@ namespace HomeFudge {
             this.addComponent(new ƒ.ComponentTransform(spawnTransform));
             this.initBulletConfig();
         }
-    }
-    interface BulletConfig {
-        graphID: string;
-        maxLifeTime: number;
-        maxSpeed: number;
-        spreadRadius: number;
-        [key: string]: string | number;
     }
 }

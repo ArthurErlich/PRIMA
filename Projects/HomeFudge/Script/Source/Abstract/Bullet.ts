@@ -7,8 +7,7 @@ namespace HomeFudge {
         protected abstract maxSpeed:number;
 
         //abstract faction:string; //may be used later for multiple turrets
-        public abstract update(deltaSeconds:number):void;
-        public abstract alive():boolean;
+        public abstract update():void;
         public abstract destroyNode():void; 
         public abstract toString():string;
 
@@ -19,6 +18,7 @@ namespace HomeFudge {
          * retrieved.
          * @return a Promise that resolves to a ƒ.Graph object.
          */
+        //TODO:Remove init configs and make a LoadAllConfigsClass!
         protected static async getGraphResources(graphID: string): Promise<ƒ.Graph> {
             let graph: ƒ.Graph = <ƒ.Graph>ƒ.Project.resources[graphID]
             if (graph == null) {
@@ -36,6 +36,7 @@ namespace HomeFudge {
          * scene or game world.
          * @return a Promise that resolves to a ƒ.Node object.
          */
+        //TODO:Remove getComponentNode configs and make a LoadNode!
         protected static async getComponentNode(nodeName: string, graph: ƒ.Graph):  Promise<ƒ.Node> {
             let node:ƒ.Node = graph.getChildrenByName(nodeName)[0];
             if (node == null) {
@@ -46,8 +47,10 @@ namespace HomeFudge {
 
         constructor(idString:string){
             super("Bullet" + idString);
-            //register to updater list
-            bulletList.push(this);
+            //register to update event
+            ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, () => {
+                this.update();
+            });
         }
     }
 }

@@ -1,3 +1,44 @@
+declare namespace HomeFudge {
+    export class Config {
+        static gatlingBullet: GatlingBulletConfig;
+        static gatlingTurret: GatlingTurretConfig;
+        static destroyer: DestroyerConfig;
+        static initConfigs(): Promise<void>;
+    }
+    export enum CONFIG {
+        GATLING_BULLET = 0,
+        GATLING_TURRET = 1
+    }
+    interface GatlingBulletConfig {
+        graphID: string;
+        maxLifeTime: number;
+        maxSpeed: number;
+        spreadRadius: number;
+        [key: string]: string | number;
+    }
+    interface DestroyerConfig {
+        graphID: string;
+        maxAcceleration: number;
+        maxSpeed: number;
+        maxTurnSpeed: number;
+        maxHealthPoints: number;
+        [key: string]: string | number;
+    }
+    interface GatlingTurretConfig {
+        graphID: string;
+        headPosition: number[];
+        basePosition: number[];
+        shootNodePosition: number[];
+        maxRotSpeed: number;
+        maxPitch: number;
+        minPitch: number;
+        roundsPerSeconds: number;
+        reloadTime: number;
+        magazineCapacity: number;
+        [key: string]: number[] | number | string;
+    }
+    export {};
+}
 declare namespace Script {
     import ƒ = FudgeCore;
     class CustomComponentScript extends ƒ.ComponentScript {
@@ -24,7 +65,8 @@ declare namespace HomeFudge {
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
-    let worldNode: ƒ.Node;
+    let _worldNode: ƒ.Node;
+    let _deltaSeconds: number;
     let bulletList: Bullet[];
     let shipsList: Ship[];
 }
@@ -33,8 +75,7 @@ declare namespace HomeFudge {
     abstract class Bullet extends ƒ.Node {
         protected abstract maxLifeTime: number;
         protected abstract maxSpeed: number;
-        abstract update(deltaSeconds: number): void;
-        abstract alive(): boolean;
+        abstract update(): void;
         abstract destroyNode(): void;
         abstract toString(): string;
         /**
@@ -62,8 +103,8 @@ declare namespace HomeFudge {
     import ƒ = FudgeCore;
     abstract class Ship extends ƒ.Node {
         protected abstract velocity: ƒ.Vector3;
-        abstract update(deltaSeconds: number): void;
-        abstract alive(): boolean;
+        protected abstract healthPoints: number;
+        abstract update(): void;
         abstract destroyNode(): void;
         abstract toString(): string;
         /**
@@ -89,31 +130,28 @@ declare namespace HomeFudge {
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
-    export class Destroyer extends Ship {
+    class Destroyer extends Ship {
         protected velocity: ƒ.Vector3;
+        protected healthPoints: number;
+        gatlingTurret: GatlingTurret;
+        laserTurretLiest: LaserTurret[];
         static graph: ƒ.Graph;
         static worldNode: ƒ.Node;
         static mesh: ƒ.Mesh;
         static material: ƒ.Material;
-        static bulletConfig: DestroyerConfig;
-        update(deltaSeconds: number): void;
+        private initAllConfigs;
+        private addWeapons;
+        private setAllComponents;
+        update(): void;
         alive(): boolean;
         destroyNode(): void;
         toString(): string;
-        constructor();
+        constructor(position: ƒ.Vector3);
     }
-    interface DestroyerConfig {
-        graphID: string;
-        maxLifeTime: number;
-        maxSpeed: number;
-        spreadRadius: number;
-        [key: string]: string | number;
-    }
-    export {};
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
-    export class GatlingBullet extends Bullet {
+    class GatlingBullet extends Bullet {
         protected maxLifeTime: number;
         protected maxSpeed: number;
         protected spreadRadius: number;
@@ -121,22 +159,13 @@ declare namespace HomeFudge {
         static worldNode: ƒ.Node;
         static mesh: ƒ.Mesh;
         static material: ƒ.Material;
-        static bulletConfig: BulletConfig;
-        update(deltaSeconds: number): void;
+        update(): void;
         private initBulletConfig;
         alive(): boolean;
         toString(): string;
         destroyNode(): void;
         constructor(spawnTransform: ƒ.Matrix4x4);
     }
-    interface BulletConfig {
-        graphID: string;
-        maxLifeTime: number;
-        maxSpeed: number;
-        spreadRadius: number;
-        [key: string]: string | number;
-    }
-    export {};
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -150,10 +179,9 @@ declare namespace HomeFudge {
         private reloadTimer;
         private magazineCapacity;
         private magazineRounds;
-        private static gatlingConfig;
         private initConfigAndAllNodes;
         private getGraphResources;
-        private createNode;
+        private createComponents;
         private createShootPosNode;
         /**
          *

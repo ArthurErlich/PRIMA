@@ -14,21 +14,17 @@ namespace HomeFudge {
         private magazineCapacity: number = null;
         private magazineRounds:number = null;
 
-        private static gatlingConfig: Config = null;
-
+        //TODO:Remove init configs and make a LoadAllConfigsClass!
         private async initConfigAndAllNodes(): Promise<void> {
-            let response: Response = await fetch("Configs/gatTurretConfig.json");
-            let gatlingConfig: Config = await response.json();
-            GatlingTurret.gatlingConfig = gatlingConfig;
 
-            let graph: ƒ.Graph = await this.getGraphResources(gatlingConfig.graphID);
-            this.headNode = this.createNode("GatlingTurretHead", JSONparser.toVector3(gatlingConfig.headPosition), graph);
-            this.baseNode = this.createNode("GatlingTurretBase", JSONparser.toVector3(gatlingConfig.basePosition), graph);
-            this.shootNode = this.createShootPosNode(JSONparser.toVector3(gatlingConfig.shootNodePosition));
+            let graph: ƒ.Graph = await this.getGraphResources(Config.gatlingTurret.graphID);
+            this.headNode = this.createComponents("GatlingTurretHead", JSONparser.toVector3(Config.gatlingTurret.headPosition), graph);
+            this.baseNode = this.createComponents("GatlingTurretBase", JSONparser.toVector3(Config.gatlingTurret.basePosition), graph);
+            this.shootNode = this.createShootPosNode(JSONparser.toVector3(Config.gatlingTurret.shootNodePosition));
 
-            this.roundsPerSecond = GatlingTurret.gatlingConfig.roundsPerSeconds;
-            this.reloadsEverySecond = GatlingTurret.gatlingConfig.reloadTime;
-            this.magazineCapacity = GatlingTurret.gatlingConfig.magazineCapacity;
+            this.roundsPerSecond = Config.gatlingTurret.roundsPerSeconds;
+            this.reloadsEverySecond = Config.gatlingTurret.reloadTime;
+            this.magazineCapacity = Config.gatlingTurret.magazineCapacity;
             this.magazineRounds = this.magazineCapacity;
 
             this.headNode.addChild(this.shootNode);
@@ -42,7 +38,7 @@ namespace HomeFudge {
             }
             return graph;
         }
-        private createNode(nodeName: string, transform: ƒ.Vector3, graph: ƒ.Graph): ƒ.Node {
+        private createComponents(nodeName: string, transform: ƒ.Vector3, graph: ƒ.Graph): ƒ.Node {
             let node = graph.getChildrenByName(nodeName)[0];
             if (node == null) {
                 console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
@@ -90,7 +86,7 @@ namespace HomeFudge {
         //spawns every n-seconds a bullet
         public shoot() {
             if (this.roundsTimer >= this.roundsPerSecond) {
-                worldNode.addChild(new GatlingBullet(this.shootNode.mtxWorld.clone));
+                _worldNode.addChild(new GatlingBullet(this.shootNode.mtxWorld.clone));
                 this.roundsTimer = 0;
             }
         }
@@ -98,24 +94,5 @@ namespace HomeFudge {
             super("GatlingTurret");
             this.initConfigAndAllNodes();
         }
-    }
-    ///interface for Blender positions and configs for GatlingTurret\\\
-    interface Config {
-        ///graph of all resource for the turret\\\
-        graphID: string;
-        ///position for the nodes\\\
-        headPosition: number[];
-        basePosition: number[];
-        shootNodePosition: number[];
-        ///rotation stuff\\\
-        maxRotSpeed: number;
-        maxPitch: number;
-        minPitch: number;
-        ///shooting stuff\\\
-        roundsPerSeconds: number;
-        reloadTime: number;
-        magazineCapacity: number;
-
-        [key: string]: number[] | number | string;
     }
 }

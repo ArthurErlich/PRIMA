@@ -16,7 +16,7 @@
   "MeshObj|2023-04-27T09:49:37.194Z|95685": {
     "ƒ.MeshObj": {
       "idResource": "MeshObj|2023-04-27T09:49:37.194Z|95685",
-      "name": "Mesh\\TestSkySphere\\SkySphere.obj",
+      "name": "Mesh_SkySphere",
       "type": "MeshObj",
       "url": "Mesh\\TestSkySphere\\SkySphere.obj"
     }
@@ -341,10 +341,60 @@
             },
             "children": []
           }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Destroyer",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2023-04-29T16:43:33.751Z|79488",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-04-21T17:06:52.835Z|19108"
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
         }
       ],
       "idResource": "Graph|2023-04-25T14:30:46.195Z|98798",
       "type": "Graph"
+    }
+  },
+  "MeshObj|2023-04-29T16:43:33.751Z|79488": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-04-29T16:43:33.751Z|79488",
+      "name": "Mesh_Destroyer",
+      "type": "MeshObj",
+      "url": "Mesh\\Destroyer\\HomeFuge_Destroyser_V_1.0.obj"
     }
   }
 }

@@ -2,9 +2,9 @@ namespace HomeFudge{
     import ƒ = FudgeCore;
     export abstract class Ship extends ƒ.Node{
         protected abstract velocity:ƒ.Vector3; 
+        protected abstract healthPoints:number;
 
-        public abstract update(deltaSeconds: number):void;
-        public abstract alive():boolean;
+        public abstract update():void;
         public abstract destroyNode():void; 
         public abstract toString():string;
 
@@ -15,6 +15,8 @@ namespace HomeFudge{
          * retrieved.
          * @return a Promise that resolves to a ƒ.Graph object.
          */
+        //TODO:Remove init configs and make a LoadAllConfigsClass!
+
         protected static async getGraphResources(graphID: string): Promise<ƒ.Graph> {
             let graph: ƒ.Graph = <ƒ.Graph>ƒ.Project.resources[graphID]
             if (graph == null) {
@@ -32,6 +34,8 @@ namespace HomeFudge{
          * scene or game world.
          * @return a Promise that resolves to a ƒ.Node object.
          */
+        //TODO:Remove init configs and make a LoadAllConfigsClass!
+
         protected static async getComponentNode(nodeName: string, graph: ƒ.Graph):  Promise<ƒ.Node> {
             let node:ƒ.Node = graph.getChildrenByName(nodeName)[0];
             if (node == null) {
@@ -41,7 +45,10 @@ namespace HomeFudge{
         }
         constructor(name:string){
             super("Ship_" + name);
-            
+            //register to updater list
+            ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, () => {
+                this.update();
+            });
         }
     }
 
