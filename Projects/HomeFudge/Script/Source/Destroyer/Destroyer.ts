@@ -47,6 +47,8 @@ namespace HomeFudge {
         }
         public update(): void {
             this.gatlingTurret.update(_deltaSeconds);
+
+            //TODO: remove temporary WP shooting
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
                 console.log("SpaceBarPressed");
                 this.gatlingTurret.shoot();

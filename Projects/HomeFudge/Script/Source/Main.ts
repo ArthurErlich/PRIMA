@@ -13,7 +13,7 @@ namespace HomeFudge {
   export let _deltaSeconds:number = null;
 
   //Bullet list, every bullet wil register itself here for the update Method.
-  ///camera setup for worldsize of 25km\\\
+  ///camera setup for worldSize of 25km\\\
   //TODO:create camera Class
   let camera: ƒ.ComponentCamera;
 

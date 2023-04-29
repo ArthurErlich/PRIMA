@@ -71,6 +71,12 @@ declare namespace HomeFudge {
     let shipsList: Ship[];
 }
 declare namespace HomeFudge {
+    class Mouse {
+        init(): void;
+        private update;
+    }
+}
+declare namespace HomeFudge {
     import ƒ = FudgeCore;
     abstract class Bullet extends ƒ.Node {
         protected abstract maxLifeTime: number;

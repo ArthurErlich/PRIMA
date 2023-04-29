@@ -97,7 +97,7 @@ var HomeFudge;
     HomeFudge._worldNode = null;
     HomeFudge._deltaSeconds = null;
     //Bullet list, every bullet wil register itself here for the update Method.
-    ///camera setup for worldsize of 25km\\\
+    ///camera setup for worldSize of 25km\\\
     //TODO:create camera Class
     let camera;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
@@ -152,6 +152,20 @@ var HomeFudge;
         console.warn(destroyer);
         viewport.getBranch().addChild(destroyer);
     }
+})(HomeFudge || (HomeFudge = {}));
+var HomeFudge;
+(function (HomeFudge) {
+    var ƒ = FudgeCore;
+    class Mouse {
+        init() {
+            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, () => {
+                this.update();
+            });
+        }
+        update() {
+        }
+    }
+    HomeFudge.Mouse = Mouse;
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
@@ -288,6 +302,7 @@ var HomeFudge;
         }
         update() {
             this.gatlingTurret.update(HomeFudge._deltaSeconds);
+            //TODO: remove temporary WP shooting
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
                 console.log("SpaceBarPressed");
                 this.gatlingTurret.shoot();
