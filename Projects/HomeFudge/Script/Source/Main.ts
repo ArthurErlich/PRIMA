@@ -7,24 +7,23 @@ namespace HomeFudge {
   //@ts-ignore
   document.addEventListener("interactiveViewportStarted", (event) => <EventListener>start(event));
 
+  ///World Node\\\
+  export let _worldNode: ƒ.Node = null;
+
+  //DeltaSeconds\\\
+  export let _deltaSeconds: number = null;
+
+  ///Mouse\\\
+
+  //Mouse.init();
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   let destroyer: Destroyer = null;
-  export let _worldNode: ƒ.Node = null;
-  export let _deltaSeconds:number = null;
-
   //Bullet list, every bullet wil register itself here for the update Method.
   ///camera setup for worldSize of 25km\\\
   //TODO:create camera Class
   let camera: ƒ.ComponentCamera;
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
-
-  //Bullet list, every bullet wil register itself here for the update Method.
-  export let bulletList: Bullet[] = new Array();
-  export let shipsList: Ship[] = new Array();
-
-
-
 
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
@@ -37,6 +36,8 @@ namespace HomeFudge {
     //TODO move camera to its own class
     camera = viewport.camera;
     camera.projectCentral(camera.getAspect(), camera.getFieldOfView(), ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+    console.warn(camera.getFieldOfView());
+    console.warn(camera.getAspect());
 
 
     //TODO:remove unused log!
@@ -45,10 +46,7 @@ namespace HomeFudge {
     // console.log(" First child of Gatling Turret: ");
     // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0].getChild(0));
 
-    
-    console.warn(shipsList);
-    console.warn(bulletList);
-    
+
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
@@ -60,13 +58,19 @@ namespace HomeFudge {
     _deltaSeconds = ƒ.Loop.timeFrameGame / 1000;
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.DELETE])) {
+      ƒ.Loop.stop();
+      console.log(_worldNode);
+    }
+
+
+    //TODO: remove error when frames are dropping
     if (ƒ.Loop.fpsGameAverage <= 20) {
-      console.warn("Active bullets in scene: " + bulletList.length);
       console.warn(ƒ.Loop.fpsGameAverage);
+      console.warn("Active bullets in scene: " + _worldNode.getChildrenByName("BulletGatling").length);
+      ƒ.Loop.stop();
     } else {
-      updateShipsList(_deltaSeconds);
-      updateBulletList(_deltaSeconds);
+
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
@@ -84,7 +88,7 @@ namespace HomeFudge {
   /// ------------T-E-S-T--A-R-E-A------------------\\\
 
   async function crateShips(): Promise<void> {
-    destroyer = new Destroyer(ƒ.Vector3.ZERO());
+    destroyer = new Destroyer(new ƒ.Vector3(0, 0, 0));
     console.warn(destroyer);
     viewport.getBranch().addChild(destroyer);
   }

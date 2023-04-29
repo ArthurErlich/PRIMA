@@ -67,14 +67,6 @@ declare namespace HomeFudge {
     import ƒ = FudgeCore;
     let _worldNode: ƒ.Node;
     let _deltaSeconds: number;
-    let bulletList: Bullet[];
-    let shipsList: Ship[];
-}
-declare namespace HomeFudge {
-    class Mouse {
-        init(): void;
-        private update;
-    }
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -109,8 +101,11 @@ declare namespace HomeFudge {
     import ƒ = FudgeCore;
     abstract class Ship extends ƒ.Node {
         protected abstract velocity: ƒ.Vector3;
+        protected abstract maxSpeed: number;
+        protected abstract maxAcceleration: number;
+        protected abstract maxTurnRate: number;
         protected abstract healthPoints: number;
-        abstract update(): void;
+        protected abstract update(): void;
         abstract destroyNode(): void;
         abstract toString(): string;
         /**
@@ -137,10 +132,13 @@ declare namespace HomeFudge {
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class Destroyer extends Ship {
+        protected maxSpeed: number;
+        protected maxAcceleration: number;
         protected velocity: ƒ.Vector3;
         protected healthPoints: number;
+        protected maxTurnRate: number;
         gatlingTurret: GatlingTurret;
-        laserTurretLiest: LaserTurret[];
+        laserTurretList: LaserTurret[];
         static graph: ƒ.Graph;
         static worldNode: ƒ.Node;
         static mesh: ƒ.Mesh;
@@ -148,7 +146,7 @@ declare namespace HomeFudge {
         private initAllConfigs;
         private addWeapons;
         private setAllComponents;
-        update(): void;
+        protected update: () => void;
         alive(): boolean;
         destroyNode(): void;
         toString(): string;
@@ -165,7 +163,7 @@ declare namespace HomeFudge {
         static worldNode: ƒ.Node;
         static mesh: ƒ.Mesh;
         static material: ƒ.Material;
-        update(): void;
+        update: () => void;
         private initBulletConfig;
         alive(): boolean;
         toString(): string;
@@ -194,7 +192,7 @@ declare namespace HomeFudge {
          * @param deltaSeconds
          * Don't forget to call this function in the UpdateMethod!!!
          */
-        update(deltaSeconds: number): void;
+        private update;
         moveTurret(xRot: number, yRot: number): void;
         shoot(): void;
         constructor();
@@ -209,5 +207,19 @@ declare namespace HomeFudge {
 declare namespace HomeFudge {
     class Mathf {
         static Lerp(a: number, b: number, t: number): number;
+    }
+}
+declare namespace HomeFudge {
+    import ƒ = FudgeCore;
+    class Camera extends ƒ.Node {
+    }
+}
+declare namespace HomeFudge {
+    import ƒ = FudgeCore;
+    class Mouse {
+        static pos: ƒ.Vector2;
+        static change: ƒ.Vector2;
+        static init(): void;
+        private static update;
     }
 }

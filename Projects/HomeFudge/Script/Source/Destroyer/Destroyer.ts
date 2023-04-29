@@ -1,12 +1,17 @@
 namespace HomeFudge {
     import ƒ = FudgeCore;
     export class Destroyer extends Ship {
+        protected maxSpeed: number= null ;
+        protected maxAcceleration: number= null; 
         protected velocity: ƒ.Vector3 = null;
         protected healthPoints: number = null;
+        protected maxTurnRate: number = null;
+
+        
 
         //TODO:make private
         public gatlingTurret: GatlingTurret = null;
-        public laserTurretLiest: LaserTurret[] = null;
+        public laserTurretList: LaserTurret[] = null;
 
         static graph: ƒ.Graph = null;
         static worldNode: ƒ.Node = null;
@@ -24,6 +29,8 @@ namespace HomeFudge {
 
             //init configs
             this.velocity = new ƒ.Vector3(0, 0, 0);
+            this.maxAcceleration = Config.destroyer.maxAcceleration;
+            this.maxSpeed = Config.destroyer.maxSpeed
 
             //init Weapons
             this.addWeapons();
@@ -45,12 +52,11 @@ namespace HomeFudge {
             this.addComponent(new ƒ.ComponentMaterial(Destroyer.material));
             this.addComponent(new ƒ.ComponentMesh(Destroyer.mesh));
         }
-        public update(): void {
-            this.gatlingTurret.update(_deltaSeconds);
+        protected update = (): void => {
+
 
             //TODO: remove temporary WP shooting
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
-                console.log("SpaceBarPressed");
                 this.gatlingTurret.shoot();
             }
         }
@@ -71,6 +77,7 @@ namespace HomeFudge {
             super("Destroyer");
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)));
             this.initAllConfigs();
+            ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
         }
     }
 

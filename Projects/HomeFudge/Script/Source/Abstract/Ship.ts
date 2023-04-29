@@ -2,9 +2,13 @@ namespace HomeFudge{
     import ƒ = FudgeCore;
     export abstract class Ship extends ƒ.Node{
         protected abstract velocity:ƒ.Vector3; 
+        protected abstract maxSpeed:number;
+        protected abstract maxAcceleration:number;
+        protected abstract maxTurnRate:number;
+
         protected abstract healthPoints:number;
 
-        public abstract update():void;
+        protected abstract update():void;
         public abstract destroyNode():void; 
         public abstract toString():string;
 

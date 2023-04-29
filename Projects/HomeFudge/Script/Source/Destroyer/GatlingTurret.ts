@@ -58,17 +58,19 @@ namespace HomeFudge {
          * @param deltaSeconds 
          * Don't forget to call this function in the UpdateMethod!!!
          */
-        public update(deltaSeconds: number):void {
+        private update = ():void => {
             if (this.roundsPerSecond == null || this.reloadsEverySecond == null || this.magazineCapacity == 0) {
                 return;
             }
             if (this.roundsTimer <= this.roundsPerSecond) {
-                this.roundsTimer += deltaSeconds;
+                this.roundsTimer += _deltaSeconds;
             }
             //TODO: think about a reload function
             if (this.reloadTimer <= this.reloadsEverySecond) {
-                this.reloadTimer += deltaSeconds;
+                this.reloadTimer += _deltaSeconds;
             }
+
+
         }
         //Base rotates on the Y-Aches, Positive number for up
         //Head rotates on the Z-Aches
@@ -86,13 +88,14 @@ namespace HomeFudge {
         //spawns every n-seconds a bullet
         public shoot() {
             if (this.roundsTimer >= this.roundsPerSecond) {
-                _worldNode.addChild(new GatlingBullet(this.shootNode.mtxWorld.clone));
+                new GatlingBullet(this.shootNode.mtxWorld.clone);
                 this.roundsTimer = 0;
             }
         }
         constructor() {
             super("GatlingTurret");
             this.initConfigAndAllNodes();
+            ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
         }
     }
 }

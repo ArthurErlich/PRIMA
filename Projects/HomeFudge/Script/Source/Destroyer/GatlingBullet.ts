@@ -14,14 +14,14 @@ namespace HomeFudge {
         //TODO: try faction out.
         // faction: FACTION="FACTION.A";
 
-        public update(): void {
+        public update =(): void => {
             //goes out of the update loop as long the date is received into the config variable
             if (this.maxLifeTime == null || this.maxSpeed == null) {
                 return
             }
             this.maxLifeTime -= _deltaSeconds;
             this.mtxLocal.translateX(this.maxSpeed * _deltaSeconds);
-            if(!this.alive()){
+            if (!this.alive()) {
                 this.destroyNode();
             }
         }
@@ -43,7 +43,7 @@ namespace HomeFudge {
 
             this.addComponent(new ƒ.ComponentMesh(GatlingBullet.mesh));
             this.addComponent(new ƒ.ComponentMaterial(GatlingBullet.material));
-            
+
 
         }
 
@@ -59,13 +59,21 @@ namespace HomeFudge {
         }
         public destroyNode(): void {
             //remove bullet from viewGraph
-            //TODO:Verify if it is a valid approach
-            this.getParent().removeChild(this);
+            //TODO:Verify if it is a valid approach // I need the Super class Bullet because I extended the Bullet Class to GatlingBullet
+            ƒ.Loop.removeEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
+            try {
+                _worldNode.removeChild(this);
+
+            } catch (error) {
+                console.warn(error);
+                ƒ.Loop.stop();
+            }
         }
         constructor(spawnTransform: ƒ.Matrix4x4) {
             super("Gatling");
             this.addComponent(new ƒ.ComponentTransform(spawnTransform));
             this.initBulletConfig();
+            ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
         }
     }
 }

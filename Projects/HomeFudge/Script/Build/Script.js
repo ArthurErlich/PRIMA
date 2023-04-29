@@ -92,18 +92,19 @@ var HomeFudge;
     let viewport;
     //@ts-ignore
     document.addEventListener("interactiveViewportStarted", (event) => start(event));
+    ///World Node\\\
+    HomeFudge._worldNode = null;
+    //DeltaSeconds\\\
+    HomeFudge._deltaSeconds = null;
+    ///Mouse\\\
+    //Mouse.init();
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     let destroyer = null;
-    HomeFudge._worldNode = null;
-    HomeFudge._deltaSeconds = null;
     //Bullet list, every bullet wil register itself here for the update Method.
     ///camera setup for worldSize of 25km\\\
     //TODO:create camera Class
     let camera;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    //Bullet list, every bullet wil register itself here for the update Method.
-    HomeFudge.bulletList = new Array();
-    HomeFudge.shipsList = new Array();
     async function start(_event) {
         viewport = _event.detail;
         HomeFudge._worldNode = viewport.getBranch();
@@ -112,13 +113,13 @@ var HomeFudge;
         //TODO move camera to its own class
         camera = viewport.camera;
         camera.projectCentral(camera.getAspect(), camera.getFieldOfView(), ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+        console.warn(camera.getFieldOfView());
+        console.warn(camera.getAspect());
         //TODO:remove unused log!
         // console.log(" Gatling Turret Node: ");
         // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0]);
         // console.log(" First child of Gatling Turret: ");
         // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0].getChild(0));
-        console.warn(HomeFudge.shipsList);
-        console.warn(HomeFudge.bulletList);
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30); // start the game loop to continuously draw the viewport, update the audiosystem and drive the physics i/a
@@ -127,13 +128,17 @@ var HomeFudge;
         // ƒ.Physics.simulate();  // if physics is included and used
         HomeFudge._deltaSeconds = ƒ.Loop.timeFrameGame / 1000;
         /// ------------T-E-S-T--A-R-E-A------------------\\\
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.DELETE])) {
+            ƒ.Loop.stop();
+            console.log(HomeFudge._worldNode);
+        }
+        //TODO: remove error when frames are dropping
         if (ƒ.Loop.fpsGameAverage <= 20) {
-            console.warn("Active bullets in scene: " + HomeFudge.bulletList.length);
             console.warn(ƒ.Loop.fpsGameAverage);
+            console.warn("Active bullets in scene: " + HomeFudge._worldNode.getChildrenByName("BulletGatling").length);
+            ƒ.Loop.stop();
         }
         else {
-            updateShipsList(HomeFudge._deltaSeconds);
-            updateBulletList(HomeFudge._deltaSeconds);
         }
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         viewport.draw();
@@ -148,24 +153,10 @@ var HomeFudge;
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function crateShips() {
-        destroyer = new HomeFudge.Destroyer(ƒ.Vector3.ZERO());
+        destroyer = new HomeFudge.Destroyer(new ƒ.Vector3(0, 0, 0));
         console.warn(destroyer);
         viewport.getBranch().addChild(destroyer);
     }
-})(HomeFudge || (HomeFudge = {}));
-var HomeFudge;
-(function (HomeFudge) {
-    var ƒ = FudgeCore;
-    class Mouse {
-        init() {
-            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, () => {
-                this.update();
-            });
-        }
-        update() {
-        }
-    }
-    HomeFudge.Mouse = Mouse;
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
@@ -207,10 +198,8 @@ var HomeFudge;
         }
         constructor(idString) {
             super("Bullet" + idString);
-            //register to update event
-            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, () => {
-                this.update();
-            });
+            HomeFudge._worldNode.addChild(this);
+            //register to update event            
         }
     }
     HomeFudge.Bullet = Bullet;
@@ -265,11 +254,14 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class Destroyer extends HomeFudge.Ship {
+        maxSpeed = null;
+        maxAcceleration = null;
         velocity = null;
         healthPoints = null;
+        maxTurnRate = null;
         //TODO:make private
         gatlingTurret = null;
-        laserTurretLiest = null;
+        laserTurretList = null;
         static graph = null;
         static worldNode = null;
         static mesh = null;
@@ -283,6 +275,8 @@ var HomeFudge;
             Destroyer.material = node.getComponent(ƒ.ComponentMaterial).material;
             //init configs
             this.velocity = new ƒ.Vector3(0, 0, 0);
+            this.maxAcceleration = HomeFudge.Config.destroyer.maxAcceleration;
+            this.maxSpeed = HomeFudge.Config.destroyer.maxSpeed;
             //init Weapons
             this.addWeapons();
             //init Components
@@ -300,14 +294,12 @@ var HomeFudge;
             this.addComponent(new ƒ.ComponentMaterial(Destroyer.material));
             this.addComponent(new ƒ.ComponentMesh(Destroyer.mesh));
         }
-        update() {
-            this.gatlingTurret.update(HomeFudge._deltaSeconds);
+        update = () => {
             //TODO: remove temporary WP shooting
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
-                console.log("SpaceBarPressed");
                 this.gatlingTurret.shoot();
             }
-        }
+        };
         alive() {
             //console.error("Method not implemented.");
             return true;
@@ -324,6 +316,7 @@ var HomeFudge;
             super("Destroyer");
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)));
             this.initAllConfigs();
+            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
         }
     }
     HomeFudge.Destroyer = Destroyer;
@@ -342,7 +335,7 @@ var HomeFudge;
         static material = null;
         //TODO: try faction out.
         // faction: FACTION="FACTION.A";
-        update() {
+        update = () => {
             //goes out of the update loop as long the date is received into the config variable
             if (this.maxLifeTime == null || this.maxSpeed == null) {
                 return;
@@ -352,7 +345,7 @@ var HomeFudge;
             if (!this.alive()) {
                 this.destroyNode();
             }
-        }
+        };
         //TODO:Remove init configs and make a LoadAllConfigsClass!
         async initBulletConfig() {
             GatlingBullet.graph = await HomeFudge.Bullet.getGraphResources(HomeFudge.Config.gatlingBullet.graphID);
@@ -381,13 +374,21 @@ var HomeFudge;
         }
         destroyNode() {
             //remove bullet from viewGraph
-            //TODO:Verify if it is a valid approach
-            this.getParent().removeChild(this);
+            //TODO:Verify if it is a valid approach // I need the Super class Bullet because I extended the Bullet Class to GatlingBullet
+            ƒ.Loop.removeEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
+            try {
+                HomeFudge._worldNode.removeChild(this);
+            }
+            catch (error) {
+                console.warn(error);
+                ƒ.Loop.stop();
+            }
         }
         constructor(spawnTransform) {
             super("Gatling");
             this.addComponent(new ƒ.ComponentTransform(spawnTransform));
             this.initBulletConfig();
+            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
         }
     }
     HomeFudge.GatlingBullet = GatlingBullet;
@@ -446,18 +447,18 @@ var HomeFudge;
          * @param deltaSeconds
          * Don't forget to call this function in the UpdateMethod!!!
          */
-        update(deltaSeconds) {
+        update = () => {
             if (this.roundsPerSecond == null || this.reloadsEverySecond == null || this.magazineCapacity == 0) {
                 return;
             }
             if (this.roundsTimer <= this.roundsPerSecond) {
-                this.roundsTimer += deltaSeconds;
+                this.roundsTimer += HomeFudge._deltaSeconds;
             }
             //TODO: think about a reload function
             if (this.reloadTimer <= this.reloadsEverySecond) {
-                this.reloadTimer += deltaSeconds;
+                this.reloadTimer += HomeFudge._deltaSeconds;
             }
-        }
+        };
         //Base rotates on the Y-Aches, Positive number for up
         //Head rotates on the Z-Aches
         //TODO:create a moveToFunction which is public
@@ -473,13 +474,14 @@ var HomeFudge;
         //spawns every n-seconds a bullet
         shoot() {
             if (this.roundsTimer >= this.roundsPerSecond) {
-                HomeFudge._worldNode.addChild(new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone));
+                new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone);
                 this.roundsTimer = 0;
             }
         }
         constructor() {
             super("GatlingTurret");
             this.initConfigAndAllNodes();
+            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
         }
     }
     HomeFudge.GatlingTurret = GatlingTurret;
@@ -508,5 +510,29 @@ var HomeFudge;
         }
     }
     HomeFudge.Mathf = Mathf;
+})(HomeFudge || (HomeFudge = {}));
+var HomeFudge;
+(function (HomeFudge) {
+    var ƒ = FudgeCore;
+    class Camera extends ƒ.Node {
+    }
+    HomeFudge.Camera = Camera;
+})(HomeFudge || (HomeFudge = {}));
+var HomeFudge;
+(function (HomeFudge) {
+    var ƒ = FudgeCore;
+    class Mouse {
+        static pos = null;
+        static change = null;
+        static init() {
+            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, Mouse.update);
+            Mouse.pos = new ƒ.Vector2(0, 0);
+            Mouse.change = new ƒ.Vector2(0, 0);
+        }
+        static update = () => {
+            Mouse.change = ƒ.Vector2.ZERO();
+        };
+    }
+    HomeFudge.Mouse = Mouse;
 })(HomeFudge || (HomeFudge = {}));
 //# sourceMappingURL=Script.js.map

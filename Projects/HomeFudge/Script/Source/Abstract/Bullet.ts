@@ -44,13 +44,12 @@ namespace HomeFudge {
             }
             return node;
         }
+        
 
         constructor(idString:string){
             super("Bullet" + idString);
-            //register to update event
-            ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, () => {
-                this.update();
-            });
+            _worldNode.addChild(this);
+            //register to update event            
         }
     }
 }
