@@ -14,17 +14,23 @@ namespace HomeFudge{
             this.mtxLocal.set(ship.mtxWorld);
             this.camComp.mtxPivot.rotation = new ƒ.Vector3(0,90,0);
 
+            ship.addChild(this);
+
         }
         private update = (): void =>{
-            
+
+            //TODO:RemoveCamTest
+            this.mtxLocal.rotateY(10*_deltaSeconds);
         }
         
         private init(){
+            this.camComp = new ƒ.ComponentCamera();
+            this.camComp.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+            this.camComp = this.camComp;
+
+            this.addComponent(this.camComp);
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.ZERO())));
-            let cameraComponent:ƒ.ComponentCamera = new ƒ.ComponentCamera();
-            cameraComponent.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
-            this.camComp = cameraComponent;
-            this.addComponent(cameraComponent);
+
             //TODO:remove debug
             //TEST CUBE
             //  this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("test",ƒ.ShaderLit)));
