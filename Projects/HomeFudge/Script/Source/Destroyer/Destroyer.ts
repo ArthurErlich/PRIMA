@@ -56,7 +56,7 @@ namespace HomeFudge {
 
             //TODO: remove temporary WP shooting
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
-                this.gatlingTurret.shoot();
+                this.gatlingTurret.fire();
             }
         }
         public alive(): boolean {

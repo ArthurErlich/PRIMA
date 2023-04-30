@@ -12,7 +12,7 @@ namespace HomeFudge {
         private reloadTimer: number = 0;
 
         private magazineCapacity: number = null;
-        //*1 private magazineRounds: number = null;
+        private magazineRounds: number = null;
 
         private async initConfigAndAllNodes(): Promise<void> {
 
@@ -24,7 +24,7 @@ namespace HomeFudge {
             this.roundsPerSecond = Config.gatlingTurret.roundsPerSeconds;
             this.reloadsEverySecond = Config.gatlingTurret.reloadTime;
             this.magazineCapacity = Config.gatlingTurret.magazineCapacity;
-            //*1 this.magazineRounds = this.magazineCapacity;
+            this.magazineRounds = this.magazineCapacity;
 
             this.headNode.addChild(this.shootNode);
             this.baseNode.addChild(this.headNode);
@@ -60,7 +60,7 @@ namespace HomeFudge {
          * Don't forget to call this function in the UpdateMethod!!!
          */
         private update = (): void => {
-            if (this.roundsPerSecond == null || this.reloadsEverySecond == null || this.magazineCapacity == 0) {
+            if (this.roundsPerSecond == null || this.reloadsEverySecond == null || this.magazineCapacity == null) {
                 return;
             }
             if (this.roundsTimer <= this.roundsPerSecond) {
@@ -69,11 +69,12 @@ namespace HomeFudge {
             //TODO: think about a reload function
             if (this.reloadTimer <= this.reloadsEverySecond) {
                 this.reloadTimer += _deltaSeconds;
+                console.log(this.reloadTimer);
             }
 
             //TODO: don't use lookAt function. Better do the math yourself! -> X is forward in my game. Z Forward is Standard
-            this.baseNode.mtxLocal.lookAt(aimPos,new ƒ.Vector3(0,1,0),true);
-            this.headNode.mtxLocal.lookAt(new ƒ.Vector3(aimPos.y,aimPos.z,0), new ƒ.Vector3(0, 0, -1), true);
+            this.baseNode.mtxLocal.lookAt(aimPos, new ƒ.Vector3(0, 1, 0), true);
+            this.headNode.mtxLocal.lookAt(new ƒ.Vector3(aimPos.y, aimPos.z, 0), new ƒ.Vector3(0, 0, -1), true);
             this.headNode.mtxLocal.rotateX(90);
             //fix rotation after LookAt
 
@@ -91,11 +92,26 @@ namespace HomeFudge {
             //TODO:Add clamp for Z-Aches
             this.headNode.mtxLocal.rotateZ(xRot);
         }
-        //spawns every n-seconds a bullet
-        public shoot() {
+
+        /* This code defines a public method `fire()` that is called when the GatlingTurret is supposed
+        to fire. It checks if there are any rounds left in the magazine, and if not, it resets the
+        reload timer and refills the magazine. It also checks if the reload timer has finished, and
+        if not, it returns without firing. If the reload timer has finished and there are rounds
+        left in the magazine, it creates a new GatlingBullet object at the position of the shootNode
+        and resets the rounds timer. */
+        public fire() {
+            if (this.magazineRounds <= 0) {
+                this.reloadTimer = 0;
+                this.magazineRounds = this.magazineCapacity;
+            }
+            if (this.reloadTimer <= this.reloadsEverySecond) {
+                return;
+            }
             if (this.roundsTimer >= this.roundsPerSecond) {
                 new GatlingBullet(this.shootNode.mtxWorld.clone);
-                this.roundsTimer = 0;
+                this.roundsTimer = 0; 
+                this.magazineRounds--;
+                console.log(this.magazineRounds);
             }
         }
         constructor() {

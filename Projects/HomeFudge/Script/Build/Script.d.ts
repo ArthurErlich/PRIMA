@@ -50,6 +50,8 @@ declare namespace Script {
     }
 }
 declare namespace HomeFudge {
+}
+declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class JSONparser {
         /**
@@ -99,8 +101,6 @@ declare namespace HomeFudge {
         protected static getComponentNode(nodeName: string, graph: ƒ.Graph): Promise<ƒ.Node>;
         constructor(idString: string);
     }
-}
-declare namespace HomeFudge {
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -187,6 +187,7 @@ declare namespace HomeFudge {
         private roundsTimer;
         private reloadTimer;
         private magazineCapacity;
+        private magazineRounds;
         private initConfigAndAllNodes;
         private getGraphResources;
         private createComponents;
@@ -198,7 +199,7 @@ declare namespace HomeFudge {
          */
         private update;
         moveTurret(xRot: number, yRot: number): void;
-        shoot(): void;
+        fire(): void;
         constructor();
     }
 }
@@ -218,6 +219,7 @@ declare namespace HomeFudge {
     class Camera extends ƒ.Node {
         aimPoinz: ƒ.Vector3;
         attachedTo: ƒ.Node;
+        camComp: ƒ.ComponentCamera;
         private offset;
         attachToShip(ship: ƒ.Node): void;
         private update;
