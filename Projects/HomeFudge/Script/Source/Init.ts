@@ -3,7 +3,7 @@ namespace HomeFudge {
     ƒ.Debug.info("Main Program Template running!");
     window.addEventListener("load", init);
 
-    let camera: Camera;
+    export let _mainCamera: Camera;
     let cmpCamera: ƒ.ComponentCamera;
 
     let canvas: HTMLCanvasElement;
@@ -11,8 +11,8 @@ namespace HomeFudge {
     let cmpListener: ƒ.ComponentAudioListener;
 
     function init(_event: Event): void {
-        camera = new Camera("Main");
-        cmpCamera = camera.camComp
+        _mainCamera = new Camera("Main");
+        cmpCamera = _mainCamera.camComp
 
         canvas = document.querySelector("canvas");
         

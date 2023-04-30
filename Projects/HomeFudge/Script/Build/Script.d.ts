@@ -50,6 +50,7 @@ declare namespace Script {
     }
 }
 declare namespace HomeFudge {
+    let _mainCamera: Camera;
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -217,7 +218,6 @@ declare namespace HomeFudge {
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class Camera extends ƒ.Node {
-        aimPoinz: ƒ.Vector3;
         attachedTo: ƒ.Node;
         camComp: ƒ.ComponentCamera;
         private offset;

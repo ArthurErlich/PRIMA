@@ -89,22 +89,14 @@ namespace HomeFudge {
 
   async function initWorld(): Promise<void> {
 
-    let destroyer: ƒ.Node = initDestroyer();
+    let destroyer: ƒ.Node = initAllDestroyers();
     _viewport.getBranch().addChild(destroyer);
-
-    let camera: Camera = initCamera("Main");
-    _viewport.getBranch().addChild(camera);
-    camera.attachToShip(destroyer);
-    //  _viewport.camera.activate(false); //TODO: Make mode for Switching InteractiveCam and PlayerCam
-    //  camera.getComponent(ƒ.ComponentCamera).activate(true);
-    //  console.log(_worldNode);
+    _mainCamera.attachToShip(destroyer);
+ 
+  
 
   }
-  function initDestroyer(): Destroyer {
+  function initAllDestroyers(): Destroyer {
     return new Destroyer(new ƒ.Vector3(0, 0, 0));
-
-  }
-  function initCamera(name: string): Camera {
-    return new Camera(name);
   }
 }

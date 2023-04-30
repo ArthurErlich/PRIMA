@@ -69,7 +69,6 @@ namespace HomeFudge {
             //TODO: think about a reload function
             if (this.reloadTimer <= this.reloadsEverySecond) {
                 this.reloadTimer += _deltaSeconds;
-                console.log(this.reloadTimer);
             }
 
             //TODO: don't use lookAt function. Better do the math yourself! -> X is forward in my game. Z Forward is Standard
@@ -105,13 +104,16 @@ namespace HomeFudge {
                 this.magazineRounds = this.magazineCapacity;
             }
             if (this.reloadTimer <= this.reloadsEverySecond) {
+                if (this.reloadTimer % 1 == 0) {
+                    FudgeCore.Debug.log("TurretReloading")
+                }
                 return;
             }
             if (this.roundsTimer >= this.roundsPerSecond) {
                 new GatlingBullet(this.shootNode.mtxWorld.clone);
-                this.roundsTimer = 0; 
+                this.roundsTimer = 0;
                 this.magazineRounds--;
-                console.log(this.magazineRounds);
+                FudgeCore.Debug.log("RoundsLeft: " + this.magazineRounds);
             }
         }
         constructor() {

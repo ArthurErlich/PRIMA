@@ -61,14 +61,13 @@ var HomeFudge;
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     window.addEventListener("load", init);
-    let camera;
     let cmpCamera;
     let canvas;
     let viewport;
     let cmpListener;
     function init(_event) {
-        camera = new HomeFudge.Camera("Main");
-        cmpCamera = camera.camComp;
+        HomeFudge._mainCamera = new HomeFudge.Camera("Main");
+        cmpCamera = HomeFudge._mainCamera.camComp;
         canvas = document.querySelector("canvas");
         viewport = new ƒ.Viewport();
         cmpListener = new ƒ.ComponentAudioListener();
@@ -198,20 +197,12 @@ var HomeFudge;
         HomeFudge.Mouse.init();
     }
     async function initWorld() {
-        let destroyer = initDestroyer();
+        let destroyer = initAllDestroyers();
         HomeFudge._viewport.getBranch().addChild(destroyer);
-        let camera = initCamera("Main");
-        HomeFudge._viewport.getBranch().addChild(camera);
-        camera.attachToShip(destroyer);
-        //  _viewport.camera.activate(false); //TODO: Make mode for Switching InteractiveCam and PlayerCam
-        //  camera.getComponent(ƒ.ComponentCamera).activate(true);
-        //  console.log(_worldNode);
+        HomeFudge._mainCamera.attachToShip(destroyer);
     }
-    function initDestroyer() {
+    function initAllDestroyers() {
         return new HomeFudge.Destroyer(new ƒ.Vector3(0, 0, 0));
-    }
-    function initCamera(name) {
-        return new HomeFudge.Camera(name);
     }
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
@@ -506,7 +497,6 @@ var HomeFudge;
             //TODO: think about a reload function
             if (this.reloadTimer <= this.reloadsEverySecond) {
                 this.reloadTimer += HomeFudge._deltaSeconds;
-                console.log(this.reloadTimer);
             }
             //TODO: don't use lookAt function. Better do the math yourself! -> X is forward in my game. Z Forward is Standard
             this.baseNode.mtxLocal.lookAt(HomeFudge.aimPos, new ƒ.Vector3(0, 1, 0), true);
@@ -538,13 +528,16 @@ var HomeFudge;
                 this.magazineRounds = this.magazineCapacity;
             }
             if (this.reloadTimer <= this.reloadsEverySecond) {
+                if (this.reloadTimer % 1 == 0) {
+                    FudgeCore.Debug.log("TurretReloading");
+                }
                 return;
             }
             if (this.roundsTimer >= this.roundsPerSecond) {
                 new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone);
                 this.roundsTimer = 0;
                 this.magazineRounds--;
-                console.log(this.magazineRounds);
+                FudgeCore.Debug.log("RoundsLeft: " + this.magazineRounds);
             }
         }
         constructor() {
@@ -584,7 +577,6 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class Camera extends ƒ.Node {
-        aimPoinz = null;
         attachedTo = null;
         camComp = null;
         offset = null;
@@ -593,6 +585,7 @@ var HomeFudge;
             this.camComp.mtxPivot.translation = this.offset;
             this.attachedTo = ship;
             this.mtxLocal.set(ship.mtxWorld);
+            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0, 90, 0);
         }
         update = () => {
         };
@@ -600,7 +593,6 @@ var HomeFudge;
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.ZERO())));
             let cameraComponent = new ƒ.ComponentCamera();
             cameraComponent.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
-            cameraComponent.mtxPivot.rotation.set(0, -90, 0);
             this.camComp = cameraComponent;
             this.addComponent(cameraComponent);
             //TODO:remove debug
