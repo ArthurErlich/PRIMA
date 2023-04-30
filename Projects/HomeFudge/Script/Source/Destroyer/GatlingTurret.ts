@@ -6,6 +6,11 @@ namespace HomeFudge {
         private baseNode: ƒ.Node = null;
         private shootNode: ƒ.Node = null;
 
+        private static headMesh: ƒ.Mesh = null;
+        private static baseMesh: ƒ.Mesh = null;
+        private static headMaterial: ƒ.Material = null;
+        private static baseMaterial: ƒ.Material = null;
+
         private roundsPerSecond: number = null;
         private reloadsEverySecond: number = null;
         private roundsTimer: number = 0;
@@ -17,8 +22,11 @@ namespace HomeFudge {
         private async initConfigAndAllNodes(): Promise<void> {
 
             let graph: ƒ.Graph = await this.getGraphResources(Config.gatlingTurret.graphID);
+
+            //TODO|ON-HOLD| REWRITE Turret Mesh and Material component gathering and attaching -> like Destroyer Class
             this.headNode = this.createComponents("GatlingTurretHead", JSONparser.toVector3(Config.gatlingTurret.headPosition), graph);
             this.baseNode = this.createComponents("GatlingTurretBase", JSONparser.toVector3(Config.gatlingTurret.basePosition), graph);
+            //TODO:FixWrongShootNode Position. Shoots above the Barrel
             this.shootNode = this.createShootPosNode(JSONparser.toVector3(Config.gatlingTurret.shootNodePosition));
 
             this.roundsPerSecond = Config.gatlingTurret.roundsPerSeconds;
@@ -40,14 +48,30 @@ namespace HomeFudge {
             return graph;
         }
         private createComponents(nodeName: string, transform: ƒ.Vector3, graph: ƒ.Graph): ƒ.Node {
-            let node = graph.getChildrenByName(nodeName)[0];
+            let node:ƒ.Node = graph.getChildrenByName(nodeName)[0];
+            let newNode:ƒ.Node = new ƒ.Node("nodeName");
             if (node == null) {
                 console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
             }
-            node.addComponent(node.getComponent(ƒ.ComponentMesh));
-            node.addComponent(node.getComponent(ƒ.ComponentMaterial));
-            node.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform)));
-            return node;
+            switch (nodeName) {
+                case "GatlingTurretHead":
+                GatlingTurret.headMaterial = node.getComponent(ƒ.ComponentMaterial).material;
+                GatlingTurret.headMesh = node.getComponent(ƒ.ComponentMesh).mesh;
+                newNode.addComponent(new ƒ.ComponentMaterial(GatlingTurret.headMaterial));
+                newNode.addComponent(new ƒ.ComponentMesh(GatlingTurret.headMesh));
+                    break;
+                case "GatlingTurretBase":
+                    GatlingTurret.baseMaterial = node.getComponent(ƒ.ComponentMaterial).material;
+                    GatlingTurret.baseMesh = node.getComponent(ƒ.ComponentMesh).mesh;
+                    newNode.addComponent(new ƒ.ComponentMaterial(GatlingTurret.baseMaterial));
+                    newNode.addComponent(new ƒ.ComponentMesh(GatlingTurret.baseMesh));
+                    break;
+                default:
+                    console.warn("+\"" + nodeName + "\" no material or mesh found inside: " + graph.name + "->Graph");
+                    break;
+            }
+            newNode.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform)));
+            return newNode;
         }
         private createShootPosNode(transform: ƒ.Vector3): ƒ.Node {
             let shootPosNode: ƒ.Node = new ƒ.Node("ShootSpawnPos");
@@ -72,9 +96,9 @@ namespace HomeFudge {
             }
 
             //TODO: don't use lookAt function. Better do the math yourself! -> X is forward in my game. Z Forward is Standard
-            this.baseNode.mtxLocal.lookAt(aimPos, new ƒ.Vector3(0, 1, 0), true);
-            this.headNode.mtxLocal.lookAt(new ƒ.Vector3(aimPos.y, aimPos.z, 0), new ƒ.Vector3(0, 0, -1), true);
-            this.headNode.mtxLocal.rotateX(90);
+            // this.baseNode.mtxLocal.lookAt(aimPos, new ƒ.Vector3(0, 1, 0), true);
+            // this.headNode.mtxLocal.lookAt(new ƒ.Vector3(aimPos.y, aimPos.z, 0), new ƒ.Vector3(0, 0, -1), true);
+            // this.headNode.mtxLocal.rotateX(90);
             //fix rotation after LookAt
 
         }
