@@ -68,6 +68,7 @@ declare namespace HomeFudge {
     import ƒ = FudgeCore;
     let _worldNode: ƒ.Node;
     let _deltaSeconds: number;
+    let _viewport: ƒ.Viewport;
     let aimPos: ƒ.Vector3;
 }
 declare namespace HomeFudge {
@@ -98,6 +99,8 @@ declare namespace HomeFudge {
         protected static getComponentNode(nodeName: string, graph: ƒ.Graph): Promise<ƒ.Node>;
         constructor(idString: string);
     }
+}
+declare namespace HomeFudge {
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -184,7 +187,6 @@ declare namespace HomeFudge {
         private roundsTimer;
         private reloadTimer;
         private magazineCapacity;
-        private magazineRounds;
         private initConfigAndAllNodes;
         private getGraphResources;
         private createComponents;
@@ -228,7 +230,9 @@ declare namespace HomeFudge {
     class Mouse {
         static pos: ƒ.Vector2;
         static change: ƒ.Vector2;
+        private static tempPos;
         static init(): void;
         private static update;
+        private static moveUpdate;
     }
 }

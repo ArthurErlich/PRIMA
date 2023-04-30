@@ -12,7 +12,7 @@ namespace HomeFudge {
         private reloadTimer: number = 0;
 
         private magazineCapacity: number = null;
-        private magazineRounds: number = null;
+        //*1 private magazineRounds: number = null;
 
         private async initConfigAndAllNodes(): Promise<void> {
 
@@ -24,7 +24,7 @@ namespace HomeFudge {
             this.roundsPerSecond = Config.gatlingTurret.roundsPerSeconds;
             this.reloadsEverySecond = Config.gatlingTurret.reloadTime;
             this.magazineCapacity = Config.gatlingTurret.magazineCapacity;
-            this.magazineRounds = this.magazineCapacity;
+            //*1 this.magazineRounds = this.magazineCapacity;
 
             this.headNode.addChild(this.shootNode);
             this.baseNode.addChild(this.headNode);
