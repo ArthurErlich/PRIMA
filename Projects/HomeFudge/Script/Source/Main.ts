@@ -15,38 +15,24 @@ namespace HomeFudge {
 
   ///Mouse\\\
 
+
   //Mouse.init();
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   let destroyer: Destroyer = null;
   //Bullet list, every bullet wil register itself here for the update Method.
   ///camera setup for worldSize of 25km\\\
   //TODO:create camera Class
-  let camera: ƒ.ComponentCamera;
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
 
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
     _worldNode = viewport.getBranch();
-    await loadConfig().then(crateShips).then(() => { console.warn("ConfigLoaded"); });// to create ships. first load configs than the ships etc
+    //Loads Config then initilizes the world 
+    await loadConfig().then(initWorld).then(() => { console.warn("ConfigsLoaded and world Initialized"); });// to create ships. first load configs than the ships etc
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-
-
-    //TODO move camera to its own class
-    camera = viewport.camera;
-    camera.projectCentral(camera.getAspect(), camera.getFieldOfView(), ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
-    console.warn(camera.getFieldOfView());
-    console.warn(camera.getAspect());
-
-
-    //TODO:remove unused log!
-    // console.log(" Gatling Turret Node: ");
-    // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0]);
-    // console.log(" First child of Gatling Turret: ");
-    // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0].getChild(0));
-
-
+    viewport.camera.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
@@ -69,9 +55,10 @@ namespace HomeFudge {
       console.warn(ƒ.Loop.fpsGameAverage);
       console.warn("Active bullets in scene: " + _worldNode.getChildrenByName("BulletGatling").length);
       ƒ.Loop.stop();
-    } else {
-
     }
+
+
+     aimPos = getAimPos();
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     viewport.draw();
@@ -79,17 +66,37 @@ namespace HomeFudge {
   }
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
+  function getAimPos(): ƒ.Vector3 {
+    let pick:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),viewport.camera,new ƒ.Vector2(viewport.canvas.width/2,viewport.canvas.height/2));
+    return pick[0].posWorld;
+  }
+  export let aimPos:ƒ.Vector3= ƒ.Vector3.ZERO();
+  /// ------------T-E-S-T--A-R-E-A------------------\\\
   async function loadConfig() {
     //loads configs
     performance.now();
     console.warn("LoadingConfigs");
     await Config.initConfigs();
   }
-  /// ------------T-E-S-T--A-R-E-A------------------\\\
 
-  async function crateShips(): Promise<void> {
-    destroyer = new Destroyer(new ƒ.Vector3(0, 0, 0));
-    console.warn(destroyer);
+  async function initWorld(): Promise<void> {
+
+    let destroyer: ƒ.Node = initDestroyer();
     viewport.getBranch().addChild(destroyer);
+
+    let camera: Camera = initCamera("Main");
+    viewport.getBranch().addChild(camera);
+    camera.attachToShip(destroyer);
+    //  viewport.camera.activate(false); //TODO: Make mode for Switching InteractiveCam and PlayerCam
+    //  camera.getComponent(ƒ.ComponentCamera).activate(true);
+    //  console.log(_worldNode);
+
+  }
+  function initDestroyer(): Destroyer {
+    return new Destroyer(new ƒ.Vector3(0, 0, 0));
+
+  }
+  function initCamera(name: string): Camera {
+    return new Camera(name);
   }
 }

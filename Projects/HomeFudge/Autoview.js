@@ -48,7 +48,7 @@ async function startInteractiveViewport(_graphId)/* : void */ {
   let cmpCamera/* : ƒ.ComponentCamera */ = new ƒ.ComponentCamera();
   let canvas/* : HTMLCanvasElement */ = document.querySelector("canvas");
   let viewport/* : ƒ.Viewport */ = new ƒ.Viewport();
-  viewport.initialize("InteractiveViewport", graph, cmpCamera, canvas);
+   viewport.initialize("InteractiveViewport", graph, cmpCamera, canvas);
   ƒ.Debug.log("Viewport:", viewport);  
   // make the camera interactive (complex method in FudgeAid)
   let cameraOrbit/* : ƒ.Node */ = ƒAid.Viewport.expandCameraToInteractiveOrbit(viewport);

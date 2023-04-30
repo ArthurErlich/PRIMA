@@ -3,11 +3,12 @@ declare namespace HomeFudge {
         static gatlingBullet: GatlingBulletConfig;
         static gatlingTurret: GatlingTurretConfig;
         static destroyer: DestroyerConfig;
+        static camera: CameraConfig;
         static initConfigs(): Promise<void>;
     }
-    export enum CONFIG {
-        GATLING_BULLET = 0,
-        GATLING_TURRET = 1
+    interface CameraConfig {
+        offset: number[];
+        [key: string]: number[];
     }
     interface GatlingBulletConfig {
         graphID: string;
@@ -67,6 +68,7 @@ declare namespace HomeFudge {
     import ƒ = FudgeCore;
     let _worldNode: ƒ.Node;
     let _deltaSeconds: number;
+    let aimPos: ƒ.Vector3;
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -212,6 +214,13 @@ declare namespace HomeFudge {
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class Camera extends ƒ.Node {
+        aimPoinz: ƒ.Vector3;
+        attachedTo: ƒ.Node;
+        private offset;
+        attachToShip(ship: ƒ.Node): void;
+        private update;
+        private init;
+        constructor(name: string);
     }
 }
 declare namespace HomeFudge {

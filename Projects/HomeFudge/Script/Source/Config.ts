@@ -4,23 +4,25 @@ namespace HomeFudge {
         public static gatlingBullet: GatlingBulletConfig = null;
         public static gatlingTurret: GatlingTurretConfig = null;
         public static destroyer: DestroyerConfig = null;
+        public static camera: CameraConfig = null;
 
         public static async initConfigs(): Promise<void> {
             let gatTurretResponse: Response = await fetch("Configs/gatTurretConfig.json");
             let gatBulletResponse: Response = await fetch("Configs/gatBulletConfig.json");
             let destroyerResponse: Response = await fetch("Configs/destroyerConfig.json");
-
+            let cameraResponse: Response = await fetch("Configs/cameraConfig.json");
 
 
             Config.gatlingBullet = await gatBulletResponse.json();
             Config.gatlingTurret = await gatTurretResponse.json();
             Config.destroyer = await destroyerResponse.json();
+            Config.camera = await cameraResponse.json();
         }
 
     }
-    export enum CONFIG {
-        GATLING_BULLET,
-        GATLING_TURRET,
+    interface CameraConfig {
+        offset: number[];
+        [key: string]: number[];
     }
     interface GatlingBulletConfig {
         graphID: string;

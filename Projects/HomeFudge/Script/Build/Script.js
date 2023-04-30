@@ -5,21 +5,19 @@ var HomeFudge;
         static gatlingBullet = null;
         static gatlingTurret = null;
         static destroyer = null;
+        static camera = null;
         static async initConfigs() {
             let gatTurretResponse = await fetch("Configs/gatTurretConfig.json");
             let gatBulletResponse = await fetch("Configs/gatBulletConfig.json");
             let destroyerResponse = await fetch("Configs/destroyerConfig.json");
+            let cameraResponse = await fetch("Configs/cameraConfig.json");
             Config.gatlingBullet = await gatBulletResponse.json();
             Config.gatlingTurret = await gatTurretResponse.json();
             Config.destroyer = await destroyerResponse.json();
+            Config.camera = await cameraResponse.json();
         }
     }
     HomeFudge.Config = Config;
-    let CONFIG;
-    (function (CONFIG) {
-        CONFIG[CONFIG["GATLING_BULLET"] = 0] = "GATLING_BULLET";
-        CONFIG[CONFIG["GATLING_TURRET"] = 1] = "GATLING_TURRET";
-    })(CONFIG = HomeFudge.CONFIG || (HomeFudge.CONFIG = {}));
 })(HomeFudge || (HomeFudge = {}));
 var Script;
 (function (Script) {
@@ -103,23 +101,14 @@ var HomeFudge;
     //Bullet list, every bullet wil register itself here for the update Method.
     ///camera setup for worldSize of 25km\\\
     //TODO:create camera Class
-    let camera;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function start(_event) {
         viewport = _event.detail;
         HomeFudge._worldNode = viewport.getBranch();
-        await loadConfig().then(crateShips).then(() => { console.warn("ConfigLoaded"); }); // to create ships. first load configs than the ships etc
+        //Loads Config then initilizes the world 
+        await loadConfig().then(initWorld).then(() => { console.warn("ConfigsLoaded and world Initialized"); }); // to create ships. first load configs than the ships etc
         /// ------------T-E-S-T--A-R-E-A------------------\\\
-        //TODO move camera to its own class
-        camera = viewport.camera;
-        camera.projectCentral(camera.getAspect(), camera.getFieldOfView(), ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
-        console.warn(camera.getFieldOfView());
-        console.warn(camera.getAspect());
-        //TODO:remove unused log!
-        // console.log(" Gatling Turret Node: ");
-        // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0]);
-        // console.log(" First child of Gatling Turret: ");
-        // console.log(viewport.getBranch().getChildrenByName("GatlingTurret")[0].getChild(0));
+        viewport.camera.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30); // start the game loop to continuously draw the viewport, update the audiosystem and drive the physics i/a
@@ -138,12 +127,17 @@ var HomeFudge;
             console.warn("Active bullets in scene: " + HomeFudge._worldNode.getChildrenByName("BulletGatling").length);
             ƒ.Loop.stop();
         }
-        else {
-        }
+        HomeFudge.aimPos = getAimPos();
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
+    /// ------------T-E-S-T--A-R-E-A------------------\\\
+    function getAimPos() {
+        let pick = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), viewport.camera, new ƒ.Vector2(viewport.canvas.width / 2, viewport.canvas.height / 2));
+        return pick[0].posWorld;
+    }
+    HomeFudge.aimPos = ƒ.Vector3.ZERO();
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function loadConfig() {
         //loads configs
@@ -151,11 +145,21 @@ var HomeFudge;
         console.warn("LoadingConfigs");
         await HomeFudge.Config.initConfigs();
     }
-    /// ------------T-E-S-T--A-R-E-A------------------\\\
-    async function crateShips() {
-        destroyer = new HomeFudge.Destroyer(new ƒ.Vector3(0, 0, 0));
-        console.warn(destroyer);
+    async function initWorld() {
+        let destroyer = initDestroyer();
         viewport.getBranch().addChild(destroyer);
+        let camera = initCamera("Main");
+        viewport.getBranch().addChild(camera);
+        camera.attachToShip(destroyer);
+        //  viewport.camera.activate(false); //TODO: Make mode for Switching InteractiveCam and PlayerCam
+        //  camera.getComponent(ƒ.ComponentCamera).activate(true);
+        //  console.log(_worldNode);
+    }
+    function initDestroyer() {
+        return new HomeFudge.Destroyer(new ƒ.Vector3(0, 0, 0));
+    }
+    function initCamera(name) {
+        return new HomeFudge.Camera(name);
     }
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
@@ -416,6 +420,7 @@ var HomeFudge;
             this.reloadsEverySecond = HomeFudge.Config.gatlingTurret.reloadTime;
             this.magazineCapacity = HomeFudge.Config.gatlingTurret.magazineCapacity;
             this.magazineRounds = this.magazineCapacity;
+            //TODO:Fix wrong Coordinates
             this.headNode.addChild(this.shootNode);
             this.baseNode.addChild(this.headNode);
             this.addChild(this.baseNode);
@@ -458,6 +463,11 @@ var HomeFudge;
             if (this.reloadTimer <= this.reloadsEverySecond) {
                 this.reloadTimer += HomeFudge._deltaSeconds;
             }
+            //TODO: don't use lookAt function. Better do the math yourself!
+            this.baseNode.mtxLocal.lookAt(HomeFudge.aimPos, new ƒ.Vector3(0, 1, 0), true);
+            this.headNode.mtxLocal.lookAt(new ƒ.Vector3(HomeFudge.aimPos.y, HomeFudge.aimPos.z, 0), new ƒ.Vector3(0, 0, -1), true);
+            this.headNode.mtxLocal.rotateX(90);
+            //fix rotation after LookAt
         };
         //Base rotates on the Y-Aches, Positive number for up
         //Head rotates on the Z-Aches
@@ -515,6 +525,35 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class Camera extends ƒ.Node {
+        aimPoinz = null;
+        attachedTo = null;
+        offset = null;
+        attachToShip(ship) {
+            this.attachedTo = ship;
+            this.mtxLocal.set(ship.mtxWorld);
+        }
+        update = () => {
+        };
+        init() {
+            this.offset = HomeFudge.JSONparser.toVector3(HomeFudge.Config.camera.offset);
+            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.ZERO())));
+            let cameraComponent = new ƒ.ComponentCamera();
+            cameraComponent.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+            cameraComponent.mtxPivot.rotation.set(0, -90, 0);
+            cameraComponent.mtxPivot.translation = this.offset;
+            this.addComponent(cameraComponent);
+            //TODO:remove debug
+            //TEST CUBE
+            //  this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("test",ƒ.ShaderLit)));
+            //  this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshCube()));
+            //  this.getComponent(ƒ.ComponentMesh).mtxPivot.translation = this.offset;
+            HomeFudge._worldNode.addChild(this);
+        }
+        constructor(name) {
+            super(name + "Camera");
+            this.init();
+            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
+        }
     }
     HomeFudge.Camera = Camera;
 })(HomeFudge || (HomeFudge = {}));
