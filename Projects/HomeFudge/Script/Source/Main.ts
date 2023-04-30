@@ -6,6 +6,7 @@ namespace HomeFudge {
   
   //@ts-ignore
   document.addEventListener("interactiveViewportStarted", (event) => <EventListener>start(event));
+  document.addEventListener("keydown", (event) => contionuLoop(event))
 
   ///World Node\\\
   export let _worldNode: ƒ.Node = null;
@@ -32,7 +33,9 @@ namespace HomeFudge {
     
     console.log(_viewport);
     //Loads Config then initilizes the world 
-    await loadConfig().then(initWorld).then(() => { console.warn("ConfigsLoaded and world Initialized"); });// to create ships. first load configs than the ships etc
+    await loadConfig().then(initWorld).then(() => { 
+      console.warn("ConfigsLoaded and world Initialized");
+    });// to create ships. first load configs than the ships etc
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     /// ------------T-E-S-T--A-R-E-A------------------\\\
@@ -60,7 +63,7 @@ namespace HomeFudge {
     }
 
 
-     aimPos = getAimPos(); //TODO:Remove unused AmingRayCaster
+    // let letaimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AmingRayCaster
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
@@ -73,11 +76,9 @@ namespace HomeFudge {
     let pick:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,new ƒ.Vector2(_viewport.canvas.width/2,_viewport.canvas.height/2));
     return pick[0].posWorld;
   }
-  export let aimPos:ƒ.Vector3= ƒ.Vector3.ZERO();
-
-
   
   
+
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   async function loadConfig() {
     //loads configs
@@ -88,15 +89,21 @@ namespace HomeFudge {
   }
 
   async function initWorld(): Promise<void> {
+    let destroyer: ƒ.Node[] = initAllDestroyers();
+    
+    _viewport.getBranch().addChild(destroyer[0]);
 
-    let destroyer: ƒ.Node = initAllDestroyers();
-    _viewport.getBranch().addChild(destroyer);
-    _mainCamera.attachToShip(destroyer);
+    _mainCamera.attachToShip(destroyer[0]);
  
-  
-
   }
-  function initAllDestroyers(): Destroyer {
-    return new Destroyer(new ƒ.Vector3(0, 0, 0));
+  function initAllDestroyers(): Destroyer[] {
+    return [new Destroyer(new ƒ.Vector3(0, 0, 0))];
+  }
+
+  //DEBUG
+  function contionuLoop(event:KeyboardEvent){
+    if(event.code == "Insert"){
+      ƒ.Loop.continue();
+    }
   }
 }
