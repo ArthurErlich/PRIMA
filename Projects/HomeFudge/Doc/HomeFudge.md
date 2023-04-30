@@ -29,7 +29,8 @@ The ideal case for the Game Prototype would be to have two Destroyers in a battl
 
 [Shooting a Moving Target (gamedeveloper.com)](https://www.gamedeveloper.com/programming/shooting-a-moving-target)
 I found a got a solution for the problem of shooting a moving targe will be used for aiming the Gatling Turret.
-```csharp	
+
+```csharp
 // Find the relative position and velocities
 Vector3 relativePosition = target.position - gun.position;
 Vector3 relativeVelocity = target.velocity - gun.velocity;
@@ -66,3 +67,7 @@ float AimAhead(Vector3 relativePosition, Vector3 relativeVelocity, float bulletS
   }
 }
 ```
+
+Before I found that solution, I started doing my own math, which I will keep here for reference:
+![](assets/20230430_170605_image.png)
+doesn't it look beautiful? 
