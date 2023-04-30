@@ -18,7 +18,6 @@ namespace HomeFudge {
         static mesh: ƒ.Mesh = null;
         static material: ƒ.Material = null;
 
-        //TODO:Remove init configs and make a LoadAllConfigsClass!
         private async initAllConfigs() {
             Destroyer.graph = await Ship.getGraphResources(Config.destroyer.graphID);
             let node: ƒ.Node = await Destroyer.getComponentNode("Destroyer", Destroyer.graph);

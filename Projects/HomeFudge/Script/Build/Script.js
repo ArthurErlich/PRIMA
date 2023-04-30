@@ -87,31 +87,30 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
-    let viewport;
     //@ts-ignore
     document.addEventListener("interactiveViewportStarted", (event) => start(event));
     ///World Node\\\
     HomeFudge._worldNode = null;
-    //DeltaSeconds\\\
+    ///DeltaSeconds\\\
     HomeFudge._deltaSeconds = null;
+    ///Viewport\\\
+    HomeFudge._viewport = null;
     ///Mouse\\\
-    //Mouse.init();
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    let destroyer = null;
     //Bullet list, every bullet wil register itself here for the update Method.
     ///camera setup for worldSize of 25km\\\
     //TODO:create camera Class
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function start(_event) {
-        viewport = _event.detail;
-        HomeFudge._worldNode = viewport.getBranch();
+        HomeFudge._viewport = _event.detail;
+        HomeFudge._worldNode = HomeFudge._viewport.getBranch();
         //Loads Config then initilizes the world 
         await loadConfig().then(initWorld).then(() => { console.warn("ConfigsLoaded and world Initialized"); }); // to create ships. first load configs than the ships etc
         /// ------------T-E-S-T--A-R-E-A------------------\\\
-        viewport.camera.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+        HomeFudge._viewport.camera.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
-        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30); // start the game loop to continuously draw the viewport, update the audiosystem and drive the physics i/a
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30); // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
@@ -128,13 +127,15 @@ var HomeFudge;
             ƒ.Loop.stop();
         }
         HomeFudge.aimPos = getAimPos();
+        console.log(HomeFudge.Mouse.pos.toString());
+        console.log(HomeFudge.Mouse.change.toString());
         /// ------------T-E-S-T--A-R-E-A------------------\\\
-        viewport.draw();
+        HomeFudge._viewport.draw();
         ƒ.AudioManager.default.update();
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     function getAimPos() {
-        let pick = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), viewport.camera, new ƒ.Vector2(viewport.canvas.width / 2, viewport.canvas.height / 2));
+        let pick = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, new ƒ.Vector2(HomeFudge._viewport.canvas.width / 2, HomeFudge._viewport.canvas.height / 2));
         return pick[0].posWorld;
     }
     HomeFudge.aimPos = ƒ.Vector3.ZERO();
@@ -144,14 +145,15 @@ var HomeFudge;
         performance.now();
         console.warn("LoadingConfigs");
         await HomeFudge.Config.initConfigs();
+        HomeFudge.Mouse.init();
     }
     async function initWorld() {
         let destroyer = initDestroyer();
-        viewport.getBranch().addChild(destroyer);
+        HomeFudge._viewport.getBranch().addChild(destroyer);
         let camera = initCamera("Main");
-        viewport.getBranch().addChild(camera);
+        HomeFudge._viewport.getBranch().addChild(camera);
         camera.attachToShip(destroyer);
-        //  viewport.camera.activate(false); //TODO: Make mode for Switching InteractiveCam and PlayerCam
+        //  _viewport.camera.activate(false); //TODO: Make mode for Switching InteractiveCam and PlayerCam
         //  camera.getComponent(ƒ.ComponentCamera).activate(true);
         //  console.log(_worldNode);
     }
@@ -175,7 +177,6 @@ var HomeFudge;
          * retrieved.
          * @return a Promise that resolves to a ƒ.Graph object.
          */
-        //TODO:Remove init configs and make a LoadAllConfigsClass!
         static async getGraphResources(graphID) {
             let graph = ƒ.Project.resources[graphID];
             if (graph == null) {
@@ -192,7 +193,6 @@ var HomeFudge;
          * scene or game world.
          * @return a Promise that resolves to a ƒ.Node object.
          */
-        //TODO:Remove getComponentNode configs and make a LoadNode!
         static async getComponentNode(nodeName, graph) {
             let node = graph.getChildrenByName(nodeName)[0];
             if (node == null) {
@@ -208,6 +208,15 @@ var HomeFudge;
     }
     HomeFudge.Bullet = Bullet;
 })(HomeFudge || (HomeFudge = {}));
+//TODO:Replace autoView.js inside here
+var HomeFudge;
+//TODO:Replace autoView.js inside here
+(function (HomeFudge) {
+    document.addEventListener("startInteractiveViewport", (event) => startInteractiveViewport(event));
+    async function startInteractiveViewport(_event) {
+        console.warn(_event.detail);
+    }
+})(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
@@ -219,7 +228,6 @@ var HomeFudge;
          * retrieved.
          * @return a Promise that resolves to a ƒ.Graph object.
          */
-        //TODO:Remove init configs and make a LoadAllConfigsClass!
         static async getGraphResources(graphID) {
             let graph = ƒ.Project.resources[graphID];
             if (graph == null) {
@@ -236,7 +244,6 @@ var HomeFudge;
          * scene or game world.
          * @return a Promise that resolves to a ƒ.Node object.
          */
-        //TODO:Remove init configs and make a LoadAllConfigsClass!
         static async getComponentNode(nodeName, graph) {
             let node = graph.getChildrenByName(nodeName)[0];
             if (node == null) {
@@ -270,7 +277,6 @@ var HomeFudge;
         static worldNode = null;
         static mesh = null;
         static material = null;
-        //TODO:Remove init configs and make a LoadAllConfigsClass!
         async initAllConfigs() {
             Destroyer.graph = await HomeFudge.Ship.getGraphResources(HomeFudge.Config.destroyer.graphID);
             let node = await Destroyer.getComponentNode("Destroyer", Destroyer.graph);
@@ -346,11 +352,11 @@ var HomeFudge;
             }
             this.maxLifeTime -= HomeFudge._deltaSeconds;
             this.mtxLocal.translateX(this.maxSpeed * HomeFudge._deltaSeconds);
+            //life check.
             if (!this.alive()) {
                 this.destroyNode();
             }
         };
-        //TODO:Remove init configs and make a LoadAllConfigsClass!
         async initBulletConfig() {
             GatlingBullet.graph = await HomeFudge.Bullet.getGraphResources(HomeFudge.Config.gatlingBullet.graphID);
             ///initAttributes\\\
@@ -367,7 +373,6 @@ var HomeFudge;
             this.addComponent(new ƒ.ComponentMaterial(GatlingBullet.material));
         }
         alive() {
-            //TODO:put alive check inside bullet update function
             if (this.maxLifeTime == null) {
                 return true;
             }
@@ -409,8 +414,7 @@ var HomeFudge;
         roundsTimer = 0;
         reloadTimer = 0;
         magazineCapacity = null;
-        magazineRounds = null;
-        //TODO:Remove init configs and make a LoadAllConfigsClass!
+        //*1 private magazineRounds: number = null;
         async initConfigAndAllNodes() {
             let graph = await this.getGraphResources(HomeFudge.Config.gatlingTurret.graphID);
             this.headNode = this.createComponents("GatlingTurretHead", HomeFudge.JSONparser.toVector3(HomeFudge.Config.gatlingTurret.headPosition), graph);
@@ -419,8 +423,7 @@ var HomeFudge;
             this.roundsPerSecond = HomeFudge.Config.gatlingTurret.roundsPerSeconds;
             this.reloadsEverySecond = HomeFudge.Config.gatlingTurret.reloadTime;
             this.magazineCapacity = HomeFudge.Config.gatlingTurret.magazineCapacity;
-            this.magazineRounds = this.magazineCapacity;
-            //TODO:Fix wrong Coordinates
+            //*1 this.magazineRounds = this.magazineCapacity;
             this.headNode.addChild(this.shootNode);
             this.baseNode.addChild(this.headNode);
             this.addChild(this.baseNode);
@@ -463,7 +466,7 @@ var HomeFudge;
             if (this.reloadTimer <= this.reloadsEverySecond) {
                 this.reloadTimer += HomeFudge._deltaSeconds;
             }
-            //TODO: don't use lookAt function. Better do the math yourself!
+            //TODO: don't use lookAt function. Better do the math yourself! -> X is forward in my game. Z Forward is Standard
             this.baseNode.mtxLocal.lookAt(HomeFudge.aimPos, new ƒ.Vector3(0, 1, 0), true);
             this.headNode.mtxLocal.lookAt(new ƒ.Vector3(HomeFudge.aimPos.y, HomeFudge.aimPos.z, 0), new ƒ.Vector3(0, 0, -1), true);
             this.headNode.mtxLocal.rotateX(90);
@@ -471,7 +474,7 @@ var HomeFudge;
         };
         //Base rotates on the Y-Aches, Positive number for up
         //Head rotates on the Z-Aches
-        //TODO:create a moveToFunction which is public
+        //TODO:create a moveToFunction which is public, turn rate based on maxRotSpeed
         moveTurret(xRot, yRot) {
             if (this.baseNode == null || this.headNode == null) {
                 return;
@@ -563,13 +566,24 @@ var HomeFudge;
     class Mouse {
         static pos = null;
         static change = null;
+        static tempPos = null;
         static init() {
+            HomeFudge._viewport.canvas.addEventListener("mousemove", Mouse.moveUpdate);
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, Mouse.update);
             Mouse.pos = new ƒ.Vector2(0, 0);
             Mouse.change = new ƒ.Vector2(0, 0);
+            Mouse.tempPos = new ƒ.Vector2(0, 0);
         }
         static update = () => {
-            Mouse.change = ƒ.Vector2.ZERO();
+            //P1=Pos
+            //P2=TempPos
+            //P2-P1
+            Mouse.change = new ƒ.Vector2(Mouse.tempPos.x - Mouse.pos.x, Mouse.tempPos.y - Mouse.pos.y);
+            Mouse.tempPos = Mouse.pos;
+        };
+        static moveUpdate = (_event) => {
+            Mouse.change = new ƒ.Vector2(_event.movementX, _event.movementY);
+            Mouse.pos = new ƒ.Vector2(_event.x, _event.y);
         };
     }
     HomeFudge.Mouse = Mouse;

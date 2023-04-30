@@ -1,5 +1,4 @@
 namespace HomeFudge {
-    import ƒ = FudgeCore;
     export class Config {
         public static gatlingBullet: GatlingBulletConfig = null;
         public static gatlingTurret: GatlingTurretConfig = null;

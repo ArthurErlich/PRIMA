@@ -12,9 +12,8 @@ namespace HomeFudge {
         private reloadTimer: number = 0;
 
         private magazineCapacity: number = null;
-        private magazineRounds: number = null;
+        //*1 private magazineRounds: number = null;
 
-        //TODO:Remove init configs and make a LoadAllConfigsClass!
         private async initConfigAndAllNodes(): Promise<void> {
 
             let graph: ƒ.Graph = await this.getGraphResources(Config.gatlingTurret.graphID);
@@ -25,9 +24,8 @@ namespace HomeFudge {
             this.roundsPerSecond = Config.gatlingTurret.roundsPerSeconds;
             this.reloadsEverySecond = Config.gatlingTurret.reloadTime;
             this.magazineCapacity = Config.gatlingTurret.magazineCapacity;
-            this.magazineRounds = this.magazineCapacity;
+            //*1 this.magazineRounds = this.magazineCapacity;
 
-            //TODO:Fix wrong Coordinates
             this.headNode.addChild(this.shootNode);
             this.baseNode.addChild(this.headNode);
             this.addChild(this.baseNode);
@@ -73,7 +71,7 @@ namespace HomeFudge {
                 this.reloadTimer += _deltaSeconds;
             }
 
-            //TODO: don't use lookAt function. Better do the math yourself!
+            //TODO: don't use lookAt function. Better do the math yourself! -> X is forward in my game. Z Forward is Standard
             this.baseNode.mtxLocal.lookAt(aimPos,new ƒ.Vector3(0,1,0),true);
             this.headNode.mtxLocal.lookAt(new ƒ.Vector3(aimPos.y,aimPos.z,0), new ƒ.Vector3(0, 0, -1), true);
             this.headNode.mtxLocal.rotateX(90);
@@ -82,7 +80,7 @@ namespace HomeFudge {
         }
         //Base rotates on the Y-Aches, Positive number for up
         //Head rotates on the Z-Aches
-        //TODO:create a moveToFunction which is public
+        //TODO:create a moveToFunction which is public, turn rate based on maxRotSpeed
         public moveTurret(xRot: number, yRot: number): void {
             if (this.baseNode == null || this.headNode == null) {
                 return;
