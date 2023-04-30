@@ -140,6 +140,7 @@ var HomeFudge;
     ƒ.Debug.info("Main Program Template running!");
     //@ts-ignore
     document.addEventListener("interactiveViewportStarted", (event) => start(event));
+    document.addEventListener("keydown", (event) => contionuLoop(event));
     ///World Node\\\
     HomeFudge._worldNode = null;
     ///DeltaSeconds\\\
@@ -157,7 +158,9 @@ var HomeFudge;
         HomeFudge._worldNode = HomeFudge._viewport.getBranch();
         console.log(HomeFudge._viewport);
         //Loads Config then initilizes the world 
-        await loadConfig().then(initWorld).then(() => { console.warn("ConfigsLoaded and world Initialized"); }); // to create ships. first load configs than the ships etc
+        await loadConfig().then(initWorld).then(() => {
+            console.warn("ConfigsLoaded and world Initialized");
+        }); // to create ships. first load configs than the ships etc
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
@@ -177,7 +180,7 @@ var HomeFudge;
             console.warn("Active bullets in scene: " + HomeFudge._worldNode.getChildrenByName("BulletGatling").length);
             ƒ.Loop.stop();
         }
-        HomeFudge.aimPos = getAimPos(); //TODO:Remove unused AmingRayCaster
+        // let letaimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AmingRayCaster
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         HomeFudge._viewport.draw();
         ƒ.AudioManager.default.update();
@@ -187,7 +190,6 @@ var HomeFudge;
         let pick = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, new ƒ.Vector2(HomeFudge._viewport.canvas.width / 2, HomeFudge._viewport.canvas.height / 2));
         return pick[0].posWorld;
     }
-    HomeFudge.aimPos = ƒ.Vector3.ZERO();
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function loadConfig() {
         //loads configs
@@ -198,11 +200,17 @@ var HomeFudge;
     }
     async function initWorld() {
         let destroyer = initAllDestroyers();
-        HomeFudge._viewport.getBranch().addChild(destroyer);
-        HomeFudge._mainCamera.attachToShip(destroyer);
+        HomeFudge._viewport.getBranch().addChild(destroyer[0]);
+        HomeFudge._mainCamera.attachToShip(destroyer[0]);
     }
     function initAllDestroyers() {
-        return new HomeFudge.Destroyer(new ƒ.Vector3(0, 0, 0));
+        return [new HomeFudge.Destroyer(new ƒ.Vector3(0, 0, 0))];
+    }
+    //DEBUG
+    function contionuLoop(event) {
+        if (event.code == "Insert") {
+            ƒ.Loop.continue();
+        }
     }
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
@@ -354,9 +362,11 @@ var HomeFudge;
             //console.error("Method not implemented.");
             return null;
         }
-        constructor(position) {
+        constructor(position, rotation) {
             super("Destroyer");
-            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)));
+            let tempComp = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position));
+            //ROTATION WILL BREAK OFFSET OF GUNS
+            this.addComponent(tempComp);
             this.initAllConfigs();
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
         }
@@ -441,6 +451,10 @@ var HomeFudge;
         headNode = null;
         baseNode = null;
         shootNode = null;
+        static headMesh = null;
+        static baseMesh = null;
+        static headMaterial = null;
+        static baseMaterial = null;
         roundsPerSecond = null;
         reloadsEverySecond = null;
         roundsTimer = 0;
@@ -449,8 +463,10 @@ var HomeFudge;
         magazineRounds = null;
         async initConfigAndAllNodes() {
             let graph = await this.getGraphResources(HomeFudge.Config.gatlingTurret.graphID);
+            //TODO|ON-HOLD| REWRITE Turret Mesh and Material component gathering and attaching -> like Destroyer Class
             this.headNode = this.createComponents("GatlingTurretHead", HomeFudge.JSONparser.toVector3(HomeFudge.Config.gatlingTurret.headPosition), graph);
             this.baseNode = this.createComponents("GatlingTurretBase", HomeFudge.JSONparser.toVector3(HomeFudge.Config.gatlingTurret.basePosition), graph);
+            //TODO:FixWrongShootNode Position. Shoots above the Barrel
             this.shootNode = this.createShootPosNode(HomeFudge.JSONparser.toVector3(HomeFudge.Config.gatlingTurret.shootNodePosition));
             this.roundsPerSecond = HomeFudge.Config.gatlingTurret.roundsPerSeconds;
             this.reloadsEverySecond = HomeFudge.Config.gatlingTurret.reloadTime;
@@ -469,13 +485,29 @@ var HomeFudge;
         }
         createComponents(nodeName, transform, graph) {
             let node = graph.getChildrenByName(nodeName)[0];
+            let newNode = new ƒ.Node("nodeName");
             if (node == null) {
                 console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
             }
-            node.addComponent(node.getComponent(ƒ.ComponentMesh));
-            node.addComponent(node.getComponent(ƒ.ComponentMaterial));
-            node.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform)));
-            return node;
+            switch (nodeName) {
+                case "GatlingTurretHead":
+                    GatlingTurret.headMaterial = node.getComponent(ƒ.ComponentMaterial).material;
+                    GatlingTurret.headMesh = node.getComponent(ƒ.ComponentMesh).mesh;
+                    newNode.addComponent(new ƒ.ComponentMaterial(GatlingTurret.headMaterial));
+                    newNode.addComponent(new ƒ.ComponentMesh(GatlingTurret.headMesh));
+                    break;
+                case "GatlingTurretBase":
+                    GatlingTurret.baseMaterial = node.getComponent(ƒ.ComponentMaterial).material;
+                    GatlingTurret.baseMesh = node.getComponent(ƒ.ComponentMesh).mesh;
+                    newNode.addComponent(new ƒ.ComponentMaterial(GatlingTurret.baseMaterial));
+                    newNode.addComponent(new ƒ.ComponentMesh(GatlingTurret.baseMesh));
+                    break;
+                default:
+                    console.warn("+\"" + nodeName + "\" no material or mesh found inside: " + graph.name + "->Graph");
+                    break;
+            }
+            newNode.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform)));
+            return newNode;
         }
         createShootPosNode(transform) {
             let shootPosNode = new ƒ.Node("ShootSpawnPos");
@@ -499,9 +531,9 @@ var HomeFudge;
                 this.reloadTimer += HomeFudge._deltaSeconds;
             }
             //TODO: don't use lookAt function. Better do the math yourself! -> X is forward in my game. Z Forward is Standard
-            this.baseNode.mtxLocal.lookAt(HomeFudge.aimPos, new ƒ.Vector3(0, 1, 0), true);
-            this.headNode.mtxLocal.lookAt(new ƒ.Vector3(HomeFudge.aimPos.y, HomeFudge.aimPos.z, 0), new ƒ.Vector3(0, 0, -1), true);
-            this.headNode.mtxLocal.rotateX(90);
+            // this.baseNode.mtxLocal.lookAt(aimPos, new ƒ.Vector3(0, 1, 0), true);
+            // this.headNode.mtxLocal.lookAt(new ƒ.Vector3(aimPos.y, aimPos.z, 0), new ƒ.Vector3(0, 0, -1), true);
+            // this.headNode.mtxLocal.rotateX(90);
             //fix rotation after LookAt
         };
         //Base rotates on the Y-Aches, Positive number for up
@@ -586,15 +618,18 @@ var HomeFudge;
             this.attachedTo = ship;
             this.mtxLocal.set(ship.mtxWorld);
             this.camComp.mtxPivot.rotation = new ƒ.Vector3(0, 90, 0);
+            ship.addChild(this);
         }
         update = () => {
+            //TODO:RemoveCamTest
+            this.mtxLocal.rotateY(10 * HomeFudge._deltaSeconds);
         };
         init() {
+            this.camComp = new ƒ.ComponentCamera();
+            this.camComp.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+            this.camComp = this.camComp;
+            this.addComponent(this.camComp);
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.ZERO())));
-            let cameraComponent = new ƒ.ComponentCamera();
-            cameraComponent.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
-            this.camComp = cameraComponent;
-            this.addComponent(cameraComponent);
             //TODO:remove debug
             //TEST CUBE
             //  this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("test",ƒ.ShaderLit)));

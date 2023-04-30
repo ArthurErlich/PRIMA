@@ -72,7 +72,6 @@ declare namespace HomeFudge {
     let _worldNode: ƒ.Node;
     let _deltaSeconds: number;
     let _viewport: ƒ.Viewport;
-    let aimPos: ƒ.Vector3;
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -156,7 +155,7 @@ declare namespace HomeFudge {
         alive(): boolean;
         destroyNode(): void;
         toString(): string;
-        constructor(position: ƒ.Vector3);
+        constructor(position: ƒ.Vector3, rotation?: ƒ.Vector3);
     }
 }
 declare namespace HomeFudge {
@@ -183,6 +182,10 @@ declare namespace HomeFudge {
         private headNode;
         private baseNode;
         private shootNode;
+        private static headMesh;
+        private static baseMesh;
+        private static headMaterial;
+        private static baseMaterial;
         private roundsPerSecond;
         private reloadsEverySecond;
         private roundsTimer;
