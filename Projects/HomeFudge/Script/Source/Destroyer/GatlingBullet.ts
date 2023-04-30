@@ -21,11 +21,11 @@ namespace HomeFudge {
             }
             this.maxLifeTime -= _deltaSeconds;
             this.mtxLocal.translateX(this.maxSpeed * _deltaSeconds);
+            //life check.
             if (!this.alive()) {
                 this.destroyNode();
             }
         }
-        //TODO:Remove init configs and make a LoadAllConfigsClass!
         private async initBulletConfig(): Promise<void> {
             GatlingBullet.graph = await Bullet.getGraphResources(Config.gatlingBullet.graphID);
 
@@ -48,7 +48,6 @@ namespace HomeFudge {
         }
 
         public alive(): boolean {
-            //TODO:put alive check inside bullet update function
             if (this.maxLifeTime == null) {
                 return true;
             }
