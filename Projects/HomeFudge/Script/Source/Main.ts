@@ -29,11 +29,12 @@ namespace HomeFudge {
   async function start(_event: CustomEvent): Promise<void> {
     _viewport = _event.detail;
     _worldNode = _viewport.getBranch();
+    
+    console.log(_viewport);
     //Loads Config then initilizes the world 
     await loadConfig().then(initWorld).then(() => { console.warn("ConfigsLoaded and world Initialized"); });// to create ships. first load configs than the ships etc
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    _viewport.camera.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
@@ -59,9 +60,8 @@ namespace HomeFudge {
     }
 
 
-     aimPos = getAimPos();
-     console.log(Mouse.pos.toString());
-     console.log(Mouse.change.toString());
+     aimPos = getAimPos(); //TODO:Remove unused AmingRayCaster
+
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     _viewport.draw();
