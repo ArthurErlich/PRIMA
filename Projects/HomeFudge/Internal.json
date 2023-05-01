@@ -29,8 +29,19 @@
       "coat": {
         "ƒ.CoatTextured": {
           "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-04-27T09:49:41.672Z|34876"
+          "idTexture": "TextureImage|2023-05-01T11:29:10.981Z|33946"
         }
+      }
+    }
+  },
+  "TextureImage|2023-05-01T11:29:10.981Z|33946": {
+    "ƒ.TextureImage": {
+      "url": "Mesh\\TestSkySphere\\SkySphereTexture_2k.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-05-01T11:29:10.981Z|33946",
+        "name": "Text_SkySphere2k",
+        "mipmap": "CRISP"
       }
     }
   },
@@ -40,7 +51,7 @@
       "type": "TextureImage",
       "Texture": {
         "idResource": "TextureImage|2023-04-27T09:49:41.672Z|34876",
-        "name": "Text_SkySpeher",
+        "name": "Text_SkySphere8k",
         "mipmap": "CRISP"
       }
     }
@@ -218,6 +229,32 @@
       "url": "Mesh\\Destroyer\\HomeFuge_Destroyser_V_1.0.obj"
     }
   },
+  "Material|2023-05-01T12:00:31.871Z|31008": {
+    "ƒ.Material": {
+      "name": "Mat_Destroyer",
+      "idResource": "Material|2023-05-01T12:00:31.871Z|31008",
+      "shader": "ShaderFlatTextured",
+      "coat": {
+        "ƒ.CoatRemissiveTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-05-01T12:00:02.827Z|48641",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
+  "TextureImage|2023-05-01T12:00:02.827Z|48641": {
+    "ƒ.TextureImage": {
+      "url": "Mesh\\Destroyer\\DestroyerTempTexture.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-05-01T12:00:02.827Z|48641",
+        "name": "Text_Destroyer_TEMP",
+        "mipmap": "CRISP"
+      }
+    }
+  },
   "Graph|2023-04-25T14:30:46.195Z|98798": {
     "ƒ.Graph": {
       "name": "GameResources",
@@ -384,7 +421,7 @@
                     "Component": {
                       "active": true
                     },
-                    "idMaterial": "Material|2023-04-21T17:06:52.835Z|19108"
+                    "idMaterial": "Material|2023-05-01T12:00:31.871Z|31008"
                   }
                 }
               ]

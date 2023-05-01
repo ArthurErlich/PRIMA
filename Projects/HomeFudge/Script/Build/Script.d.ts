@@ -50,6 +50,9 @@ declare namespace Script {
     }
 }
 declare namespace HomeFudge {
+    let _mainCamera: Camera;
+}
+declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class JSONparser {
         /**
@@ -69,7 +72,6 @@ declare namespace HomeFudge {
     let _worldNode: ƒ.Node;
     let _deltaSeconds: number;
     let _viewport: ƒ.Viewport;
-    let aimPos: ƒ.Vector3;
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -99,8 +101,6 @@ declare namespace HomeFudge {
         protected static getComponentNode(nodeName: string, graph: ƒ.Graph): Promise<ƒ.Node>;
         constructor(idString: string);
     }
-}
-declare namespace HomeFudge {
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -155,7 +155,7 @@ declare namespace HomeFudge {
         alive(): boolean;
         destroyNode(): void;
         toString(): string;
-        constructor(position: ƒ.Vector3);
+        constructor(position: ƒ.Vector3, rotation?: ƒ.Vector3);
     }
 }
 declare namespace HomeFudge {
@@ -182,11 +182,16 @@ declare namespace HomeFudge {
         private headNode;
         private baseNode;
         private shootNode;
+        private static headMesh;
+        private static baseMesh;
+        private static headMaterial;
+        private static baseMaterial;
         private roundsPerSecond;
         private reloadsEverySecond;
         private roundsTimer;
         private reloadTimer;
         private magazineCapacity;
+        private magazineRounds;
         private initConfigAndAllNodes;
         private getGraphResources;
         private createComponents;
@@ -198,7 +203,7 @@ declare namespace HomeFudge {
          */
         private update;
         moveTurret(xRot: number, yRot: number): void;
-        shoot(): void;
+        fire(): void;
         constructor();
     }
 }
@@ -216,8 +221,8 @@ declare namespace HomeFudge {
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class Camera extends ƒ.Node {
-        aimPoinz: ƒ.Vector3;
         attachedTo: ƒ.Node;
+        camComp: ƒ.ComponentCamera;
         private offset;
         attachToShip(ship: ƒ.Node): void;
         private update;

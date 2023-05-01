@@ -6,6 +6,7 @@ namespace HomeFudge {
   
   //@ts-ignore
   document.addEventListener("interactiveViewportStarted", (event) => <EventListener>start(event));
+  document.addEventListener("keydown", (event) => contionuLoop(event))
 
   ///World Node\\\
   export let _worldNode: ƒ.Node = null;
@@ -29,15 +30,23 @@ namespace HomeFudge {
   async function start(_event: CustomEvent): Promise<void> {
     _viewport = _event.detail;
     _worldNode = _viewport.getBranch();
+    
+    console.log(_viewport);
     //Loads Config then initilizes the world 
-    await loadConfig().then(initWorld).then(() => { console.warn("ConfigsLoaded and world Initialized"); });// to create ships. first load configs than the ships etc
+    await loadConfig().then(initWorld).then(() => { 
+      let audioComp=new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true);
+      console.warn("ConfigsLoaded and world Initialized");
+      //Sound by IXION!
+      audioComp.volume = 0.2;
+      audioComp.play(true);
+      _mainCamera.addComponent(audioComp);
+    });// to create ships. first load configs than the ships etc
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    _viewport.camera.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30);  // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
+    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 100);  // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
   }
 
   function update(_event: Event): void {
@@ -59,9 +68,8 @@ namespace HomeFudge {
     }
 
 
-     aimPos = getAimPos();
-     console.log(Mouse.pos.toString());
-     console.log(Mouse.change.toString());
+    // let letaimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AmingRayCaster
+
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     _viewport.draw();
@@ -73,11 +81,9 @@ namespace HomeFudge {
     let pick:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,new ƒ.Vector2(_viewport.canvas.width/2,_viewport.canvas.height/2));
     return pick[0].posWorld;
   }
-  export let aimPos:ƒ.Vector3= ƒ.Vector3.ZERO();
-
-
   
   
+
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   async function loadConfig() {
     //loads configs
@@ -88,23 +94,21 @@ namespace HomeFudge {
   }
 
   async function initWorld(): Promise<void> {
+    let destroyer: ƒ.Node[] = initAllDestroyers();
+    
+    _viewport.getBranch().addChild(destroyer[0]);
 
-    let destroyer: ƒ.Node = initDestroyer();
-    _viewport.getBranch().addChild(destroyer);
-
-    let camera: Camera = initCamera("Main");
-    _viewport.getBranch().addChild(camera);
-    camera.attachToShip(destroyer);
-    //  _viewport.camera.activate(false); //TODO: Make mode for Switching InteractiveCam and PlayerCam
-    //  camera.getComponent(ƒ.ComponentCamera).activate(true);
-    //  console.log(_worldNode);
-
+    _mainCamera.attachToShip(destroyer[0]);
+ 
   }
-  function initDestroyer(): Destroyer {
-    return new Destroyer(new ƒ.Vector3(0, 0, 0));
-
+  function initAllDestroyers(): Destroyer[] {
+    return [new Destroyer(new ƒ.Vector3(0, 0, 0))];
   }
-  function initCamera(name: string): Camera {
-    return new Camera(name);
+
+  //DEBUG
+  function contionuLoop(event:KeyboardEvent){
+    if(event.code == "Insert"){
+      ƒ.Loop.continue();
+    }
   }
 }

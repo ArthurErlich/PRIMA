@@ -1,4 +1,4 @@
-# ahFudge Basics
+# Fudge Basics
 
 ## Coordinates in Fudge
 

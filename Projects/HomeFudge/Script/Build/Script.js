@@ -56,6 +56,57 @@ var Script;
     }
     Script.CustomComponentScript = CustomComponentScript;
 })(Script || (Script = {}));
+var HomeFudge;
+(function (HomeFudge) {
+    var ƒ = FudgeCore;
+    ƒ.Debug.info("Main Program Template running!");
+    window.addEventListener("load", init);
+    let cmpCamera;
+    let canvas;
+    let viewport;
+    let cmpListener;
+    function init(_event) {
+        HomeFudge._mainCamera = new HomeFudge.Camera("Main");
+        cmpCamera = HomeFudge._mainCamera.camComp;
+        canvas = document.querySelector("canvas");
+        viewport = new ƒ.Viewport();
+        cmpListener = new ƒ.ComponentAudioListener();
+        let dialog = document.querySelector("dialog");
+        dialog.querySelector("h1").textContent = document.title;
+        dialog.addEventListener("click", function (_event) {
+            dialog.close();
+            let graphId = document.head.querySelector("meta[autoView]").getAttribute("autoView");
+            startInteractiveViewport(graphId);
+        });
+        dialog.showModal();
+    }
+    async function startInteractiveViewport(graphId) {
+        // load resources referenced in the link-tag
+        await FudgeCore.Project.loadResourcesFromHTML();
+        FudgeCore.Debug.log("Project:", FudgeCore.Project.resources);
+        // pick the graph to show
+        let graph = FudgeCore.Project.resources[graphId];
+        FudgeCore.Debug.log("Graph:", graph);
+        if (!graph) {
+            alert("Nothing to render. Create a graph with at least a mesh, material and probably some light");
+            return;
+        }
+        // hide the cursor when interacting, also suppressing right-click menu
+        canvas.addEventListener("mousedown", canvas.requestPointerLock);
+        canvas.addEventListener("mouseup", function () { document.exitPointerLock(); });
+        viewport.initialize("InteractiveViewport", graph, cmpCamera, canvas);
+        // setup audio
+        cmpCamera.node.addComponent(cmpListener);
+        ƒ.AudioManager.default.listenWith(cmpListener);
+        ƒ.AudioManager.default.listenTo(graph);
+        ƒ.Debug.log("Audio:", ƒ.AudioManager.default);
+        // draw viewport once for immediate feedback
+        viewport.draw();
+        // dispatch event to signal startup done
+        canvas.dispatchEvent(new CustomEvent("interactiveViewportStarted", { bubbles: true, detail: viewport }));
+        // setup the viewport
+    }
+})(HomeFudge || (HomeFudge = {}));
 /* This code defines a namespace called `HomeFudge` and exports a class called `JSONparser` with a
 static method `toVector3`. The method takes an array of numbers and returns a new instance of the
 `ƒ.Vector3` class from the `FudgeCore` library, using the values from the array as its x, y, and z
@@ -89,6 +140,7 @@ var HomeFudge;
     ƒ.Debug.info("Main Program Template running!");
     //@ts-ignore
     document.addEventListener("interactiveViewportStarted", (event) => start(event));
+    document.addEventListener("keydown", (event) => contionuLoop(event));
     ///World Node\\\
     HomeFudge._worldNode = null;
     ///DeltaSeconds\\\
@@ -104,13 +156,20 @@ var HomeFudge;
     async function start(_event) {
         HomeFudge._viewport = _event.detail;
         HomeFudge._worldNode = HomeFudge._viewport.getBranch();
+        console.log(HomeFudge._viewport);
         //Loads Config then initilizes the world 
-        await loadConfig().then(initWorld).then(() => { console.warn("ConfigsLoaded and world Initialized"); }); // to create ships. first load configs than the ships etc
+        await loadConfig().then(initWorld).then(() => {
+            let audioComp = new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true);
+            console.warn("ConfigsLoaded and world Initialized");
+            //Sound by IXION!
+            audioComp.volume = 0.2;
+            audioComp.play(true);
+            HomeFudge._mainCamera.addComponent(audioComp);
+        }); // to create ships. first load configs than the ships etc
         /// ------------T-E-S-T--A-R-E-A------------------\\\
-        HomeFudge._viewport.camera.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
-        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30); // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 100); // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
@@ -126,9 +185,7 @@ var HomeFudge;
             console.warn("Active bullets in scene: " + HomeFudge._worldNode.getChildrenByName("BulletGatling").length);
             ƒ.Loop.stop();
         }
-        HomeFudge.aimPos = getAimPos();
-        console.log(HomeFudge.Mouse.pos.toString());
-        console.log(HomeFudge.Mouse.change.toString());
+        // let letaimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AmingRayCaster
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         HomeFudge._viewport.draw();
         ƒ.AudioManager.default.update();
@@ -138,7 +195,6 @@ var HomeFudge;
         let pick = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, new ƒ.Vector2(HomeFudge._viewport.canvas.width / 2, HomeFudge._viewport.canvas.height / 2));
         return pick[0].posWorld;
     }
-    HomeFudge.aimPos = ƒ.Vector3.ZERO();
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function loadConfig() {
         //loads configs
@@ -148,20 +204,18 @@ var HomeFudge;
         HomeFudge.Mouse.init();
     }
     async function initWorld() {
-        let destroyer = initDestroyer();
-        HomeFudge._viewport.getBranch().addChild(destroyer);
-        let camera = initCamera("Main");
-        HomeFudge._viewport.getBranch().addChild(camera);
-        camera.attachToShip(destroyer);
-        //  _viewport.camera.activate(false); //TODO: Make mode for Switching InteractiveCam and PlayerCam
-        //  camera.getComponent(ƒ.ComponentCamera).activate(true);
-        //  console.log(_worldNode);
+        let destroyer = initAllDestroyers();
+        HomeFudge._viewport.getBranch().addChild(destroyer[0]);
+        HomeFudge._mainCamera.attachToShip(destroyer[0]);
     }
-    function initDestroyer() {
-        return new HomeFudge.Destroyer(new ƒ.Vector3(0, 0, 0));
+    function initAllDestroyers() {
+        return [new HomeFudge.Destroyer(new ƒ.Vector3(0, 0, 0))];
     }
-    function initCamera(name) {
-        return new HomeFudge.Camera(name);
+    //DEBUG
+    function contionuLoop(event) {
+        if (event.code == "Insert") {
+            ƒ.Loop.continue();
+        }
     }
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
@@ -207,15 +261,6 @@ var HomeFudge;
         }
     }
     HomeFudge.Bullet = Bullet;
-})(HomeFudge || (HomeFudge = {}));
-//TODO:Replace autoView.js inside here
-var HomeFudge;
-//TODO:Replace autoView.js inside here
-(function (HomeFudge) {
-    document.addEventListener("startInteractiveViewport", (event) => startInteractiveViewport(event));
-    async function startInteractiveViewport(_event) {
-        console.warn(_event.detail);
-    }
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
@@ -307,7 +352,7 @@ var HomeFudge;
         update = () => {
             //TODO: remove temporary WP shooting
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
-                this.gatlingTurret.shoot();
+                this.gatlingTurret.fire();
             }
         };
         alive() {
@@ -322,9 +367,11 @@ var HomeFudge;
             //console.error("Method not implemented.");
             return null;
         }
-        constructor(position) {
+        constructor(position, rotation) {
             super("Destroyer");
-            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)));
+            let tempComp = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position));
+            //ROTATION WILL BREAK OFFSET OF GUNS
+            this.addComponent(tempComp);
             this.initAllConfigs();
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
         }
@@ -409,21 +456,28 @@ var HomeFudge;
         headNode = null;
         baseNode = null;
         shootNode = null;
+        static headMesh = null;
+        static baseMesh = null;
+        static headMaterial = null;
+        static baseMaterial = null;
         roundsPerSecond = null;
         reloadsEverySecond = null;
         roundsTimer = 0;
         reloadTimer = 0;
         magazineCapacity = null;
-        //*1 private magazineRounds: number = null;
+        magazineRounds = null;
         async initConfigAndAllNodes() {
             let graph = await this.getGraphResources(HomeFudge.Config.gatlingTurret.graphID);
+            //TODO|ON-HOLD| REWRITE Turret Mesh and Material component gathering and attaching -> like Destroyer Class
             this.headNode = this.createComponents("GatlingTurretHead", HomeFudge.JSONparser.toVector3(HomeFudge.Config.gatlingTurret.headPosition), graph);
             this.baseNode = this.createComponents("GatlingTurretBase", HomeFudge.JSONparser.toVector3(HomeFudge.Config.gatlingTurret.basePosition), graph);
+            //TODO:FixWrongShootNode Position. Shoots above the Barrel
             this.shootNode = this.createShootPosNode(HomeFudge.JSONparser.toVector3(HomeFudge.Config.gatlingTurret.shootNodePosition));
             this.roundsPerSecond = HomeFudge.Config.gatlingTurret.roundsPerSeconds;
             this.reloadsEverySecond = HomeFudge.Config.gatlingTurret.reloadTime;
             this.magazineCapacity = HomeFudge.Config.gatlingTurret.magazineCapacity;
-            //*1 this.magazineRounds = this.magazineCapacity;
+            this.magazineRounds = this.magazineCapacity;
+            this.shootNode.addComponent(new ƒ.ComponentAudio(new ƒ.Audio("Sound/autocannon.mp3"))); //TODO: REMOVE TEMP AUDIO
             this.headNode.addChild(this.shootNode);
             this.baseNode.addChild(this.headNode);
             this.addChild(this.baseNode);
@@ -437,13 +491,29 @@ var HomeFudge;
         }
         createComponents(nodeName, transform, graph) {
             let node = graph.getChildrenByName(nodeName)[0];
+            let newNode = new ƒ.Node("nodeName");
             if (node == null) {
                 console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
             }
-            node.addComponent(node.getComponent(ƒ.ComponentMesh));
-            node.addComponent(node.getComponent(ƒ.ComponentMaterial));
-            node.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform)));
-            return node;
+            switch (nodeName) {
+                case "GatlingTurretHead":
+                    GatlingTurret.headMaterial = node.getComponent(ƒ.ComponentMaterial).material;
+                    GatlingTurret.headMesh = node.getComponent(ƒ.ComponentMesh).mesh;
+                    newNode.addComponent(new ƒ.ComponentMaterial(GatlingTurret.headMaterial));
+                    newNode.addComponent(new ƒ.ComponentMesh(GatlingTurret.headMesh));
+                    break;
+                case "GatlingTurretBase":
+                    GatlingTurret.baseMaterial = node.getComponent(ƒ.ComponentMaterial).material;
+                    GatlingTurret.baseMesh = node.getComponent(ƒ.ComponentMesh).mesh;
+                    newNode.addComponent(new ƒ.ComponentMaterial(GatlingTurret.baseMaterial));
+                    newNode.addComponent(new ƒ.ComponentMesh(GatlingTurret.baseMesh));
+                    break;
+                default:
+                    console.warn("+\"" + nodeName + "\" no material or mesh found inside: " + graph.name + "->Graph");
+                    break;
+            }
+            newNode.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform)));
+            return newNode;
         }
         createShootPosNode(transform) {
             let shootPosNode = new ƒ.Node("ShootSpawnPos");
@@ -456,7 +526,7 @@ var HomeFudge;
          * Don't forget to call this function in the UpdateMethod!!!
          */
         update = () => {
-            if (this.roundsPerSecond == null || this.reloadsEverySecond == null || this.magazineCapacity == 0) {
+            if (this.roundsPerSecond == null || this.reloadsEverySecond == null || this.magazineCapacity == null) {
                 return;
             }
             if (this.roundsTimer <= this.roundsPerSecond) {
@@ -467,9 +537,9 @@ var HomeFudge;
                 this.reloadTimer += HomeFudge._deltaSeconds;
             }
             //TODO: don't use lookAt function. Better do the math yourself! -> X is forward in my game. Z Forward is Standard
-            this.baseNode.mtxLocal.lookAt(HomeFudge.aimPos, new ƒ.Vector3(0, 1, 0), true);
-            this.headNode.mtxLocal.lookAt(new ƒ.Vector3(HomeFudge.aimPos.y, HomeFudge.aimPos.z, 0), new ƒ.Vector3(0, 0, -1), true);
-            this.headNode.mtxLocal.rotateX(90);
+            // this.baseNode.mtxLocal.lookAt(aimPos, new ƒ.Vector3(0, 1, 0), true);
+            // this.headNode.mtxLocal.lookAt(new ƒ.Vector3(aimPos.y, aimPos.z, 0), new ƒ.Vector3(0, 0, -1), true);
+            // this.headNode.mtxLocal.rotateX(90);
             //fix rotation after LookAt
         };
         //Base rotates on the Y-Aches, Positive number for up
@@ -484,11 +554,30 @@ var HomeFudge;
             //TODO:Add clamp for Z-Aches
             this.headNode.mtxLocal.rotateZ(xRot);
         }
-        //spawns every n-seconds a bullet
-        shoot() {
-            if (this.roundsTimer >= this.roundsPerSecond) {
+        /* This code defines a public method `fire()` that is called when the GatlingTurret is supposed
+        to fire. It checks if there are any rounds left in the magazine, and if not, it resets the
+        reload timer and refills the magazine. It also checks if the reload timer has finished, and
+        if not, it returns without firing. If the reload timer has finished and there are rounds
+        left in the magazine, it creates a new GatlingBullet object at the position of the shootNode
+        and resets the rounds timer. */
+        fire() {
+            if (this.magazineRounds <= 0) {
+                this.reloadTimer = 0;
+                this.magazineRounds = this.magazineCapacity;
+            }
+            if (this.reloadTimer <= this.reloadsEverySecond) {
+                if (this.reloadTimer % 1 == 0) {
+                    FudgeCore.Debug.log("TurretReloading");
+                }
+                return;
+            }
+            if (this.roundsTimer >= 1 / this.roundsPerSecond) {
                 new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone);
                 this.roundsTimer = 0;
+                this.magazineRounds--;
+                FudgeCore.Debug.log("RoundsLeft: " + this.magazineRounds);
+                this.shootNode.getComponent(ƒ.ComponentAudio).volume = 4;
+                this.shootNode.getComponent(ƒ.ComponentAudio).play(true); //TODO: REMOVE TEMP AUDIO
             }
         }
         constructor() {
@@ -528,29 +617,32 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class Camera extends ƒ.Node {
-        aimPoinz = null;
         attachedTo = null;
+        camComp = null;
         offset = null;
         attachToShip(ship) {
+            this.offset = HomeFudge.JSONparser.toVector3(HomeFudge.Config.camera.offset);
+            this.camComp.mtxPivot.translation = this.offset;
             this.attachedTo = ship;
             this.mtxLocal.set(ship.mtxWorld);
+            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0, 90, 0); //TODO: Sound Bug when Pivot is rotated
+            ship.addChild(this);
         }
         update = () => {
+            //TODO:RemoveCamTest
+            this.mtxLocal.rotateY(10 * HomeFudge._deltaSeconds);
         };
         init() {
-            this.offset = HomeFudge.JSONparser.toVector3(HomeFudge.Config.camera.offset);
+            this.camComp = new ƒ.ComponentCamera();
+            this.camComp.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+            this.camComp = this.camComp;
+            this.addComponent(this.camComp);
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.ZERO())));
-            let cameraComponent = new ƒ.ComponentCamera();
-            cameraComponent.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
-            cameraComponent.mtxPivot.rotation.set(0, -90, 0);
-            cameraComponent.mtxPivot.translation = this.offset;
-            this.addComponent(cameraComponent);
             //TODO:remove debug
             //TEST CUBE
             //  this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("test",ƒ.ShaderLit)));
             //  this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshCube()));
             //  this.getComponent(ƒ.ComponentMesh).mtxPivot.translation = this.offset;
-            HomeFudge._worldNode.addChild(this);
         }
         constructor(name) {
             super(name + "Camera");

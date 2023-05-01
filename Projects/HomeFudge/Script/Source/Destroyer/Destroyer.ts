@@ -56,7 +56,7 @@ namespace HomeFudge {
 
             //TODO: remove temporary WP shooting
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
-                this.gatlingTurret.shoot();
+                this.gatlingTurret.fire();
             }
         }
         public alive(): boolean {
@@ -72,9 +72,11 @@ namespace HomeFudge {
             return null;
         }
 
-        constructor(position: ƒ.Vector3) {
+        constructor(position: ƒ.Vector3, rotation?: ƒ.Vector3) {
             super("Destroyer");
-            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)));
+            let tempComp = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position));
+            //ROTATION WILL BREAK OFFSET OF GUNS
+            this.addComponent(tempComp);
             this.initAllConfigs();
             ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
         }
