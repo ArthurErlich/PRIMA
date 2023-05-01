@@ -12,7 +12,7 @@ namespace HomeFudge{
             
             this.attachedTo = ship;
             this.mtxLocal.set(ship.mtxWorld);
-            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0,90,0);
+            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0,90,0);//TODO: Sound Bug when Pivot is rotated
 
             ship.addChild(this);
 

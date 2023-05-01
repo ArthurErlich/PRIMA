@@ -34,6 +34,8 @@ namespace HomeFudge {
             this.magazineCapacity = Config.gatlingTurret.magazineCapacity;
             this.magazineRounds = this.magazineCapacity;
 
+            this.shootNode.addComponent(new ƒ.ComponentAudio(new ƒ.Audio("Sound/autocannon.mp3")));//TODO: REMOVE TEMP AUDIO
+
             this.headNode.addChild(this.shootNode);
             this.baseNode.addChild(this.headNode);
             this.addChild(this.baseNode);
@@ -133,11 +135,13 @@ namespace HomeFudge {
                 }
                 return;
             }
-            if (this.roundsTimer >= this.roundsPerSecond) {
+            if (this.roundsTimer >= 1/this.roundsPerSecond) {
                 new GatlingBullet(this.shootNode.mtxWorld.clone);
                 this.roundsTimer = 0;
                 this.magazineRounds--;
                 FudgeCore.Debug.log("RoundsLeft: " + this.magazineRounds);
+                this.shootNode.getComponent(ƒ.ComponentAudio).volume = 4;
+                this.shootNode.getComponent(ƒ.ComponentAudio).play(true); //TODO: REMOVE TEMP AUDIO
             }
         }
         constructor() {

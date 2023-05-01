@@ -159,9 +159,9 @@ var HomeFudge;
         console.log(HomeFudge._viewport);
         //Loads Config then initilizes the world 
         await loadConfig().then(initWorld).then(() => {
+            let audioComp = new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true);
             console.warn("ConfigsLoaded and world Initialized");
             //Sound by IXION!
-            let audioComp = new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true);
             audioComp.volume = 0.2;
             audioComp.play(true);
             HomeFudge._mainCamera.addComponent(audioComp);
@@ -169,7 +169,7 @@ var HomeFudge;
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
-        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30); // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 100); // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
@@ -477,6 +477,7 @@ var HomeFudge;
             this.reloadsEverySecond = HomeFudge.Config.gatlingTurret.reloadTime;
             this.magazineCapacity = HomeFudge.Config.gatlingTurret.magazineCapacity;
             this.magazineRounds = this.magazineCapacity;
+            this.shootNode.addComponent(new ƒ.ComponentAudio(new ƒ.Audio("Sound/autocannon.mp3"))); //TODO: REMOVE TEMP AUDIO
             this.headNode.addChild(this.shootNode);
             this.baseNode.addChild(this.headNode);
             this.addChild(this.baseNode);
@@ -570,11 +571,13 @@ var HomeFudge;
                 }
                 return;
             }
-            if (this.roundsTimer >= this.roundsPerSecond) {
+            if (this.roundsTimer >= 1 / this.roundsPerSecond) {
                 new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone);
                 this.roundsTimer = 0;
                 this.magazineRounds--;
                 FudgeCore.Debug.log("RoundsLeft: " + this.magazineRounds);
+                this.shootNode.getComponent(ƒ.ComponentAudio).volume = 4;
+                this.shootNode.getComponent(ƒ.ComponentAudio).play(true); //TODO: REMOVE TEMP AUDIO
             }
         }
         constructor() {
@@ -622,7 +625,7 @@ var HomeFudge;
             this.camComp.mtxPivot.translation = this.offset;
             this.attachedTo = ship;
             this.mtxLocal.set(ship.mtxWorld);
-            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0, 90, 0);
+            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0, 90, 0); //TODO: Sound Bug when Pivot is rotated
             ship.addChild(this);
         }
         update = () => {

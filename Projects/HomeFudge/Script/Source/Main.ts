@@ -34,9 +34,9 @@ namespace HomeFudge {
     console.log(_viewport);
     //Loads Config then initilizes the world 
     await loadConfig().then(initWorld).then(() => { 
+      let audioComp=new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true);
       console.warn("ConfigsLoaded and world Initialized");
       //Sound by IXION!
-      let audioComp=new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true);
       audioComp.volume = 0.2;
       audioComp.play(true);
       _mainCamera.addComponent(audioComp);
@@ -46,7 +46,7 @@ namespace HomeFudge {
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30);  // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
+    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 100);  // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
   }
 
   function update(_event: Event): void {
