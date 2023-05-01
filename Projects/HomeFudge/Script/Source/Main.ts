@@ -38,7 +38,7 @@ namespace HomeFudge {
     console.log(_viewport);
     //Loads Config then initilizes the world 
     await loadConfig().then(initWorld).then(() => { 
-      let audioComp=new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true);
+      let audioComp=new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true); //TODO:Move sound to recourses
       console.warn("ConfigsLoaded and world Initialized");
       //Sound by IXION!
       audioComp.volume = 0.1;
@@ -96,7 +96,8 @@ namespace HomeFudge {
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   function getAimPos():void {
     let pick:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,Mouse.pos);
-    return pick[0].posWorld;
+    console.log(pick);
+    
   }
   
   
