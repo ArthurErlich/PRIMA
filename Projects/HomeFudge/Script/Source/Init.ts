@@ -32,6 +32,8 @@ namespace HomeFudge {
     }
     async function startInteractiveViewport(graphId: string): Promise<void> {
         // load resources referenced in the link-tag
+        LoadingScreen.init(canvas);
+
         await FudgeCore.Project.loadResourcesFromHTML();
         FudgeCore.Debug.log("Project:", FudgeCore.Project.resources);
         // pick the graph to show

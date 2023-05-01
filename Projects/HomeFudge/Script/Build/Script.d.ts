@@ -68,6 +68,11 @@ declare namespace HomeFudge {
     }
 }
 declare namespace HomeFudge {
+    class LoadingScreen {
+        static init(canvas: HTMLCanvasElement): void;
+    }
+}
+declare namespace HomeFudge {
     import ƒ = FudgeCore;
     let _worldNode: ƒ.Node;
     let _deltaSeconds: number;
