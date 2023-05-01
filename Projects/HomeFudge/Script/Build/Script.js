@@ -92,7 +92,8 @@ var HomeFudge;
             return;
         }
         // hide the cursor when interacting, also suppressing right-click menu
-        canvas.addEventListener("mousedown", canvas.requestPointerLock);
+        //TODO:HIDE it ony when using right click!!!
+        canvas.addEventListener("mousedown", function () { canvas.requestPointerLock(); });
         canvas.addEventListener("mouseup", function () { document.exitPointerLock(); });
         viewport.initialize("InteractiveViewport", graph, cmpCamera, canvas);
         // setup audio
@@ -156,6 +157,7 @@ var HomeFudge;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function start(_event) {
         HomeFudge._viewport = _event.detail;
+        HomeFudge._viewport.canvas.style.cursor = "url(Textures/AimCurser.svg) 0 0, crosshair";
         HomeFudge._worldNode = HomeFudge._viewport.getBranch();
         console.log(HomeFudge._viewport);
         //Loads Config then initilizes the world 
@@ -407,7 +409,6 @@ var HomeFudge;
                 return;
             }
             this.maxLifeTime -= HomeFudge._deltaSeconds;
-            console.log((this.parentVelocity.y));
             this.mtxLocal.translate(new ƒ.Vector3((2 * this.parentVelocity.x + this.maxSpeed) * HomeFudge._deltaSeconds, 2 * this.parentVelocity.y * HomeFudge._deltaSeconds, 2 * this.parentVelocity.z * HomeFudge._deltaSeconds));
             //life check.
             if (!this.alive()) {
@@ -672,6 +673,7 @@ var HomeFudge;
         static tempPos = null;
         static init() {
             HomeFudge._viewport.canvas.addEventListener("mousemove", Mouse.moveUpdate);
+            HomeFudge._viewport.canvas.addEventListener("mousedown", Mouse.downUpdate);
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, Mouse.update);
             Mouse.pos = new ƒ.Vector2(0, 0);
             Mouse.change = new ƒ.Vector2(0, 0);
@@ -688,6 +690,9 @@ var HomeFudge;
             Mouse.change = new ƒ.Vector2(_event.movementX, _event.movementY);
             Mouse.pos = new ƒ.Vector2(_event.x, _event.y);
         };
+        static downUpdate(_event) {
+            throw new Error("Method not implemented.");
+        }
     }
     HomeFudge.Mouse = Mouse;
 })(HomeFudge || (HomeFudge = {}));

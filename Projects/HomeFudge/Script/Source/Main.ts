@@ -32,6 +32,7 @@ namespace HomeFudge {
 
   async function start(_event: CustomEvent): Promise<void> {
     _viewport = _event.detail;
+    _viewport.canvas.style.cursor = "url(Textures/AimCurser.svg) 0 0, crosshair";
     _worldNode = _viewport.getBranch();
     
     console.log(_viewport);

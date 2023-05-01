@@ -15,7 +15,7 @@ namespace HomeFudge {
         cmpCamera = _mainCamera.camComp
 
         canvas = document.querySelector("canvas");
-        
+
         viewport = new ƒ.Viewport();
         cmpListener = new ƒ.ComponentAudioListener();
 
@@ -42,9 +42,10 @@ namespace HomeFudge {
             return;
         }
         // hide the cursor when interacting, also suppressing right-click menu
-        canvas.addEventListener("mousedown", canvas.requestPointerLock);
+        //TODO:HIDE it ony when using right click!!!
+        canvas.addEventListener("mousedown", function () { canvas.requestPointerLock(); });
         canvas.addEventListener("mouseup", function () { document.exitPointerLock(); });
-        
+
         viewport.initialize("InteractiveViewport", graph, cmpCamera, canvas);
         // setup audio
         cmpCamera.node.addComponent(cmpListener);

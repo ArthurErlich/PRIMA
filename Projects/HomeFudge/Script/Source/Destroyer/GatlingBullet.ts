@@ -23,7 +23,6 @@ namespace HomeFudge {
             }
             this.maxLifeTime -= _deltaSeconds;
 
-            console.log((this.parentVelocity.y));
             this.mtxLocal.translate( new ƒ.Vector3(
                 (2*this.parentVelocity.x + this.maxSpeed) * _deltaSeconds,
                 2*this.parentVelocity.y * _deltaSeconds,

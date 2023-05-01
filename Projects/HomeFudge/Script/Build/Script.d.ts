@@ -241,5 +241,6 @@ declare namespace HomeFudge {
         static init(): void;
         private static update;
         private static moveUpdate;
+        private static downUpdate;
     }
 }
