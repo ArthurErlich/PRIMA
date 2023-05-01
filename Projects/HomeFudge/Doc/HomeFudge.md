@@ -6,10 +6,15 @@
 
 - [heWelcome to the Document about HomeFudge](#hewelcome-to-the-document-about-homefudge)
   - [Table of Contents](#table-of-contents)
+  - [Why this document?](#why-this-document)
   - [Idea](#idea)
     - [The Destroyer:](#the-destroyer)
     - [Some Math:](#some-math)
   - [Astroid Spawning fo worst-case scenario](#astroid-spawning-fo-worst-case-scenario)
+
+## Why this document?
+
+I will use that document to write down information about the HomeFudge project. I will use it to write down ideas and to keep track of the progress. I will also use it to write down the math I will use for the project and some code snippets i will later use in the project.
 
 ## Idea
 
@@ -114,3 +119,11 @@ function weightedRandom(astroid:string[],weights:number[]):string{
   return "null";
 }
 ```
+
+Test with 1000 [iterations](https://www.typescriptlang.org/play?#code/LAKANgpgLgBAhgZygJwPYEsAmAuJz0B2A5gNoC6MAvDCQERhzJES0A0tAthJugK4dtaCDnDBhaZANyhIsAO4R0RABZQE2AvwBGEZOSo0AjKwBMrAMxTQM6DCgQkAGXRJcKQqQrUCEOTACCyMhwAJ4AFACU0iCgIoSR0QBmvAQAxlDoqAQwcQSR2ABuGJgA3qAwMImoyGGyMOga2roGAAyS9QA8hi09kugA1P0RZSAVFfZOLlAAdAAOvAjKYQpKqtwASnAEmKgcYYgoxawrKmoRUeUwAL6XdanKW6kOjRw6el40LaxfLVajldUYLVbA1NK9mtQ2ugOhMoM4kNNIMQoMo+oNhpcKuhEmFYfCoCR0GRKJR6IxmLQMf8xjB7o8HCRfoNojSbtSadjcQ44VNCcTSVwePxKSMaRU6WkGYYyMzMdc5WNOXjeUSSUIRGIRQraQ9JQgSCYZf0WWM2RUzbSsghUJBEagiGEJU8EBcQGzQAB6D0AdUUp24ME22128DARGq6BRHE9HoAKsoIDBfehVAgcgtYDoYNbkPZMJU0BxsxrIEg7KgYAwmNzQMk0hksjATmtMEGdnsDmgsG58MRyMc-amXm9yBEex5RZXbKl+LwGBkChBk6c08PdPpvL4AkFQglbrYRAAPADCs-n6EXy9Ua+QrRNdWCwY4ADkmrfIdFrP8vQBRIKA48E1SABrDxLmxIFO2KREIGRZQYAAQhJJtBzUGC4KpGkUTQPwfD8P80BqWgAEl7A4NMtnzZs1HTMss1QRI7ATbM4C4bN0AALwgBDKRNK4YHAxiwgQqCsHQogUQiGBJ3GZQcJgPCYAI6owgAclIiByNo2ACFQTNE002YoBCVTXXNS4vRgAAFZAIFmRgPCYxMZw4Oc4AXRNqIoncQmmS4qlvYFYFBN873qGAOhQ1Y0KRCTUXqdEZJgL0IJctyPKvNRCQAWmlKhqF4HhEgDQFNDEVh6nkdAxBgeZYEMJzbPqAgkEo5KPRodBcooAAfHqYBaGAAB0hoQuU0vPS9UP1IkDGWaa+RgfogQm9yLyXBauulPqWnOPiLI9ZgoAyYgnJgR92wU0LCHOiAtmYGAGLO1aMum+AfMuI9T1cyaNuigwXvWzL9UBqbooQcSUW6k0Lt2V9wXfIEvrPNawdOGAACoYAAWXc5RplhvY9q-CovVmdAQMclFE1EzB-JUuoQoRsL0Ai+A8Gg2KUXaAYhiSzlQb+ldFoAPmoQn4beTCxVsqBeGQbJab5E1zP+C1Zfl7JaDK8RojZIA)
+
+`let astroid:string[] = ["large","medium","small"];`
+`let weights:number[] = [1,2,3];`
+`[LOG]: [184, 327, 489]`
+
+-->
