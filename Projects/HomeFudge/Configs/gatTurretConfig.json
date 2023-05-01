@@ -3,7 +3,7 @@
     "maxRotSpeed": null,
     "maxPitch" : 90,
     "minPitch" : 7.85, 
-    "roundsPerSeconds": 0.2,
+    "roundsPerSeconds": 8,
     "reloadTime": 3,
     "magazineCapacity": 30,
     "headPosition": [
@@ -12,13 +12,13 @@
         0
     ],
     "basePosition": [
-        0,
-        0,
+        22.7231,
+        20.221,
         0
     ],
     "shootNodePosition": [
-        6.7871,
-        0.479092,
+        6.7799,
+        1,
         0
     ]
 }

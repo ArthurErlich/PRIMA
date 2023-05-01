@@ -16,7 +16,7 @@
   "MeshObj|2023-04-27T09:49:37.194Z|95685": {
     "ƒ.MeshObj": {
       "idResource": "MeshObj|2023-04-27T09:49:37.194Z|95685",
-      "name": "Mesh\\TestSkySphere\\SkySphere.obj",
+      "name": "Mesh_SkySphere",
       "type": "MeshObj",
       "url": "Mesh\\TestSkySphere\\SkySphere.obj"
     }
@@ -29,8 +29,19 @@
       "coat": {
         "ƒ.CoatTextured": {
           "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-04-27T09:49:41.672Z|34876"
+          "idTexture": "TextureImage|2023-05-01T11:29:10.981Z|33946"
         }
+      }
+    }
+  },
+  "TextureImage|2023-05-01T11:29:10.981Z|33946": {
+    "ƒ.TextureImage": {
+      "url": "Mesh\\TestSkySphere\\SkySphereTexture_2k.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-05-01T11:29:10.981Z|33946",
+        "name": "Text_SkySphere2k",
+        "mipmap": "CRISP"
       }
     }
   },
@@ -40,7 +51,7 @@
       "type": "TextureImage",
       "Texture": {
         "idResource": "TextureImage|2023-04-27T09:49:41.672Z|34876",
-        "name": "Text_SkySpeher",
+        "name": "Text_SkySphere8k",
         "mipmap": "CRISP"
       }
     }
@@ -165,17 +176,17 @@
   "MeshObj|2023-04-25T16:48:05.703Z|54473": {
     "ƒ.MeshObj": {
       "idResource": "MeshObj|2023-04-25T16:48:05.703Z|54473",
-      "name": "Mesh\\TestGatTurret\\Head\\HomeFudge_Head.obj",
+      "name": "GatlingTurretHead",
       "type": "MeshObj",
-      "url": "Mesh\\TestGatTurret\\Head\\HomeFudge_Head.obj"
+      "url": "Mesh\\Destroyer\\HomeFudge_Head.obj"
     }
   },
   "MeshObj|2023-04-25T16:48:09.298Z|94442": {
     "ƒ.MeshObj": {
       "idResource": "MeshObj|2023-04-25T16:48:09.298Z|94442",
-      "name": "Mesh\\TestGatTurret\\Head\\Base\\HomeFudge_Base.obj",
+      "name": "GatlingTurretBase",
       "type": "MeshObj",
-      "url": "Mesh\\TestGatTurret\\Head\\Base\\HomeFudge_Base.obj"
+      "url": "Mesh\\Destroyer\\HomeFudge_Base.obj"
     }
   },
   "MeshObj|2023-04-26T14:25:28.306Z|19816": {
@@ -183,7 +194,7 @@
       "idResource": "MeshObj|2023-04-26T14:25:28.306Z|19816",
       "name": "Mesh_TempBullet",
       "type": "MeshObj",
-      "url": "Mesh\\TestGatTurret\\Bullet\\HomeFuge_GatlingBullet.obj"
+      "url": "Mesh\\Destroyer\\HomeFuge_GatlingBullet.obj"
     }
   },
   "Material|2023-04-26T14:44:25.193Z|05381": {
@@ -201,11 +212,45 @@
   },
   "TextureImage|2023-04-26T14:26:14.544Z|39959": {
     "ƒ.TextureImage": {
-      "url": "Mesh\\TestGatTurret\\Bullet\\GatBulletTexture.png",
+      "url": "Mesh\\Destroyer\\GatBulletTexture.png",
       "type": "TextureImage",
       "Texture": {
         "idResource": "TextureImage|2023-04-26T14:26:14.544Z|39959",
         "name": "Text_GatlingBullet",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "MeshObj|2023-04-29T16:43:33.751Z|79488": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-04-29T16:43:33.751Z|79488",
+      "name": "Mesh_Destroyer",
+      "type": "MeshObj",
+      "url": "Mesh\\Destroyer\\HomeFuge_Destroyser_V_1.0.obj"
+    }
+  },
+  "Material|2023-05-01T12:00:31.871Z|31008": {
+    "ƒ.Material": {
+      "name": "Mat_Destroyer",
+      "idResource": "Material|2023-05-01T12:00:31.871Z|31008",
+      "shader": "ShaderFlatTextured",
+      "coat": {
+        "ƒ.CoatRemissiveTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-05-01T12:00:02.827Z|48641",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
+  "TextureImage|2023-05-01T12:00:02.827Z|48641": {
+    "ƒ.TextureImage": {
+      "url": "Mesh\\Destroyer\\DestroyerTempTexture.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-05-01T12:00:02.827Z|48641",
+        "name": "Text_Destroyer_TEMP",
         "mipmap": "CRISP"
       }
     }
@@ -224,7 +269,7 @@
               "ComponentMesh": [
                 {
                   "ƒ.ComponentMesh": {
-                    "idMesh": "MeshObj|2023-04-25T16:48:05.703Z|54473",
+                    "idMesh": "MeshObj|2023-04-25T16:48:09.298Z|94442",
                     "pivot": {
                       "translation": "[0, 0, 0]",
                       "rotation": "[0, 0, 0]",
@@ -266,7 +311,7 @@
               "ComponentMesh": [
                 {
                   "ƒ.ComponentMesh": {
-                    "idMesh": "MeshObj|2023-04-25T16:48:09.298Z|94442",
+                    "idMesh": "MeshObj|2023-04-25T16:48:05.703Z|54473",
                     "pivot": {
                       "translation": "[0, 0, 0]",
                       "rotation": "[0, 0, 0]",
@@ -335,6 +380,48 @@
                       "active": true
                     },
                     "idMaterial": "Material|2023-04-26T14:44:25.193Z|05381"
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Destroyer",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2023-04-29T16:43:33.751Z|79488",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-05-01T12:00:31.871Z|31008"
                   }
                 }
               ]
