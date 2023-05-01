@@ -35,6 +35,11 @@ namespace HomeFudge {
     //Loads Config then initilizes the world 
     await loadConfig().then(initWorld).then(() => { 
       console.warn("ConfigsLoaded and world Initialized");
+      //Sound by IXION!
+      let audioComp=new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true);
+      audioComp.volume = 0.2;
+      audioComp.play(true);
+      _mainCamera.addComponent(audioComp);
     });// to create ships. first load configs than the ships etc
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
