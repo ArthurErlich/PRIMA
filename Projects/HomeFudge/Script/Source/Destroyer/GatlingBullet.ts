@@ -6,6 +6,8 @@ namespace HomeFudge {
         protected maxSpeed: number = null;
         protected spreadRadius: number = null;
 
+        private parentVelocity: ƒ.Vector3 = ƒ.Vector3.ZERO();
+
         static graph: ƒ.Graph = null;
         static worldNode: ƒ.Node = null;
         static mesh: ƒ.Mesh = null;
@@ -14,13 +16,20 @@ namespace HomeFudge {
         //TODO: try faction out.
         // faction: FACTION="FACTION.A";
 
-        public update =(): void => {
+        public update = (): void => {
             //goes out of the update loop as long the date is received into the config variable
             if (this.maxLifeTime == null || this.maxSpeed == null) {
                 return
             }
             this.maxLifeTime -= _deltaSeconds;
-            this.mtxLocal.translateX(this.maxSpeed * _deltaSeconds);
+
+            console.log((this.parentVelocity.y));
+            this.mtxLocal.translate( new ƒ.Vector3(
+                (2*this.parentVelocity.x + this.maxSpeed) * _deltaSeconds,
+                2*this.parentVelocity.y * _deltaSeconds,
+                2*this.parentVelocity.z * _deltaSeconds
+                ));
+
             //life check.
             if (!this.alive()) {
                 this.destroyNode();
@@ -68,9 +77,10 @@ namespace HomeFudge {
                 ƒ.Loop.stop();
             }
         }
-        constructor(spawnTransform: ƒ.Matrix4x4) {
+        constructor(spawnTransform: ƒ.Matrix4x4, _parentVelocity: ƒ.Vector3) {
             super("Gatling");
             this.addComponent(new ƒ.ComponentTransform(spawnTransform));
+            this.parentVelocity = _parentVelocity;
             this.initBulletConfig();
             ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
         }

@@ -1,13 +1,11 @@
 namespace HomeFudge {
     import ƒ = FudgeCore;
     export class Destroyer extends Ship {
-        protected maxSpeed: number= null ;
-        protected maxAcceleration: number= null; 
+        protected maxSpeed: number = null;
+        protected maxAcceleration: number = null;
         protected velocity: ƒ.Vector3 = null;
         protected healthPoints: number = null;
         protected maxTurnRate: number = null;
-
-        
 
         //TODO:make private
         public gatlingTurret: GatlingTurret = null;
@@ -23,11 +21,13 @@ namespace HomeFudge {
             let node: ƒ.Node = await Destroyer.getComponentNode("Destroyer", Destroyer.graph);
 
             //init mesh and material
-            Destroyer.mesh =  node.getComponent(ƒ.ComponentMesh).mesh;
+            Destroyer.mesh = node.getComponent(ƒ.ComponentMesh).mesh;
             Destroyer.material = node.getComponent(ƒ.ComponentMaterial).material;
 
             //init configs
-            this.velocity = new ƒ.Vector3(0, 0, 0);
+            if(this.velocity == null){
+                this.velocity = new ƒ.Vector3(0, 0, 0);
+            }
             this.maxAcceleration = Config.destroyer.maxAcceleration;
             this.maxSpeed = Config.destroyer.maxSpeed
 
@@ -36,15 +36,15 @@ namespace HomeFudge {
 
             //init Components
             this.setAllComponents();
-            
+
         }
-        private addWeapons():void{
+        private addWeapons(): void {
             this.gatlingTurret = new GatlingTurret();
 
             this.addChild(this.gatlingTurret);
         }
-        private setAllComponents():void{
-            if(Destroyer.material == null || Destroyer.mesh == null){
+        private setAllComponents(): void {
+            if (Destroyer.material == null || Destroyer.mesh == null) {
                 console.warn(this.name + " Mesh and/or Material is missing");
                 return;
             }
@@ -52,11 +52,14 @@ namespace HomeFudge {
             this.addComponent(new ƒ.ComponentMesh(Destroyer.mesh));
         }
         protected update = (): void => {
-
+            this.mtxLocal.translate(new ƒ.Vector3(
+                this.velocity.x * _deltaSeconds,
+                this.velocity.y * _deltaSeconds,
+                this.velocity.z * _deltaSeconds)); 
 
             //TODO: remove temporary WP shooting
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
-                this.gatlingTurret.fire();
+                this.gatlingTurret.fire(this.velocity);
             }
         }
         public alive(): boolean {
@@ -67,12 +70,14 @@ namespace HomeFudge {
             //console.error("Method not implemented.");
             return null;
         }
+        public getVelocity(): ƒ.Vector3 {
+            return this.velocity;
+        }
         public toString(): string {
             //console.error("Method not implemented.");
             return null;
         }
-
-        constructor(position: ƒ.Vector3, rotation?: ƒ.Vector3) {
+        constructor(position: ƒ.Vector3) {
             super("Destroyer");
             let tempComp = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position));
             //ROTATION WILL BREAK OFFSET OF GUNS

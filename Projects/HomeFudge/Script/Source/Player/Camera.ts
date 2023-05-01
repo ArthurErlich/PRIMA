@@ -12,7 +12,7 @@ namespace HomeFudge{
             
             this.attachedTo = ship;
             this.mtxLocal.set(ship.mtxWorld);
-            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0,90,0);//TODO: Sound Bug when Pivot is rotated
+            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0,-270,0);//TODO: Sound Bug when Pivot is rotated
 
             ship.addChild(this);
 
@@ -20,7 +20,7 @@ namespace HomeFudge{
         private update = (): void =>{
 
             //TODO:RemoveCamTest
-            this.mtxLocal.rotateY(10*_deltaSeconds);
+            // this.mtxLocal.rotateY(10*_deltaSeconds);
         }
         
         private init(){

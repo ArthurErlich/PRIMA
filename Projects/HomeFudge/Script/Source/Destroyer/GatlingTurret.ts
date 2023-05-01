@@ -124,7 +124,7 @@ namespace HomeFudge {
         if not, it returns without firing. If the reload timer has finished and there are rounds
         left in the magazine, it creates a new GatlingBullet object at the position of the shootNode
         and resets the rounds timer. */
-        public fire() {
+        public fire(parentVelocity: ƒ.Vector3) {
             if (this.magazineRounds <= 0) {
                 this.reloadTimer = 0;
                 this.magazineRounds = this.magazineCapacity;
@@ -136,7 +136,7 @@ namespace HomeFudge {
                 return;
             }
             if (this.roundsTimer >= 1/this.roundsPerSecond) {
-                new GatlingBullet(this.shootNode.mtxWorld.clone);
+                new GatlingBullet(this.shootNode.mtxWorld.clone, parentVelocity);
                 this.roundsTimer = 0;
                 this.magazineRounds--;
                 FudgeCore.Debug.log("RoundsLeft: " + this.magazineRounds);

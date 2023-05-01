@@ -154,8 +154,9 @@ declare namespace HomeFudge {
         protected update: () => void;
         alive(): boolean;
         destroyNode(): void;
+        getVelocity(): ƒ.Vector3;
         toString(): string;
-        constructor(position: ƒ.Vector3, rotation?: ƒ.Vector3);
+        constructor(position: ƒ.Vector3);
     }
 }
 declare namespace HomeFudge {
@@ -164,6 +165,7 @@ declare namespace HomeFudge {
         protected maxLifeTime: number;
         protected maxSpeed: number;
         protected spreadRadius: number;
+        private parentVelocity;
         static graph: ƒ.Graph;
         static worldNode: ƒ.Node;
         static mesh: ƒ.Mesh;
@@ -173,7 +175,7 @@ declare namespace HomeFudge {
         alive(): boolean;
         toString(): string;
         destroyNode(): void;
-        constructor(spawnTransform: ƒ.Matrix4x4);
+        constructor(spawnTransform: ƒ.Matrix4x4, _parentVelocity: ƒ.Vector3);
     }
 }
 declare namespace HomeFudge {
@@ -203,7 +205,7 @@ declare namespace HomeFudge {
          */
         private update;
         moveTurret(xRot: number, yRot: number): void;
-        fire(): void;
+        fire(parentVelocity: ƒ.Vector3): void;
         constructor();
     }
 }

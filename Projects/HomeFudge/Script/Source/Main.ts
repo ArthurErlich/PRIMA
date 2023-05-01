@@ -6,7 +6,8 @@ namespace HomeFudge {
   
   //@ts-ignore
   document.addEventListener("interactiveViewportStarted", (event) => <EventListener>start(event));
-  document.addEventListener("keydown", (event) => contionuLoop(event))
+  document.addEventListener("keydown", (event) => continueLoop(event))
+  
 
   ///World Node\\\
   export let _worldNode: ƒ.Node = null;
@@ -16,7 +17,9 @@ namespace HomeFudge {
 
   ///Viewport\\\
   export let _viewport: ƒ.Viewport = null;
-  ///Mouse\\\
+ 
+  ///TestShip\\\
+  let destroyer: Destroyer[] = null;
 
 
 
@@ -37,10 +40,25 @@ namespace HomeFudge {
       let audioComp=new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true);
       console.warn("ConfigsLoaded and world Initialized");
       //Sound by IXION!
-      audioComp.volume = 0.2;
+      audioComp.volume = 0.1;
       audioComp.play(true);
       _mainCamera.addComponent(audioComp);
     });// to create ships. first load configs than the ships etc
+    async function loadConfig() {
+      //loads configs
+      performance.now();
+      console.warn("LoadingConfigs");
+      await Config.initConfigs();
+      Mouse.init();
+    }
+  
+    async function initWorld(): Promise<void> {
+      destroyer = new Array();
+      destroyer = initAllDestroyers();
+      
+      _viewport.getBranch().addChild(destroyer[0]);
+      _mainCamera.attachToShip(destroyer[0]);   
+    }
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     /// ------------T-E-S-T--A-R-E-A------------------\\\
@@ -59,15 +77,13 @@ namespace HomeFudge {
       console.log(_worldNode);
     }
 
-
     //TODO: remove error when frames are dropping
     if (ƒ.Loop.fpsGameAverage <= 20) {
       console.warn(ƒ.Loop.fpsGameAverage);
       console.warn("Active bullets in scene: " + _worldNode.getChildrenByName("BulletGatling").length);
       ƒ.Loop.stop();
     }
-
-
+     
     // let letaimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AmingRayCaster
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
@@ -77,36 +93,21 @@ namespace HomeFudge {
   }
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
-  function getAimPos(): ƒ.Vector3 {
-    let pick:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,new ƒ.Vector2(_viewport.canvas.width/2,_viewport.canvas.height/2));
+  function getAimPos():void {
+    let pick:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,Mouse.pos);
     return pick[0].posWorld;
   }
   
   
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
-  async function loadConfig() {
-    //loads configs
-    performance.now();
-    console.warn("LoadingConfigs");
-    await Config.initConfigs();
-    Mouse.init();
-  }
-
-  async function initWorld(): Promise<void> {
-    let destroyer: ƒ.Node[] = initAllDestroyers();
-    
-    _viewport.getBranch().addChild(destroyer[0]);
-
-    _mainCamera.attachToShip(destroyer[0]);
- 
-  }
+  
   function initAllDestroyers(): Destroyer[] {
     return [new Destroyer(new ƒ.Vector3(0, 0, 0))];
   }
 
   //DEBUG
-  function contionuLoop(event:KeyboardEvent){
+  function continueLoop(event:KeyboardEvent){
     if(event.code == "Insert"){
       ƒ.Loop.continue();
     }

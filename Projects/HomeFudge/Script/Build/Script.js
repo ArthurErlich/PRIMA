@@ -140,14 +140,15 @@ var HomeFudge;
     ƒ.Debug.info("Main Program Template running!");
     //@ts-ignore
     document.addEventListener("interactiveViewportStarted", (event) => start(event));
-    document.addEventListener("keydown", (event) => contionuLoop(event));
+    document.addEventListener("keydown", (event) => continueLoop(event));
     ///World Node\\\
     HomeFudge._worldNode = null;
     ///DeltaSeconds\\\
     HomeFudge._deltaSeconds = null;
     ///Viewport\\\
     HomeFudge._viewport = null;
-    ///Mouse\\\
+    ///TestShip\\\
+    let destroyer = null;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     //Bullet list, every bullet wil register itself here for the update Method.
     ///camera setup for worldSize of 25km\\\
@@ -162,10 +163,23 @@ var HomeFudge;
             let audioComp = new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true);
             console.warn("ConfigsLoaded and world Initialized");
             //Sound by IXION!
-            audioComp.volume = 0.2;
+            audioComp.volume = 0.1;
             audioComp.play(true);
             HomeFudge._mainCamera.addComponent(audioComp);
         }); // to create ships. first load configs than the ships etc
+        async function loadConfig() {
+            //loads configs
+            performance.now();
+            console.warn("LoadingConfigs");
+            await HomeFudge.Config.initConfigs();
+            HomeFudge.Mouse.init();
+        }
+        async function initWorld() {
+            destroyer = new Array();
+            destroyer = initAllDestroyers();
+            HomeFudge._viewport.getBranch().addChild(destroyer[0]);
+            HomeFudge._mainCamera.attachToShip(destroyer[0]);
+        }
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
@@ -192,27 +206,15 @@ var HomeFudge;
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     function getAimPos() {
-        let pick = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, new ƒ.Vector2(HomeFudge._viewport.canvas.width / 2, HomeFudge._viewport.canvas.height / 2));
+        let pick = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, HomeFudge.Mouse.pos);
         return pick[0].posWorld;
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    async function loadConfig() {
-        //loads configs
-        performance.now();
-        console.warn("LoadingConfigs");
-        await HomeFudge.Config.initConfigs();
-        HomeFudge.Mouse.init();
-    }
-    async function initWorld() {
-        let destroyer = initAllDestroyers();
-        HomeFudge._viewport.getBranch().addChild(destroyer[0]);
-        HomeFudge._mainCamera.attachToShip(destroyer[0]);
-    }
     function initAllDestroyers() {
         return [new HomeFudge.Destroyer(new ƒ.Vector3(0, 0, 0))];
     }
     //DEBUG
-    function contionuLoop(event) {
+    function continueLoop(event) {
         if (event.code == "Insert") {
             ƒ.Loop.continue();
         }
@@ -329,7 +331,9 @@ var HomeFudge;
             Destroyer.mesh = node.getComponent(ƒ.ComponentMesh).mesh;
             Destroyer.material = node.getComponent(ƒ.ComponentMaterial).material;
             //init configs
-            this.velocity = new ƒ.Vector3(0, 0, 0);
+            if (this.velocity == null) {
+                this.velocity = new ƒ.Vector3(0, 0, 0);
+            }
             this.maxAcceleration = HomeFudge.Config.destroyer.maxAcceleration;
             this.maxSpeed = HomeFudge.Config.destroyer.maxSpeed;
             //init Weapons
@@ -350,9 +354,10 @@ var HomeFudge;
             this.addComponent(new ƒ.ComponentMesh(Destroyer.mesh));
         }
         update = () => {
+            this.mtxLocal.translate(new ƒ.Vector3(this.velocity.x * HomeFudge._deltaSeconds, this.velocity.y * HomeFudge._deltaSeconds, this.velocity.z * HomeFudge._deltaSeconds));
             //TODO: remove temporary WP shooting
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
-                this.gatlingTurret.fire();
+                this.gatlingTurret.fire(this.velocity);
             }
         };
         alive() {
@@ -363,11 +368,14 @@ var HomeFudge;
             //console.error("Method not implemented.");
             return null;
         }
+        getVelocity() {
+            return this.velocity;
+        }
         toString() {
             //console.error("Method not implemented.");
             return null;
         }
-        constructor(position, rotation) {
+        constructor(position) {
             super("Destroyer");
             let tempComp = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position));
             //ROTATION WILL BREAK OFFSET OF GUNS
@@ -386,6 +394,7 @@ var HomeFudge;
         maxLifeTime = null;
         maxSpeed = null;
         spreadRadius = null;
+        parentVelocity = ƒ.Vector3.ZERO();
         static graph = null;
         static worldNode = null;
         static mesh = null;
@@ -398,7 +407,8 @@ var HomeFudge;
                 return;
             }
             this.maxLifeTime -= HomeFudge._deltaSeconds;
-            this.mtxLocal.translateX(this.maxSpeed * HomeFudge._deltaSeconds);
+            console.log((this.parentVelocity.y));
+            this.mtxLocal.translate(new ƒ.Vector3((2 * this.parentVelocity.x + this.maxSpeed) * HomeFudge._deltaSeconds, 2 * this.parentVelocity.y * HomeFudge._deltaSeconds, 2 * this.parentVelocity.z * HomeFudge._deltaSeconds));
             //life check.
             if (!this.alive()) {
                 this.destroyNode();
@@ -440,9 +450,10 @@ var HomeFudge;
                 ƒ.Loop.stop();
             }
         }
-        constructor(spawnTransform) {
+        constructor(spawnTransform, _parentVelocity) {
             super("Gatling");
             this.addComponent(new ƒ.ComponentTransform(spawnTransform));
+            this.parentVelocity = _parentVelocity;
             this.initBulletConfig();
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
         }
@@ -560,7 +571,7 @@ var HomeFudge;
         if not, it returns without firing. If the reload timer has finished and there are rounds
         left in the magazine, it creates a new GatlingBullet object at the position of the shootNode
         and resets the rounds timer. */
-        fire() {
+        fire(parentVelocity) {
             if (this.magazineRounds <= 0) {
                 this.reloadTimer = 0;
                 this.magazineRounds = this.magazineCapacity;
@@ -572,7 +583,7 @@ var HomeFudge;
                 return;
             }
             if (this.roundsTimer >= 1 / this.roundsPerSecond) {
-                new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone);
+                new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone, parentVelocity);
                 this.roundsTimer = 0;
                 this.magazineRounds--;
                 FudgeCore.Debug.log("RoundsLeft: " + this.magazineRounds);
@@ -625,12 +636,12 @@ var HomeFudge;
             this.camComp.mtxPivot.translation = this.offset;
             this.attachedTo = ship;
             this.mtxLocal.set(ship.mtxWorld);
-            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0, 90, 0); //TODO: Sound Bug when Pivot is rotated
+            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0, -270, 0); //TODO: Sound Bug when Pivot is rotated
             ship.addChild(this);
         }
         update = () => {
             //TODO:RemoveCamTest
-            this.mtxLocal.rotateY(10 * HomeFudge._deltaSeconds);
+            // this.mtxLocal.rotateY(10*_deltaSeconds);
         };
         init() {
             this.camComp = new ƒ.ComponentCamera();
