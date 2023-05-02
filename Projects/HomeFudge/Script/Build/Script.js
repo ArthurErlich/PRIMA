@@ -365,14 +365,16 @@ var HomeFudge;
         //TODO:make private
         gatlingTurret = null;
         beamTurretList = null;
-        selectedWeapon;
-        graph = null;
-        static worldNode = null; //TODO: remove
+        //list of weapons
+        weapons = Weapons;
+        static graph = null;
         static mesh = null;
         static material = null;
-        async initAllConfigs() {
+        async initAllConfigs(startPosition) {
             Destroyer.graph = await HomeFudge.Ship.getGraphResources(HomeFudge.Config.destroyer.graphID);
             let node = await HomeFudge.Ship.getComponentNode("Destroyer", Destroyer.graph);
+            let transNode = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(startPosition)); //TODO: move after turret are loaded!
+            this.addComponent(transNode);
             //init mesh and material
             Destroyer.mesh = node.getComponent(ƒ.ComponentMesh).mesh;
             Destroyer.material = node.getComponent(ƒ.ComponentMaterial).material;
@@ -425,12 +427,9 @@ var HomeFudge;
                 turret.fire();
             });
         }
-        constructor(position) {
+        constructor(startPosition) {
             super("Destroyer");
-            let tempComp = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)); //TODO: move after turret are loaded!
-            //ROTATION WILL BREAK OFFSET OF GUNS
-            this.addComponent(tempComp);
-            this.initAllConfigs();
+            this.initAllConfigs(startPosition);
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
         }
     }
@@ -446,6 +445,7 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     //TODO:create a logic for Hit detection. Using a physics engine of Fudge
+    //TODO:move texturePivot to the Beck
     class GatlingBullet extends HomeFudge.Bullet {
         maxLifeTime = null;
         maxSpeed = null;

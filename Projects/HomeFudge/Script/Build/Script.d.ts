@@ -141,16 +141,23 @@ declare namespace HomeFudge {
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
-    class Destroyer extends Ship {
+    class BeamTurret extends ƒ.Node {
+        fire(): void;
+        constructor();
+    }
+}
+declare namespace HomeFudge {
+    import ƒ = FudgeCore;
+    export class Destroyer extends Ship {
         protected maxSpeed: number;
         protected maxAcceleration: number;
         protected velocity: ƒ.Vector3;
         protected healthPoints: number;
         protected maxTurnRate: number;
-        gatlingTurret: GatlingTurret;
-        beamTurretList: BeamTurret[];
+        private gatlingTurret;
+        private beamTurretList;
+        weapons: typeof Weapons;
         static graph: ƒ.Graph;
-        static worldNode: ƒ.Node;
         static mesh: ƒ.Mesh;
         static material: ƒ.Material;
         private initAllConfigs;
@@ -163,8 +170,14 @@ declare namespace HomeFudge {
         toString(): string;
         fireGatling(): void;
         fireBeam(): void;
-        constructor(position: ƒ.Vector3);
+        constructor(startPosition: ƒ.Vector3);
     }
+    enum Weapons {
+        GatlingTurret = 0,
+        BeamTurret = 1,
+        RocketPod = 2
+    }
+    export {};
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -208,13 +221,6 @@ declare namespace HomeFudge {
         private update;
         moveTurret(xRot: number, yRot: number): void;
         fire(parentVelocity: ƒ.Vector3): void;
-        constructor();
-    }
-}
-declare namespace HomeFudge {
-    import ƒ = FudgeCore;
-    class BeamTurret extends ƒ.Node {
-        fire(): void;
         constructor();
     }
 }

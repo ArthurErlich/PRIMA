@@ -1,6 +1,7 @@
 namespace HomeFudge {
     import ƒ = FudgeCore;
     //TODO:create a logic for Hit detection. Using a physics engine of Fudge
+    //TODO:move texturePivot to the Beck
     export class GatlingBullet extends Bullet {
         protected maxLifeTime: number = null;
         protected maxSpeed: number = null;
