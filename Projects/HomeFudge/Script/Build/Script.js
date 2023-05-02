@@ -82,6 +82,7 @@ var HomeFudge;
     }
     async function startInteractiveViewport(graphId) {
         // load resources referenced in the link-tag
+        HomeFudge.LoadingScreen.init(canvas);
         await FudgeCore.Project.loadResourcesFromHTML();
         FudgeCore.Debug.log("Project:", FudgeCore.Project.resources);
         // pick the graph to show
@@ -134,6 +135,20 @@ components. */
         }
     }
     HomeFudge.JSONparser = JSONparser;
+})(HomeFudge || (HomeFudge = {}));
+var HomeFudge;
+(function (HomeFudge) {
+    class LoadingScreen {
+        static init(canvas) {
+            canvas.style.backgroundColor = "#191919";
+            let body = document.body;
+            let loadText = document.createElement("div");
+            loadText.style.fontSize = "44px";
+            loadText.innerHTML = "HomeFudge is Loading";
+            body.append(loadText);
+        }
+    }
+    HomeFudge.LoadingScreen = LoadingScreen;
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
