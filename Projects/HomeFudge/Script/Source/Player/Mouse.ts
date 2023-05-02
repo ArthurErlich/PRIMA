@@ -68,6 +68,13 @@ namespace HomeFudge {
                     break;
             }
         }
+        /**
+         * The function checks if any of the mouse buttons in the input array are currently pressed.
+         * 
+         * @param inputs An array of MOUSE_CODE values that represent the mouse buttons being checked
+         * for being pressed.
+         * @return A boolean value is being returned, which indicates whether the Mouse is pressed.
+         */
         public static isPressedOne(inputs:Array<MOUSE_CODE>):boolean{
             for(let index:number = 0; index <= Mouse.isPressed.length; index++){
                 for( let inputIndex:number = 0; inputIndex< inputs.length; inputIndex++){
