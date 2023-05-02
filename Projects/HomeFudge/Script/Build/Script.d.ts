@@ -148,7 +148,7 @@ declare namespace HomeFudge {
         protected healthPoints: number;
         protected maxTurnRate: number;
         gatlingTurret: GatlingTurret;
-        laserTurretList: LaserTurret[];
+        beamTurretList: BeamTurret[];
         static graph: ƒ.Graph;
         static worldNode: ƒ.Node;
         static mesh: ƒ.Mesh;
@@ -161,7 +161,8 @@ declare namespace HomeFudge {
         destroyNode(): void;
         getVelocity(): ƒ.Vector3;
         toString(): string;
-        fire(): void;
+        fireGatling(): void;
+        fireBeam(): void;
         constructor(position: ƒ.Vector3);
     }
 }
@@ -204,11 +205,6 @@ declare namespace HomeFudge {
         private getGraphResources;
         private createComponents;
         private createShootPosNode;
-        /**
-         *
-         * @param deltaSeconds
-         * Don't forget to call this function in the UpdateMethod!!!
-         */
         private update;
         moveTurret(xRot: number, yRot: number): void;
         fire(parentVelocity: ƒ.Vector3): void;
@@ -217,7 +213,8 @@ declare namespace HomeFudge {
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
-    class LaserTurret extends ƒ.Node {
+    class BeamTurret extends ƒ.Node {
+        fire(): void;
         constructor();
     }
 }
@@ -250,11 +247,26 @@ declare namespace HomeFudge {
         private static moveUpdate;
         private static mouseDown;
         private static mouseUp;
+        /**
+         * The function checks if any of the mouse buttons in the input array are currently pressed.
+         *
+         * @param inputs An array of MOUSE_CODE values that represent the mouse buttons being checked
+         * for being pressed.
+         * @return A boolean value is being returned, which indicates whether the Mouse is pressed.
+         */
         static isPressedOne(inputs: Array<MOUSE_CODE>): boolean;
     }
     enum MOUSE_CODE {
         LEFT = 0,
         MIDDLE = 1,
         RIGHT = 2
+    }
+}
+declare namespace HomeFudge {
+    import ƒ = FudgeCore;
+    class Player extends ƒ.Node {
+        destroyer: Destroyer;
+        private update;
+        constructor(name: string);
     }
 }

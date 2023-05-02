@@ -170,15 +170,15 @@ var HomeFudge;
     HomeFudge._deltaSeconds = null;
     ///Viewport\\\
     HomeFudge._viewport = null;
-    ///TestShip\\\
-    let destroyerList = null;
+    ///Player\\\
+    let p1 = null;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     //Bullet list, every bullet wil register itself here for the update Method.
     ///camera setup for worldSize of 25km\\\
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function start(_event) {
         HomeFudge._viewport = _event.detail;
-        HomeFudge._viewport.canvas.style.cursor = "url(Textures/AimCurser.svg) 0 0, crosshair";
+        HomeFudge._viewport.canvas.style.cursor = "url(Textures/AimCurser.svg) 16 16, crosshair";
         HomeFudge._worldNode = HomeFudge._viewport.getBranch();
         console.log(HomeFudge._viewport);
         //Loads Config then initilizes the world 
@@ -198,10 +198,9 @@ var HomeFudge;
             HomeFudge.Mouse.init();
         }
         async function initWorld() {
-            destroyerList = new Array();
-            destroyerList = initAllDestroyers();
-            HomeFudge._viewport.getBranch().addChild(destroyerList[0]);
-            HomeFudge._mainCamera.attachToShip(destroyerList[0]);
+            p1 = new HomeFudge.Player("test_P1");
+            HomeFudge._viewport.getBranch().addChild(p1);
+            HomeFudge._mainCamera.attachToShip(p1.destroyer);
         }
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         /// ------------T-E-S-T--A-R-E-A------------------\\\
@@ -223,7 +222,7 @@ var HomeFudge;
             ƒ.Loop.stop();
         }
         if (HomeFudge.Mouse.isPressedOne([HomeFudge.MOUSE_CODE.LEFT])) {
-            destroyerList[0].fire();
+            getPosTest();
         }
         // let aimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AimingRayCaster
         /// ------------T-E-S-T--A-R-E-A------------------\\\
@@ -231,18 +230,21 @@ var HomeFudge;
         ƒ.AudioManager.default.update();
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    function getPoTest() {
+    function getPosTest() {
         let pickCam = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, HomeFudge.Mouse.pos);
         let pickViewport = ƒ.Picker.pickViewport(HomeFudge._viewport, HomeFudge.Mouse.pos);
         console.log("Camera Picker");
-        console.log(pickCam);
+        pickCam.forEach(element => {
+            console.log("%c" + element.posMesh.toString(), "background:yellow");
+        });
+        console.log("-------------");
         console.log("Viewport Picker");
-        console.log(pickViewport);
+        pickViewport.forEach(element => {
+            console.log("%c" + element.posMesh.toString(), "background:yellow");
+        });
+        console.log("-------------");
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    function initAllDestroyers() {
-        return [new HomeFudge.Destroyer(new ƒ.Vector3(0, 0, 0))];
-    }
     //DEBUG
     function continueLoop(event) {
         if (event.code == "Insert") {
@@ -341,6 +343,19 @@ var HomeFudge;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
+    class BeamTurret extends ƒ.Node {
+        fire() {
+            console.warn("NO FIRE HERE");
+        }
+        constructor() {
+            super("BamTurret");
+        }
+    }
+    HomeFudge.BeamTurret = BeamTurret;
+})(HomeFudge || (HomeFudge = {}));
+var HomeFudge;
+(function (HomeFudge) {
+    var ƒ = FudgeCore;
     class Destroyer extends HomeFudge.Ship {
         maxSpeed = null;
         maxAcceleration = null;
@@ -349,8 +364,9 @@ var HomeFudge;
         maxTurnRate = null;
         //TODO:make private
         gatlingTurret = null;
-        laserTurretList = null;
-        static graph = null;
+        beamTurretList = null;
+        selectedWeapon;
+        graph = null;
         static worldNode = null; //TODO: remove
         static mesh = null;
         static material = null;
@@ -401,8 +417,13 @@ var HomeFudge;
             //console.error("Method not implemented.");
             return null;
         }
-        fire() {
+        fireGatling() {
             this.gatlingTurret.fire(this.velocity);
+        }
+        fireBeam() {
+            this.beamTurretList.forEach(turret => {
+                turret.fire();
+            });
         }
         constructor(position) {
             super("Destroyer");
@@ -414,6 +435,12 @@ var HomeFudge;
         }
     }
     HomeFudge.Destroyer = Destroyer;
+    let Weapons;
+    (function (Weapons) {
+        Weapons[Weapons["GatlingTurret"] = 0] = "GatlingTurret";
+        Weapons[Weapons["BeamTurret"] = 1] = "BeamTurret";
+        Weapons[Weapons["RocketPod"] = 2] = "RocketPod";
+    })(Weapons || (Weapons = {}));
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
@@ -559,11 +586,6 @@ var HomeFudge;
             shootPosNode.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform))); //From gatConfig.json
             return shootPosNode;
         }
-        /**
-         *
-         * @param deltaSeconds
-         * Don't forget to call this function in the UpdateMethod!!!
-         */
         update = () => {
             if (this.roundsPerSecond == null || this.reloadsEverySecond == null || this.magazineCapacity == null) {
                 return;
@@ -625,16 +647,6 @@ var HomeFudge;
         }
     }
     HomeFudge.GatlingTurret = GatlingTurret;
-})(HomeFudge || (HomeFudge = {}));
-var HomeFudge;
-(function (HomeFudge) {
-    var ƒ = FudgeCore;
-    class LaserTurret extends ƒ.Node {
-        constructor() {
-            super("Laser.");
-        }
-    }
-    HomeFudge.LaserTurret = LaserTurret;
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
@@ -744,6 +756,13 @@ var HomeFudge;
                     break;
             }
         }
+        /**
+         * The function checks if any of the mouse buttons in the input array are currently pressed.
+         *
+         * @param inputs An array of MOUSE_CODE values that represent the mouse buttons being checked
+         * for being pressed.
+         * @return A boolean value is being returned, which indicates whether the Mouse is pressed.
+         */
         static isPressedOne(inputs) {
             for (let index = 0; index <= Mouse.isPressed.length; index++) {
                 for (let inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
@@ -762,5 +781,24 @@ var HomeFudge;
         MOUSE_CODE[MOUSE_CODE["MIDDLE"] = 1] = "MIDDLE";
         MOUSE_CODE[MOUSE_CODE["RIGHT"] = 2] = "RIGHT";
     })(MOUSE_CODE = HomeFudge.MOUSE_CODE || (HomeFudge.MOUSE_CODE = {}));
+})(HomeFudge || (HomeFudge = {}));
+var HomeFudge;
+(function (HomeFudge) {
+    var ƒ = FudgeCore;
+    class Player extends ƒ.Node {
+        destroyer = null;
+        update = () => {
+            if (HomeFudge.Mouse.isPressedOne([HomeFudge.MOUSE_CODE.LEFT])) {
+                this.destroyer.fireGatling();
+            }
+        };
+        constructor(name) {
+            super(name);
+            this.destroyer = new HomeFudge.Destroyer(ƒ.Vector3.ZERO());
+            this.addChild(this.destroyer);
+            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
+        }
+    }
+    HomeFudge.Player = Player;
 })(HomeFudge || (HomeFudge = {}));
 //# sourceMappingURL=Script.js.map
