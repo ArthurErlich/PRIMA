@@ -92,10 +92,17 @@ var HomeFudge;
             alert("Nothing to render. Create a graph with at least a mesh, material and probably some light");
             return;
         }
-        // hide the cursor when interacting, also suppressing right-click menu
-        //TODO:HIDE it ony when using right click!!!
-        canvas.addEventListener("mousedown", function () { canvas.requestPointerLock(); });
-        canvas.addEventListener("mouseup", function () { document.exitPointerLock(); });
+        // hide the cursor when right clicking, also suppressing right-click menu
+        canvas.addEventListener("mousedown", function (event) {
+            if (event.button == 2) {
+                canvas.requestPointerLock();
+            }
+        });
+        canvas.addEventListener("mouseup", function (event) {
+            if (event.button == 2) {
+                document.exitPointerLock();
+            }
+        });
         viewport.initialize("InteractiveViewport", graph, cmpCamera, canvas);
         // setup audio
         cmpCamera.node.addComponent(cmpListener);
@@ -164,7 +171,7 @@ var HomeFudge;
     ///Viewport\\\
     HomeFudge._viewport = null;
     ///TestShip\\\
-    let destroyer = null;
+    let destroyerList = null;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     //Bullet list, every bullet wil register itself here for the update Method.
     ///camera setup for worldSize of 25km\\\
@@ -191,15 +198,15 @@ var HomeFudge;
             HomeFudge.Mouse.init();
         }
         async function initWorld() {
-            destroyer = new Array();
-            destroyer = initAllDestroyers();
-            HomeFudge._viewport.getBranch().addChild(destroyer[0]);
-            HomeFudge._mainCamera.attachToShip(destroyer[0]);
+            destroyerList = new Array();
+            destroyerList = initAllDestroyers();
+            HomeFudge._viewport.getBranch().addChild(destroyerList[0]);
+            HomeFudge._mainCamera.attachToShip(destroyerList[0]);
         }
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
-        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 100); // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30); // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
@@ -215,15 +222,22 @@ var HomeFudge;
             console.warn("Active bullets in scene: " + HomeFudge._worldNode.getChildrenByName("BulletGatling").length);
             ƒ.Loop.stop();
         }
-        // let letaimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AmingRayCaster
+        if (HomeFudge.Mouse.isPressedOne([HomeFudge.MOUSE_CODE.LEFT])) {
+            destroyerList[0].fire();
+        }
+        // let aimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AimingRayCaster
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         HomeFudge._viewport.draw();
         ƒ.AudioManager.default.update();
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    function getAimPos() {
-        let pick = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, HomeFudge.Mouse.pos);
-        console.log(pick);
+    function getPoTest() {
+        let pickCam = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, HomeFudge.Mouse.pos);
+        let pickViewport = ƒ.Picker.pickViewport(HomeFudge._viewport, HomeFudge.Mouse.pos);
+        console.log("Camera Picker");
+        console.log(pickCam);
+        console.log("Viewport Picker");
+        console.log(pickViewport);
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     function initAllDestroyers() {
@@ -337,12 +351,12 @@ var HomeFudge;
         gatlingTurret = null;
         laserTurretList = null;
         static graph = null;
-        static worldNode = null;
+        static worldNode = null; //TODO: remove
         static mesh = null;
         static material = null;
         async initAllConfigs() {
             Destroyer.graph = await HomeFudge.Ship.getGraphResources(HomeFudge.Config.destroyer.graphID);
-            let node = await Destroyer.getComponentNode("Destroyer", Destroyer.graph);
+            let node = await HomeFudge.Ship.getComponentNode("Destroyer", Destroyer.graph);
             //init mesh and material
             Destroyer.mesh = node.getComponent(ƒ.ComponentMesh).mesh;
             Destroyer.material = node.getComponent(ƒ.ComponentMaterial).material;
@@ -371,10 +385,6 @@ var HomeFudge;
         }
         update = () => {
             this.mtxLocal.translate(new ƒ.Vector3(this.velocity.x * HomeFudge._deltaSeconds, this.velocity.y * HomeFudge._deltaSeconds, this.velocity.z * HomeFudge._deltaSeconds));
-            //TODO: remove temporary WP shooting
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
-                this.gatlingTurret.fire(this.velocity);
-            }
         };
         alive() {
             //console.error("Method not implemented.");
@@ -391,9 +401,12 @@ var HomeFudge;
             //console.error("Method not implemented.");
             return null;
         }
+        fire() {
+            this.gatlingTurret.fire(this.velocity);
+        }
         constructor(position) {
             super("Destroyer");
-            let tempComp = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position));
+            let tempComp = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)); //TODO: move after turret are loaded!
             //ROTATION WILL BREAK OFFSET OF GUNS
             this.addComponent(tempComp);
             this.initAllConfigs();
@@ -650,14 +663,17 @@ var HomeFudge;
             this.camComp.mtxPivot.translation = this.offset;
             this.attachedTo = ship;
             this.mtxLocal.set(ship.mtxWorld);
-            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0, -270, 0); //TODO: Sound Bug when Pivot is rotated
+            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0, -270, 0); //TODO: Sound Bug when Pivot is rotated 
+            //TODO: add node for campComp
             ship.addChild(this);
         }
         update = () => {
+            //TODO: remove test rotation
+            this.mtxLocal.rotateY(10 * HomeFudge._deltaSeconds);
         };
         init() {
             this.camComp = new ƒ.ComponentCamera();
-            this.camComp.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+            this.camComp.projectCentral(1.77, 70, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
             this.camComp = this.camComp;
             this.addComponent(this.camComp);
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.ZERO())));
@@ -676,14 +692,16 @@ var HomeFudge;
     class Mouse {
         static pos = null;
         static change = null;
+        static isPressed = new Array(3); // length of MOUSE_CODE enum
         static tempPos = null;
         static init() {
             HomeFudge._viewport.canvas.addEventListener("mousemove", Mouse.moveUpdate);
-            HomeFudge._viewport.canvas.addEventListener("mousedown", Mouse.downUpdate);
-            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, Mouse.update);
+            HomeFudge._viewport.canvas.addEventListener("mousedown", Mouse.mouseDown);
+            HomeFudge._viewport.canvas.addEventListener("mouseup", Mouse.mouseUp);
             Mouse.pos = new ƒ.Vector2(0, 0);
             Mouse.change = new ƒ.Vector2(0, 0);
             Mouse.tempPos = new ƒ.Vector2(0, 0);
+            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, Mouse.update);
         }
         static update = () => {
             //P1=Pos
@@ -696,10 +714,53 @@ var HomeFudge;
             Mouse.change = new ƒ.Vector2(_event.movementX, _event.movementY);
             Mouse.pos = new ƒ.Vector2(_event.x, _event.y);
         };
-        static downUpdate(_event) {
-            throw new Error("Method not implemented.");
+        static mouseDown(_event) {
+            switch (_event.button) {
+                case MOUSE_CODE.RIGHT:
+                    Mouse.isPressed[MOUSE_CODE.RIGHT] = MOUSE_CODE.RIGHT;
+                    break;
+                case MOUSE_CODE.LEFT:
+                    Mouse.isPressed[MOUSE_CODE.LEFT] = MOUSE_CODE.LEFT;
+                    break;
+                case MOUSE_CODE.MIDDLE:
+                    Mouse.isPressed[MOUSE_CODE.MIDDLE] = MOUSE_CODE.MIDDLE;
+                    break;
+                default:
+                    break;
+            }
+        }
+        static mouseUp(_event) {
+            switch (_event.button) {
+                case MOUSE_CODE.RIGHT:
+                    Mouse.isPressed[MOUSE_CODE.RIGHT] = null;
+                    break;
+                case MOUSE_CODE.LEFT:
+                    Mouse.isPressed[MOUSE_CODE.LEFT] = null;
+                    break;
+                case MOUSE_CODE.MIDDLE:
+                    Mouse.isPressed[MOUSE_CODE.MIDDLE] = null;
+                    break;
+                default:
+                    break;
+            }
+        }
+        static isPressedOne(inputs) {
+            for (let index = 0; index <= Mouse.isPressed.length; index++) {
+                for (let inputIndex = 0; inputIndex < inputs.length; inputIndex++) {
+                    if (inputs[inputIndex] == Mouse.isPressed[index]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
     HomeFudge.Mouse = Mouse;
+    let MOUSE_CODE;
+    (function (MOUSE_CODE) {
+        MOUSE_CODE[MOUSE_CODE["LEFT"] = 0] = "LEFT";
+        MOUSE_CODE[MOUSE_CODE["MIDDLE"] = 1] = "MIDDLE";
+        MOUSE_CODE[MOUSE_CODE["RIGHT"] = 2] = "RIGHT";
+    })(MOUSE_CODE = HomeFudge.MOUSE_CODE || (HomeFudge.MOUSE_CODE = {}));
 })(HomeFudge || (HomeFudge = {}));
 //# sourceMappingURL=Script.js.map

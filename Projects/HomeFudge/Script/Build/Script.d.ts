@@ -161,6 +161,7 @@ declare namespace HomeFudge {
         destroyNode(): void;
         getVelocity(): ƒ.Vector3;
         toString(): string;
+        fire(): void;
         constructor(position: ƒ.Vector3);
     }
 }
@@ -242,10 +243,18 @@ declare namespace HomeFudge {
     class Mouse {
         static pos: ƒ.Vector2;
         static change: ƒ.Vector2;
+        private static isPressed;
         private static tempPos;
         static init(): void;
         private static update;
         private static moveUpdate;
-        private static downUpdate;
+        private static mouseDown;
+        private static mouseUp;
+        static isPressedOne(inputs: Array<MOUSE_CODE>): boolean;
+    }
+    enum MOUSE_CODE {
+        LEFT = 0,
+        MIDDLE = 1,
+        RIGHT = 2
     }
 }
