@@ -26,7 +26,7 @@ namespace HomeFudge {
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   //Bullet list, every bullet wil register itself here for the update Method.
   ///camera setup for worldSize of 25km\\\
-  //TODO:create camera Class
+
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
 

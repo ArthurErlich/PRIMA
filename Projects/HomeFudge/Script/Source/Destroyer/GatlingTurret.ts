@@ -92,7 +92,6 @@ namespace HomeFudge {
             if (this.roundsTimer <= this.roundsPerSecond) {
                 this.roundsTimer += _deltaSeconds;
             }
-            //TODO: think about a reload function
             if (this.reloadTimer <= this.reloadsEverySecond) {
                 this.reloadTimer += _deltaSeconds;
             }
@@ -141,7 +140,7 @@ namespace HomeFudge {
                 this.magazineRounds--;
                 FudgeCore.Debug.log("RoundsLeft: " + this.magazineRounds);
                 this.shootNode.getComponent(ƒ.ComponentAudio).volume = 4;
-                this.shootNode.getComponent(ƒ.ComponentAudio).play(true); //TODO: REMOVE TEMP AUDIO
+                this.shootNode.getComponent(ƒ.ComponentAudio).play(true);
             }
         }
         constructor() {

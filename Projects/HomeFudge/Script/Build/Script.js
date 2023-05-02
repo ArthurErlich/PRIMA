@@ -168,7 +168,6 @@ var HomeFudge;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     //Bullet list, every bullet wil register itself here for the update Method.
     ///camera setup for worldSize of 25km\\\
-    //TODO:create camera Class
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function start(_event) {
         HomeFudge._viewport = _event.detail;
@@ -177,7 +176,7 @@ var HomeFudge;
         console.log(HomeFudge._viewport);
         //Loads Config then initilizes the world 
         await loadConfig().then(initWorld).then(() => {
-            let audioComp = new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true);
+            let audioComp = new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true); //TODO:Move sound to recourses
             console.warn("ConfigsLoaded and world Initialized");
             //Sound by IXION!
             audioComp.volume = 0.1;
@@ -224,7 +223,7 @@ var HomeFudge;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     function getAimPos() {
         let pick = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, HomeFudge.Mouse.pos);
-        return pick[0].posWorld;
+        console.log(pick);
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     function initAllDestroyers() {
@@ -559,7 +558,6 @@ var HomeFudge;
             if (this.roundsTimer <= this.roundsPerSecond) {
                 this.roundsTimer += HomeFudge._deltaSeconds;
             }
-            //TODO: think about a reload function
             if (this.reloadTimer <= this.reloadsEverySecond) {
                 this.reloadTimer += HomeFudge._deltaSeconds;
             }
@@ -604,7 +602,7 @@ var HomeFudge;
                 this.magazineRounds--;
                 FudgeCore.Debug.log("RoundsLeft: " + this.magazineRounds);
                 this.shootNode.getComponent(ƒ.ComponentAudio).volume = 4;
-                this.shootNode.getComponent(ƒ.ComponentAudio).play(true); //TODO: REMOVE TEMP AUDIO
+                this.shootNode.getComponent(ƒ.ComponentAudio).play(true);
             }
         }
         constructor() {
@@ -656,8 +654,6 @@ var HomeFudge;
             ship.addChild(this);
         }
         update = () => {
-            //TODO:RemoveCamTest
-            // this.mtxLocal.rotateY(10*_deltaSeconds);
         };
         init() {
             this.camComp = new ƒ.ComponentCamera();
@@ -665,11 +661,6 @@ var HomeFudge;
             this.camComp = this.camComp;
             this.addComponent(this.camComp);
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.ZERO())));
-            //TODO:remove debug
-            //TEST CUBE
-            //  this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("test",ƒ.ShaderLit)));
-            //  this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshCube()));
-            //  this.getComponent(ƒ.ComponentMesh).mtxPivot.translation = this.offset;
         }
         constructor(name) {
             super(name + "Camera");
