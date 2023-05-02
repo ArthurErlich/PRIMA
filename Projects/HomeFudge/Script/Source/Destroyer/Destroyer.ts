@@ -12,13 +12,13 @@ namespace HomeFudge {
         public laserTurretList: LaserTurret[] = null;
 
         static graph: ƒ.Graph = null;
-        static worldNode: ƒ.Node = null;
+        static worldNode: ƒ.Node = null;//TODO: remove
         static mesh: ƒ.Mesh = null;
         static material: ƒ.Material = null;
 
         private async initAllConfigs() {
             Destroyer.graph = await Ship.getGraphResources(Config.destroyer.graphID);
-            let node: ƒ.Node = await Destroyer.getComponentNode("Destroyer", Destroyer.graph);
+            let node: ƒ.Node = await Ship.getComponentNode("Destroyer", Destroyer.graph);
 
             //init mesh and material
             Destroyer.mesh = node.getComponent(ƒ.ComponentMesh).mesh;
@@ -56,11 +56,6 @@ namespace HomeFudge {
                 this.velocity.x * _deltaSeconds,
                 this.velocity.y * _deltaSeconds,
                 this.velocity.z * _deltaSeconds)); 
-
-            //TODO: remove temporary WP shooting
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE])) {
-                this.gatlingTurret.fire(this.velocity);
-            }
         }
         public alive(): boolean {
             //console.error("Method not implemented.");
@@ -77,9 +72,12 @@ namespace HomeFudge {
             //console.error("Method not implemented.");
             return null;
         }
+        public fire(){
+            this.gatlingTurret.fire(this.velocity);
+        }
         constructor(position: ƒ.Vector3) {
             super("Destroyer");
-            let tempComp = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position));
+            let tempComp = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position));//TODO: move after turret are loaded!
             //ROTATION WILL BREAK OFFSET OF GUNS
             this.addComponent(tempComp);
             this.initAllConfigs();
