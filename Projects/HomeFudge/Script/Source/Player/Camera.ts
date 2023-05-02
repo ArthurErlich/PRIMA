@@ -18,9 +18,6 @@ namespace HomeFudge{
 
         }
         private update = (): void =>{
-
-            //TODO:RemoveCamTest
-            // this.mtxLocal.rotateY(10*_deltaSeconds);
         }
         
         private init(){
@@ -30,12 +27,7 @@ namespace HomeFudge{
 
             this.addComponent(this.camComp);
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.ZERO())));
-
-            //TODO:remove debug
-            //TEST CUBE
-            //  this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("test",ƒ.ShaderLit)));
-            //  this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshCube()));
-            //  this.getComponent(ƒ.ComponentMesh).mtxPivot.translation = this.offset;
+            
         }
         constructor(name:string){
             super(name+"Camera");
