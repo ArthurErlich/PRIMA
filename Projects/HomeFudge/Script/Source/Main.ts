@@ -19,7 +19,7 @@ namespace HomeFudge {
   export let _viewport: ƒ.Viewport = null;
  
   ///TestShip\\\
-  let destroyer: Destroyer[] = null;
+  let destroyerList: Destroyer[] = null;
 
 
 
@@ -54,18 +54,18 @@ namespace HomeFudge {
     }
   
     async function initWorld(): Promise<void> {
-      destroyer = new Array();
-      destroyer = initAllDestroyers();
+      destroyerList = new Array();
+      destroyerList = initAllDestroyers();
       
-      _viewport.getBranch().addChild(destroyer[0]);
-      _mainCamera.attachToShip(destroyer[0]);   
+      _viewport.getBranch().addChild(destroyerList[0]);
+      _mainCamera.attachToShip(destroyerList[0]);   
     }
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 100);  // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
+    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30);  // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
   }
 
   function update(_event: Event): void {
@@ -85,7 +85,10 @@ namespace HomeFudge {
       ƒ.Loop.stop();
     }
      
-    // let letaimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AmingRayCaster
+    if(Mouse.isPressedOne([MOUSE_CODE.LEFT])){
+      destroyerList[0].fire();
+    }
+    // let aimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AimingRayCaster
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
@@ -94,14 +97,16 @@ namespace HomeFudge {
   }
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
-  function getAimPos():void {
-    let pick:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,Mouse.pos);
-    console.log(pick);
+  function getPoTest():void {
+    let pickCam:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,Mouse.pos);
+    let pickViewport:ƒ.Pick[] = ƒ.Picker.pickViewport(_viewport,Mouse.pos);
+
+    console.log("Camera Picker");
+    console.log(pickCam);
+    console.log("Viewport Picker");
+    console.log(pickViewport);
     
   }
-  
-  
-
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   
   function initAllDestroyers(): Destroyer[] {
