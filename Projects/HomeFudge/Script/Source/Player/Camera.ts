@@ -12,17 +12,21 @@ namespace HomeFudge{
             
             this.attachedTo = ship;
             this.mtxLocal.set(ship.mtxWorld);
-            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0,-270,0);//TODO: Sound Bug when Pivot is rotated
+            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0,-270,0);//TODO: Sound Bug when Pivot is rotated 
+            //TODO: add node for campComp
 
             ship.addChild(this);
 
         }
         private update = (): void =>{
+            //TODO: remove test rotation
+            this.mtxLocal.rotateY(10*_deltaSeconds);
+
         }
         
         private init(){
             this.camComp = new ƒ.ComponentCamera();
-            this.camComp.projectCentral(1.77, 80, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+            this.camComp.projectCentral(1.77, 70, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
             this.camComp = this.camComp;
 
             this.addComponent(this.camComp);
