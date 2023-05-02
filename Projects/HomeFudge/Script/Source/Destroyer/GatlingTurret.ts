@@ -50,17 +50,17 @@ namespace HomeFudge {
             return graph;
         }
         private createComponents(nodeName: string, transform: ƒ.Vector3, graph: ƒ.Graph): ƒ.Node {
-            let node:ƒ.Node = graph.getChildrenByName(nodeName)[0];
-            let newNode:ƒ.Node = new ƒ.Node("nodeName");
+            let node: ƒ.Node = graph.getChildrenByName(nodeName)[0];
+            let newNode: ƒ.Node = new ƒ.Node("nodeName");
             if (node == null) {
                 console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
             }
             switch (nodeName) {
                 case "GatlingTurretHead":
-                GatlingTurret.headMaterial = node.getComponent(ƒ.ComponentMaterial).material;
-                GatlingTurret.headMesh = node.getComponent(ƒ.ComponentMesh).mesh;
-                newNode.addComponent(new ƒ.ComponentMaterial(GatlingTurret.headMaterial));
-                newNode.addComponent(new ƒ.ComponentMesh(GatlingTurret.headMesh));
+                    GatlingTurret.headMaterial = node.getComponent(ƒ.ComponentMaterial).material;
+                    GatlingTurret.headMesh = node.getComponent(ƒ.ComponentMesh).mesh;
+                    newNode.addComponent(new ƒ.ComponentMaterial(GatlingTurret.headMaterial));
+                    newNode.addComponent(new ƒ.ComponentMesh(GatlingTurret.headMesh));
                     break;
                 case "GatlingTurretBase":
                     GatlingTurret.baseMaterial = node.getComponent(ƒ.ComponentMaterial).material;
@@ -80,11 +80,6 @@ namespace HomeFudge {
             shootPosNode.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(transform))); //From gatConfig.json
             return shootPosNode;
         }
-        /**
-         * 
-         * @param deltaSeconds 
-         * Don't forget to call this function in the UpdateMethod!!!
-         */
         private update = (): void => {
             if (this.roundsPerSecond == null || this.reloadsEverySecond == null || this.magazineCapacity == null) {
                 return;
@@ -130,11 +125,11 @@ namespace HomeFudge {
             }
             if (this.reloadTimer <= this.reloadsEverySecond) {
                 if (this.reloadTimer % 1 == 0) {
-                    FudgeCore.Debug.log("TurretReloading")
+                    FudgeCore.Debug.log("TurretReloading");
                 }
                 return;
             }
-            if (this.roundsTimer >= 1/this.roundsPerSecond) {
+            if (this.roundsTimer >= 1 / this.roundsPerSecond) {
                 new GatlingBullet(this.shootNode.mtxWorld.clone, parentVelocity);
                 this.roundsTimer = 0;
                 this.magazineRounds--;
