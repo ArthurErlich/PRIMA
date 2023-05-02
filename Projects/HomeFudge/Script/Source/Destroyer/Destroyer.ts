@@ -8,17 +8,22 @@ namespace HomeFudge {
         protected maxTurnRate: number = null;
 
         //TODO:make private
-        public gatlingTurret: GatlingTurret = null;
-        public laserTurretList: LaserTurret[] = null;
+        private gatlingTurret: GatlingTurret = null;
+        private beamTurretList: BeamTurret[] = null;
+
+        //list of weapons
+        public weapons = Weapons;
 
         static graph: ƒ.Graph = null;
-        static worldNode: ƒ.Node = null;//TODO: remove
         static mesh: ƒ.Mesh = null;
         static material: ƒ.Material = null;
 
-        private async initAllConfigs() {
+        private async initAllConfigs(startPosition:ƒ.Vector3) {
             Destroyer.graph = await Ship.getGraphResources(Config.destroyer.graphID);
             let node: ƒ.Node = await Ship.getComponentNode("Destroyer", Destroyer.graph);
+
+            let transNode = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(startPosition));//TODO: move after turret are loaded!
+            this.addComponent(transNode);
 
             //init mesh and material
             Destroyer.mesh = node.getComponent(ƒ.ComponentMesh).mesh;
@@ -72,18 +77,24 @@ namespace HomeFudge {
             //console.error("Method not implemented.");
             return null;
         }
-        public fire(){
+        public fireGatling(){
             this.gatlingTurret.fire(this.velocity);
         }
-        constructor(position: ƒ.Vector3) {
+        public fireBeam(){
+            this.beamTurretList.forEach(turret => {
+                turret.fire();
+            });
+        }
+        constructor(startPosition: ƒ.Vector3) {
             super("Destroyer");
-            let tempComp = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position));//TODO: move after turret are loaded!
-            //ROTATION WILL BREAK OFFSET OF GUNS
-            this.addComponent(tempComp);
-            this.initAllConfigs();
+            this.initAllConfigs(startPosition);
             ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
         }
     }
-
+    enum Weapons{
+        GatlingTurret,
+        BeamTurret,
+        RocketPod
+    }
 }
 
