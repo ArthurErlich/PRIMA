@@ -18,9 +18,8 @@ namespace HomeFudge {
   ///Viewport\\\
   export let _viewport: ƒ.Viewport = null;
  
-  ///TestShip\\\
-  let destroyerList: Destroyer[] = null;
-
+  ///Player\\\
+  let p1:Player = null;
 
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
@@ -32,7 +31,7 @@ namespace HomeFudge {
 
   async function start(_event: CustomEvent): Promise<void> {
     _viewport = _event.detail;
-    _viewport.canvas.style.cursor = "url(Textures/AimCurser.svg) 0 0, crosshair";
+    _viewport.canvas.style.cursor = "url(Textures/AimCurser.svg) 16 16, crosshair";
     _worldNode = _viewport.getBranch();
     
     console.log(_viewport);
@@ -54,11 +53,9 @@ namespace HomeFudge {
     }
   
     async function initWorld(): Promise<void> {
-      destroyerList = new Array();
-      destroyerList = initAllDestroyers();
-      
-      _viewport.getBranch().addChild(destroyerList[0]);
-      _mainCamera.attachToShip(destroyerList[0]);   
+      p1 = new Player("test_P1");
+      _viewport.getBranch().addChild(p1);
+      _mainCamera.attachToShip(p1.destroyer);   
     }
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
@@ -86,7 +83,7 @@ namespace HomeFudge {
     }
      
     if(Mouse.isPressedOne([MOUSE_CODE.LEFT])){
-      destroyerList[0].fire();
+      getPosTest();
     }
     // let aimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AimingRayCaster
 
@@ -97,22 +94,23 @@ namespace HomeFudge {
   }
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
-  function getPoTest():void {
+  function getPosTest():void {
     let pickCam:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,Mouse.pos);
     let pickViewport:ƒ.Pick[] = ƒ.Picker.pickViewport(_viewport,Mouse.pos);
 
     console.log("Camera Picker");
-    console.log(pickCam);
+    pickCam.forEach(element => {
+      console.log("%c"+element.posMesh.toString(),"background:yellow");
+    });
+    console.log("-------------");
     console.log("Viewport Picker");
-    console.log(pickViewport);
-    
+    pickViewport.forEach(element => {
+      console.log("%c"+element.posMesh.toString(),"background:yellow");
+    });
+    console.log("-------------");
   }
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   
-  function initAllDestroyers(): Destroyer[] {
-    return [new Destroyer(new ƒ.Vector3(0, 0, 0))];
-  }
-
   //DEBUG
   function continueLoop(event:KeyboardEvent){
     if(event.code == "Insert"){
