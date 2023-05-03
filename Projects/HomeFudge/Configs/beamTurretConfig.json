@@ -1,19 +1,19 @@
 {
     "graphID": "Graph|2023-04-25T14:30:46.195Z|98798",
     "maxRotSpeed": null,
-    "maxPitch" : null,
-    "minPitch" : null, 
+    "maxPitch" : 70,
+    "minPitch" : -70, 
     "beamTime": 2,
     "reloadTime": 3,
-    "range": 0,
+    "range": 1000,
     "basePosition": [
+        -30.9649,
         0,
-        0,
-        0
+        -24.0245
     ],
     "beamPosition": [
-        0,
-        0,
+        7.90656,
+        6.71342,
         0
     ]
 }
