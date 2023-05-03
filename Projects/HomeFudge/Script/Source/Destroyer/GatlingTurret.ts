@@ -2,8 +2,9 @@ namespace HomeFudge {
     import ƒ = FudgeCore;
     export class GatlingTurret extends ƒ.Node {
 
-        private headNode: ƒ.Node = null;
-        private baseNode: ƒ.Node = null;
+        //TODO: make Private again
+        public headNode: ƒ.Node = null;
+        public baseNode: ƒ.Node = null;
         private shootNode: ƒ.Node = null;
 
         private static headMesh: ƒ.Mesh = null;
@@ -130,11 +131,27 @@ namespace HomeFudge {
                 return;
             }
             if (this.roundsTimer >= 1 / this.roundsPerSecond) {
-                new GatlingBullet(this.shootNode.mtxWorld.clone, parentVelocity);
+                // new GatlingBullet(this.shootNode.mtxWorld.clone, parentVelocity);
+
+                //TODO remove test
+                let shot2= this.shootNode.mtxWorld.clone;
+                let shot3= this.shootNode.mtxWorld.clone;
+                let spread1x = Math.random()*0.2-(Math.random())*0.2;
+                let spread1y = Math.random()*0.2-(Math.random())*0.2;
+                let spread1z = Math.random()*0.2-(Math.random())*0.2;
+                let spread2x = Math.random()*0.5-(Math.random())*0.5;
+                let spread2y = Math.random()*0.5-(Math.random())*0.5;
+                let spread2z = Math.random()*0.5-(Math.random())*0.5;
+                shot2.rotate(new ƒ.Vector3(spread1x,spread1y,spread1z));
+                shot3.rotate(new ƒ.Vector3(spread2x,spread2y,spread2z));
+                new GatlingBullet(shot2, parentVelocity);
+                new GatlingBullet(shot3, parentVelocity);
+                //TEST end
+
                 this.roundsTimer = 0;
                 this.magazineRounds--;
                 FudgeCore.Debug.log("RoundsLeft: " + this.magazineRounds);
-                this.shootNode.getComponent(ƒ.ComponentAudio).volume = 4;
+                this.shootNode.getComponent(ƒ.ComponentAudio).volume = 10;
                 this.shootNode.getComponent(ƒ.ComponentAudio).play(true);
             }
         }
