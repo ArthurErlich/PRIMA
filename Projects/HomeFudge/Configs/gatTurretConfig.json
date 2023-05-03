@@ -4,7 +4,7 @@
     "maxPitch" : 90,
     "minPitch" : 7.85, 
     "roundsPerSeconds": 8,
-    "reloadTime": 3,
+    "reloadTime": 1.5,
     "magazineCapacity": 30,
     "headPosition": [
         -0.007236,
