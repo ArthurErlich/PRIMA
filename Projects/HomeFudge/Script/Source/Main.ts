@@ -26,12 +26,10 @@ namespace HomeFudge {
   //Bullet list, every bullet wil register itself here for the update Method.
   ///camera setup for worldSize of 25km\\\
 
-
   /// ------------T-E-S-T--A-R-E-A------------------\\\
 
   async function start(_event: CustomEvent): Promise<void> {
     _viewport = _event.detail;
-    _viewport.canvas.style.cursor = "url(Textures/AimCurser.svg) 16 16, crosshair";
     _worldNode = _viewport.getBranch();
     
     console.log(_viewport);
@@ -42,7 +40,7 @@ namespace HomeFudge {
       //Sound by IXION!
       audioComp.volume = 0.1;
       audioComp.play(true);
-      _mainCamera.addComponent(audioComp);
+      _mainCamera.camNode.addComponent(audioComp);
     });// to create ships. first load configs than the ships etc
     async function loadConfig() {
       //loads configs
@@ -55,14 +53,16 @@ namespace HomeFudge {
     async function initWorld(): Promise<void> {
       p1 = new Player("test_P1");
       _viewport.getBranch().addChild(p1);
-      _mainCamera.attachToShip(p1.destroyer);   
+      _mainCamera.attachToShip(p1.destroyer);  
+    _viewport.canvas.style.scale = "(0.1,0.1)";
+
     }
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30);  // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
+    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 35);  // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
   }
 
   function update(_event: Event): void {
@@ -98,12 +98,12 @@ namespace HomeFudge {
     let pickCam:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,Mouse.pos);
     let pickViewport:ƒ.Pick[] = ƒ.Picker.pickViewport(_viewport,Mouse.pos);
 
-    console.log("Camera Picker");
+    console.log("%c"+"Camera Picker","background:red");
     pickCam.forEach(element => {
       console.log("%c"+element.posMesh.toString(),"background:yellow");
     });
     console.log("-------------");
-    console.log("Viewport Picker");
+    console.log("%c"+"Viewport Picker","background:red");
     pickViewport.forEach(element => {
       console.log("%c"+element.posMesh.toString(),"background:yellow");
     });
