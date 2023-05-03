@@ -9,10 +9,9 @@ namespace HomeFudge {
 
         private parentVelocity: ƒ.Vector3 = ƒ.Vector3.ZERO();
 
-        static graph: ƒ.Graph = null;
-        static worldNode: ƒ.Node = null;
-        static mesh: ƒ.Mesh = null;
-        static material: ƒ.Material = null;
+        private static graph: ƒ.Graph = null;
+        private static mesh: ƒ.Mesh = null;
+        private static material: ƒ.Material = null;
 
         //TODO: try faction out.
         // faction: FACTION="FACTION.A";

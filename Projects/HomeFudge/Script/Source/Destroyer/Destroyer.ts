@@ -8,7 +8,7 @@ namespace HomeFudge {
         protected maxTurnRate: number = null;
 
         private gatlingTurret: GatlingTurret = null;
-        private beamTurretList: BeamTurret[] = null;
+        private beamTurretList: BeamTurret[] = new Array(2);
 
         //list of weapons
         public weapons = Weapons;
@@ -44,8 +44,12 @@ namespace HomeFudge {
         }
         private addWeapons(): void {
             this.gatlingTurret = new GatlingTurret();
+            this.beamTurretList[0] = new BeamTurret();
+            // this.beamTurretList[1] = new BeamTurret(BeamTurret.side.LEFT);
+
 
             this.addChild(this.gatlingTurret);
+            this.addChild(this.beamTurretList[0]); //TODO:add second Beam turret
         }
         private setAllComponents(): void {
             if (Destroyer.material == null || Destroyer.mesh == null) {

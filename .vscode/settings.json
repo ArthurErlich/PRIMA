@@ -12,7 +12,7 @@
     "sundial.sunset": " \"window.autoDetectColorScheme\": false",
     "window.autoDetectColorScheme": true,
     "workbench.preferredLightColorTheme": "Visual Studio Light - C++",
-    "workbench.colorTheme": "Visual Studio Dark - C++",
+    "workbench.colorTheme": "Visual Studio Light - C++",
     "cSpell.enableFiletypes": [
         "!javascript"
     ],

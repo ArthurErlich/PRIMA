@@ -2,28 +2,14 @@ declare namespace HomeFudge {
     export class Config {
         static gatlingBullet: GatlingBulletConfig;
         static gatlingTurret: GatlingTurretConfig;
+        static beamTurret: BeamTurretConfig;
         static destroyer: DestroyerConfig;
         static camera: CameraConfig;
+        /**
+         * The function initializes configurations by fetching JSON files and assigning their contents
+         * to corresponding variables.
+         */
         static initConfigs(): Promise<void>;
-    }
-    interface CameraConfig {
-        offset: number[];
-        [key: string]: number[];
-    }
-    interface GatlingBulletConfig {
-        graphID: string;
-        maxLifeTime: number;
-        maxSpeed: number;
-        spreadRadius: number;
-        [key: string]: string | number;
-    }
-    interface DestroyerConfig {
-        graphID: string;
-        maxAcceleration: number;
-        maxSpeed: number;
-        maxTurnSpeed: number;
-        maxHealthPoints: number;
-        [key: string]: string | number;
     }
     interface GatlingTurretConfig {
         graphID: string;
@@ -37,6 +23,37 @@ declare namespace HomeFudge {
         reloadTime: number;
         magazineCapacity: number;
         [key: string]: number[] | number | string;
+    }
+    interface GatlingBulletConfig {
+        graphID: string;
+        maxLifeTime: number;
+        maxSpeed: number;
+        spreadRadius: number;
+        [key: string]: string | number;
+    }
+    interface BeamTurretConfig {
+        graphID: string;
+        maxRotSpeed: number;
+        maxPitch: number;
+        minPitch: number;
+        beamTime: number;
+        reloadTime: number;
+        range: number;
+        basePosition: number[];
+        beamPosition: number[];
+        [key: string]: string | number | number[];
+    }
+    interface DestroyerConfig {
+        graphID: string;
+        maxAcceleration: number;
+        maxSpeed: number;
+        maxTurnSpeed: number;
+        maxHealthPoints: number;
+        [key: string]: string | number;
+    }
+    interface CameraConfig {
+        offset: number[];
+        [key: string]: number[];
     }
     export {};
 }
@@ -169,6 +186,19 @@ declare namespace HomeFudge {
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class BeamTurret extends ƒ.Node {
+        private static graph;
+        private static mesh;
+        private static material;
+        private maxRotSpeed;
+        private maxPitch;
+        private minPitch;
+        private maxBeamTime;
+        private maxReloadTime;
+        private range;
+        private init;
+        private getGraphResources;
+        private getComponentNode;
+        private update;
         fire(): void;
         constructor();
     }
@@ -215,10 +245,9 @@ declare namespace HomeFudge {
         protected maxSpeed: number;
         protected spreadRadius: number;
         private parentVelocity;
-        static graph: ƒ.Graph;
-        static worldNode: ƒ.Node;
-        static mesh: ƒ.Mesh;
-        static material: ƒ.Material;
+        private static graph;
+        private static mesh;
+        private static material;
         update: () => void;
         private initBulletConfig;
         alive(): boolean;

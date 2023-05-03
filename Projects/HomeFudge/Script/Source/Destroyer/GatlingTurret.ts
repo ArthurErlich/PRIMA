@@ -1,5 +1,7 @@
 namespace HomeFudge {
     import ƒ = FudgeCore;
+
+    //TODO:create super class Turret. GatlingTurret and BeamTurret extends Turret
     export class GatlingTurret extends ƒ.Node {
 
         //TODO: make Private again
@@ -35,7 +37,7 @@ namespace HomeFudge {
             this.magazineCapacity = Config.gatlingTurret.magazineCapacity;
             this.magazineRounds = this.magazineCapacity;
 
-            this.shootNode.addComponent(new ƒ.ComponentAudio(new ƒ.Audio("Sound/autocannon.mp3")));//TODO: REMOVE TEMP AUDIO
+            this.shootNode.addComponent(new ƒ.ComponentAudio(new ƒ.Audio("Sound/autocannon.mp3")));//TODO: REMOVE TEMP AUDIO move to Resources
 
             this.headNode.addChild(this.shootNode);
             this.baseNode.addChild(this.headNode);
