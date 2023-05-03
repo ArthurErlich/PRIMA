@@ -66,14 +66,14 @@ namespace HomeFudge {
             let tempRotBase: ƒ.Vector3 = this.gatlingTurret.baseNode.mtxLocal.rotation;
             this.gatlingTurret.baseNode.mtxLocal.rotation = new ƒ.Vector3(
                 tempRotBase.x,
-                -(Mouse.pos.x - (_viewport.canvas.width / 2)) / Math.PI/3,
+                -(Mouse.position.x - (_viewport.canvas.width / 2)) / Math.PI/3,
                 tempRotBase.z
             );
             let tempRotHead: ƒ.Vector3 = this.gatlingTurret.headNode.mtxLocal.rotation;
             this.gatlingTurret.headNode.mtxLocal.rotation = new ƒ.Vector3(
                 tempRotHead.x,
                 tempRotHead.y,
-                -(Mouse.pos.y - (_viewport.canvas.height/2)) / Math.PI/4
+                -(Mouse.position.y - (_viewport.canvas.height/2)) / Math.PI/4
             );
             ///TEST----------------TEST\\\
         }

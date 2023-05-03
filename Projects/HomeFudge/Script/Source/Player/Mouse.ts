@@ -1,41 +1,77 @@
 namespace HomeFudge {
     import ƒ = FudgeCore;
+    /**  
+     * The  Mouse class is a TypeScript class that tracks mouse movement and button presses.
+     * 
+     * @static position: ƒ.Vector2;
+     * @static movedDistance: ƒ.Vector2;
+     * @ArthurErlich <arthur.erlich@hs-furtwangen.de>}
+     */
     export class Mouse {
 
-        public static pos: ƒ.Vector2 = null;
-        public static change: ƒ.Vector2 = null;
+        public static position: ƒ.Vector2 = null;
+        public static movedDistance: ƒ.Vector2 = null;
 
+        /**
+         * This array should be the same length as the {@link MOUSE_CODE }
+         */
         private static isPressed: Array<MOUSE_CODE> = new Array<MOUSE_CODE>(3); // length of MOUSE_CODE enum
 
         private static tempPos: ƒ.Vector2 = null;
 
+        /**
+         * This function initializes mouse event listeners and sets up variables for tracking mouse
+         * movement.
+         * @ArthurErlich <arthur.erlich@hs-furtwangen.de>
+         */
         public static init(): void {
             _viewport.canvas.addEventListener("mousemove", Mouse.moveUpdate);
             _viewport.canvas.addEventListener("mousedown", Mouse.mouseDown);
             _viewport.canvas.addEventListener("mouseup", Mouse.mouseUp);
 
-            Mouse.pos = new ƒ.Vector2(0, 0);
-            Mouse.change = new ƒ.Vector2(0, 0);
+            Mouse.position = new ƒ.Vector2(0, 0);
+            Mouse.movedDistance = new ƒ.Vector2(0, 0);
             Mouse.tempPos = new ƒ.Vector2(0, 0);
 
             ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, Mouse.update);
-
         }
 
+        /** 
+         * This is a private static arrow function called `update` that is used to update the
+         * `movedDistance` property of the `Mouse` class. It calculates the distance the mouse has
+         * moved since the last frame by subtracting the current position of the mouse from the
+         * previous position stored in `tempPos`. It then updates `tempPos` to the current position of
+         * the mouse so that it can be used to calculate the distance moved in the next frame. 
+         * @ArthurErlich <arthur.erlich@hs-furtwangen.de>
+         */
         private static update = (): void => {
-            //P1=Pos
-            //P2=TempPos
-            //P2-P1
-            Mouse.change = new ƒ.Vector2(
-                Mouse.tempPos.x - Mouse.pos.x,
-                Mouse.tempPos.y - Mouse.pos.y
+            Mouse.movedDistance = new ƒ.Vector2(
+                Mouse.tempPos.x - Mouse.position.x,
+                Mouse.tempPos.y - Mouse.position.y
             );
-            Mouse.tempPos = Mouse.pos;
+            Mouse.tempPos = Mouse.position;
         }
+        /** 
+         * This is a private static arrow function called `moveUpdate` that is used to update the
+         * `position` and `movedDistance` properties of the `Mouse` class when the mouse is moved. It
+         * takes a `MouseEvent` object as its parameter and sets the `movedDistance` property to a new
+         * `Vector2` object with the `movementX` and `movementY` properties of the `MouseEvent`. It
+         * also sets the `position` property to a new `Vector2` object with the `x` and `y` properties
+         * of the `MouseEvent`. 
+        */
         private static moveUpdate = (_event: MouseEvent): void => {
-            Mouse.change = new ƒ.Vector2(_event.movementX, _event.movementY);
-            Mouse.pos = new ƒ.Vector2(_event.x, _event.y);
+            Mouse.movedDistance = new ƒ.Vector2(_event.movementX, _event.movementY);
+            Mouse.position = new ƒ.Vector2(_event.x, _event.y);
         }
+
+        /**
+         * The function sets the corresponding value in the Mouse.isPressed array based on the button
+         * pressed during a mouse down event.
+         * 
+         * @param _event The _event parameter is a MouseEvent object that contains information about
+         * the mouse event that occurred, such as the type of event (e.g. mouse down, mouse up, mouse
+         * move), the position of the mouse cursor, and which mouse button was pressed.
+         */
         private static mouseDown(_event: MouseEvent) {
             switch (_event.button) {
                 case MOUSE_CODE.RIGHT:
@@ -52,6 +88,14 @@ namespace HomeFudge {
                     break;
             }
         }
+        /**
+         * The function handles the mouse up event and updates the state of the mouse button that was
+         * released.
+         * 
+         * @param _event The _event parameter is a MouseEvent object that contains information about
+         * the mouse event that occurred, such as the type of event (e.g. mouseup), the target element
+         * that triggered the event, and the position of the mouse cursor at the time of the event.
+         */
         private static mouseUp(_event: MouseEvent) {
             switch (_event.button) {
                 case MOUSE_CODE.RIGHT:
@@ -75,10 +119,10 @@ namespace HomeFudge {
          * for being pressed.
          * @return A boolean value is being returned, which indicates whether the Mouse is pressed.
          */
-        public static isPressedOne(inputs:Array<MOUSE_CODE>):boolean{
-            for(let index:number = 0; index <= Mouse.isPressed.length; index++){
-                for( let inputIndex:number = 0; inputIndex< inputs.length; inputIndex++){
-                    if(inputs[inputIndex] == Mouse.isPressed[index]){
+        public static isPressedOne(inputs: Array<MOUSE_CODE>): boolean {
+            for (let index: number = 0; index <= Mouse.isPressed.length; index++) {
+                for (let inputIndex: number = 0; inputIndex < inputs.length; inputIndex++) {
+                    if (inputs[inputIndex] == Mouse.isPressed[index]) {
                         return true;
                     }
                 }
@@ -86,11 +130,12 @@ namespace HomeFudge {
             return false;
         }
     }
+    /** 
+     * Note: adding buttons means to lengthen the {@link Mouse.isPressed}
+     */
     export enum MOUSE_CODE {
         LEFT = 0,
         MIDDLE = 1,
         RIGHT = 2
     }
-
-
 }

@@ -231,8 +231,8 @@ var HomeFudge;
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     function getPosTest() {
-        let pickCam = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, HomeFudge.Mouse.pos);
-        let pickViewport = ƒ.Picker.pickViewport(HomeFudge._viewport, HomeFudge.Mouse.pos);
+        let pickCam = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, HomeFudge.Mouse.position);
+        let pickViewport = ƒ.Picker.pickViewport(HomeFudge._viewport, HomeFudge.Mouse.position);
         console.log("%c" + "Camera Picker", "background:red");
         pickCam.forEach(element => {
             console.log("%c" + element.posMesh.toString(), "background:yellow");
@@ -448,9 +448,9 @@ var HomeFudge;
             //TODO:remove test of gatling rot
             ///TEST----------------TEST\\\
             let tempRotBase = this.gatlingTurret.baseNode.mtxLocal.rotation;
-            this.gatlingTurret.baseNode.mtxLocal.rotation = new ƒ.Vector3(tempRotBase.x, -(HomeFudge.Mouse.pos.x - (HomeFudge._viewport.canvas.width / 2)) / Math.PI / 3, tempRotBase.z);
+            this.gatlingTurret.baseNode.mtxLocal.rotation = new ƒ.Vector3(tempRotBase.x, -(HomeFudge.Mouse.position.x - (HomeFudge._viewport.canvas.width / 2)) / Math.PI / 3, tempRotBase.z);
             let tempRotHead = this.gatlingTurret.headNode.mtxLocal.rotation;
-            this.gatlingTurret.headNode.mtxLocal.rotation = new ƒ.Vector3(tempRotHead.x, tempRotHead.y, -(HomeFudge.Mouse.pos.y - (HomeFudge._viewport.canvas.height / 2)) / Math.PI / 4);
+            this.gatlingTurret.headNode.mtxLocal.rotation = new ƒ.Vector3(tempRotHead.x, tempRotHead.y, -(HomeFudge.Mouse.position.y - (HomeFudge._viewport.canvas.height / 2)) / Math.PI / 4);
             ///TEST----------------TEST\\\
         };
         alive() {
@@ -784,31 +784,67 @@ var HomeFudge;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
+    /**
+     * The  Mouse class is a TypeScript class that tracks mouse movement and button presses.
+     *
+     * @static position: ƒ.Vector2;
+     * @static movedDistance: ƒ.Vector2;
+     * @ArthurErlich <arthur.erlich@hs-furtwangen.de>}
+     */
     class Mouse {
-        static pos = null;
-        static change = null;
+        static position = null;
+        static movedDistance = null;
+        /**
+         * This array should be the same length as the {@link MOUSE_CODE }
+         */
         static isPressed = new Array(3); // length of MOUSE_CODE enum
         static tempPos = null;
+        /**
+         * This function initializes mouse event listeners and sets up variables for tracking mouse
+         * movement.
+         * @ArthurErlich <arthur.erlich@hs-furtwangen.de>
+         */
         static init() {
             HomeFudge._viewport.canvas.addEventListener("mousemove", Mouse.moveUpdate);
             HomeFudge._viewport.canvas.addEventListener("mousedown", Mouse.mouseDown);
             HomeFudge._viewport.canvas.addEventListener("mouseup", Mouse.mouseUp);
-            Mouse.pos = new ƒ.Vector2(0, 0);
-            Mouse.change = new ƒ.Vector2(0, 0);
+            Mouse.position = new ƒ.Vector2(0, 0);
+            Mouse.movedDistance = new ƒ.Vector2(0, 0);
             Mouse.tempPos = new ƒ.Vector2(0, 0);
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, Mouse.update);
         }
+        /**
+         * This is a private static arrow function called `update` that is used to update the
+         * `movedDistance` property of the `Mouse` class. It calculates the distance the mouse has
+         * moved since the last frame by subtracting the current position of the mouse from the
+         * previous position stored in `tempPos`. It then updates `tempPos` to the current position of
+         * the mouse so that it can be used to calculate the distance moved in the next frame.
+         * @ArthurErlich <arthur.erlich@hs-furtwangen.de>
+         */
         static update = () => {
-            //P1=Pos
-            //P2=TempPos
-            //P2-P1
-            Mouse.change = new ƒ.Vector2(Mouse.tempPos.x - Mouse.pos.x, Mouse.tempPos.y - Mouse.pos.y);
-            Mouse.tempPos = Mouse.pos;
+            Mouse.movedDistance = new ƒ.Vector2(Mouse.tempPos.x - Mouse.position.x, Mouse.tempPos.y - Mouse.position.y);
+            Mouse.tempPos = Mouse.position;
         };
+        /**
+         * This is a private static arrow function called `moveUpdate` that is used to update the
+         * `position` and `movedDistance` properties of the `Mouse` class when the mouse is moved. It
+         * takes a `MouseEvent` object as its parameter and sets the `movedDistance` property to a new
+         * `Vector2` object with the `movementX` and `movementY` properties of the `MouseEvent`. It
+         * also sets the `position` property to a new `Vector2` object with the `x` and `y` properties
+         * of the `MouseEvent`.
+        */
         static moveUpdate = (_event) => {
-            Mouse.change = new ƒ.Vector2(_event.movementX, _event.movementY);
-            Mouse.pos = new ƒ.Vector2(_event.x, _event.y);
+            Mouse.movedDistance = new ƒ.Vector2(_event.movementX, _event.movementY);
+            Mouse.position = new ƒ.Vector2(_event.x, _event.y);
         };
+        /**
+         * The function sets the corresponding value in the Mouse.isPressed array based on the button
+         * pressed during a mouse down event.
+         *
+         * @param _event The _event parameter is a MouseEvent object that contains information about
+         * the mouse event that occurred, such as the type of event (e.g. mouse down, mouse up, mouse
+         * move), the position of the mouse cursor, and which mouse button was pressed.
+         */
         static mouseDown(_event) {
             switch (_event.button) {
                 case MOUSE_CODE.RIGHT:
@@ -824,6 +860,14 @@ var HomeFudge;
                     break;
             }
         }
+        /**
+         * The function handles the mouse up event and updates the state of the mouse button that was
+         * released.
+         *
+         * @param _event The _event parameter is a MouseEvent object that contains information about
+         * the mouse event that occurred, such as the type of event (e.g. mouseup), the target element
+         * that triggered the event, and the position of the mouse cursor at the time of the event.
+         */
         static mouseUp(_event) {
             switch (_event.button) {
                 case MOUSE_CODE.RIGHT:
@@ -858,6 +902,9 @@ var HomeFudge;
         }
     }
     HomeFudge.Mouse = Mouse;
+    /**
+     * Note: adding buttons means to lengthen the {@link Mouse.isPressed}
+     */
     let MOUSE_CODE;
     (function (MOUSE_CODE) {
         MOUSE_CODE[MOUSE_CODE["LEFT"] = 0] = "LEFT";
@@ -922,7 +969,7 @@ var HomeFudge;
             this.moveDirection = ƒ.Vector3.ZERO();
             //TODO: use PlayerCamera instant of mainCamera
             //TODO: pan camera only a specific threshold
-            HomeFudge._mainCamera.camComp.mtxPivot.rotation = new ƒ.Vector3(HomeFudge._mainCamera.camComp.mtxPivot.rotation.x, -(HomeFudge.Mouse.pos.x - (HomeFudge._viewport.canvas.width / 2)) / 100, HomeFudge._mainCamera.camComp.mtxPivot.rotation.z);
+            HomeFudge._mainCamera.camComp.mtxPivot.rotation = new ƒ.Vector3(HomeFudge._mainCamera.camComp.mtxPivot.rotation.x, -(HomeFudge.Mouse.position.x - (HomeFudge._viewport.canvas.width / 2)) / 100, HomeFudge._mainCamera.camComp.mtxPivot.rotation.z);
             HomeFudge._mainCamera.camComp.mtxPivot.rotation = this.camRotBeforeChange; // Resets cam rotation before using the cam rot mouse.
         };
         constructor(name) {

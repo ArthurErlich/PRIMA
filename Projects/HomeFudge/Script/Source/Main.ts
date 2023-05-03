@@ -95,8 +95,8 @@ namespace HomeFudge {
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
   function getPosTest():void {
-    let pickCam:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,Mouse.pos);
-    let pickViewport:ƒ.Pick[] = ƒ.Picker.pickViewport(_viewport,Mouse.pos);
+    let pickCam:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,Mouse.position);
+    let pickViewport:ƒ.Pick[] = ƒ.Picker.pickViewport(_viewport,Mouse.position);
 
     console.log("%c"+"Camera Picker","background:red");
     pickCam.forEach(element => {

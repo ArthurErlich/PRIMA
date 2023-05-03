@@ -88,7 +88,7 @@ namespace HomeFudge {
             //TODO: pan camera only a specific threshold
             _mainCamera.camComp.mtxPivot.rotation = new ƒ.Vector3(
                 _mainCamera.camComp.mtxPivot.rotation.x,
-                -(Mouse.pos.x - (_viewport.canvas.width / 2)) / 100,
+                -(Mouse.position.x - (_viewport.canvas.width / 2)) / 100,
                 _mainCamera.camComp.mtxPivot.rotation.z
             );
             _mainCamera.camComp.mtxPivot.rotation = this.camRotBeforeChange; // Resets cam rotation before using the cam rot mouse.
