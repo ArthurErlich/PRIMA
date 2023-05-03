@@ -255,6 +255,14 @@
       }
     }
   },
+  "MeshObj|2023-05-03T14:58:20.766Z|18328": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-05-03T14:58:20.766Z|18328",
+      "name": "Mesh_BeamTurret",
+      "type": "MeshObj",
+      "url": "Mesh\\Destroyer\\HomeFuge_BeamTurret.obj"
+    }
+  },
   "Graph|2023-04-25T14:30:46.195Z|98798": {
     "ƒ.Graph": {
       "name": "GameResources",
@@ -396,6 +404,48 @@
                 {
                   "ƒ.ComponentMesh": {
                     "idMesh": "MeshObj|2023-04-29T16:43:33.751Z|79488",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-05-01T12:00:31.871Z|31008"
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "BeamTurret",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2023-05-03T14:58:20.766Z|18328",
                     "pivot": {
                       "translation": "[0, 0, 0]",
                       "rotation": "[0, 0, 0]",
