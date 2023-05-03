@@ -80,6 +80,33 @@ declare namespace HomeFudge {
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
+    class Mathf {
+        /**
+         * The function performs linear interpolation between two numbers based on a given ratio.
+         *
+         * @param a a is a number representing the starting value of the range to interpolate between.
+         * @param b The parameter "b" is a number representing the end value of the range to
+         * interpolate between.
+         * @param t t is a number between 0 and 1 that represents the interpolation factor. It
+         * determines how much of the second value (b) should be blended with the first value (a) to
+         * produce the final result. A value of 0 means that only the first value should be used, while
+         * a
+         * @return the linear interpolation value between `a` and `b` based on the value of `t`.
+         */
+        static lerp(a: number, b: number, t: number): number;
+        /**
+         * The function calculates the length of a 3D vector using the Pythagorean theorem.
+         *
+         * @param v A 3-dimensional vector represented as an object with properties x, y, and z.
+         * @return The function `vectorLength` returns the length of a 3D vector represented by the
+         * input parameter `v`.
+         */
+        static vectorLength(v: ƒ.Vector3): number;
+        static vectorNegate(v: ƒ.Vector3): ƒ.Vector3;
+    }
+}
+declare namespace HomeFudge {
+    import ƒ = FudgeCore;
     abstract class Bullet extends ƒ.Node {
         protected abstract maxLifeTime: number;
         protected abstract maxSpeed: number;
@@ -168,8 +195,10 @@ declare namespace HomeFudge {
         destroyNode(): void;
         getVelocity(): ƒ.Vector3;
         toString(): string;
+        fireWeapon(_weapon: Weapons): void;
         fireGatling(): void;
         fireBeam(): void;
+        move(moveDirection: ƒ.Vector3): void;
         constructor(startPosition: ƒ.Vector3);
     }
     enum Weapons {
@@ -201,8 +230,8 @@ declare namespace HomeFudge {
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class GatlingTurret extends ƒ.Node {
-        private headNode;
-        private baseNode;
+        headNode: ƒ.Node;
+        baseNode: ƒ.Node;
         private shootNode;
         private static headMesh;
         private static baseMesh;
@@ -225,15 +254,11 @@ declare namespace HomeFudge {
     }
 }
 declare namespace HomeFudge {
-    class Mathf {
-        static Lerp(a: number, b: number, t: number): number;
-    }
-}
-declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class Camera extends ƒ.Node {
         attachedTo: ƒ.Node;
         camComp: ƒ.ComponentCamera;
+        camNode: ƒ.Node;
         private offset;
         attachToShip(ship: ƒ.Node): void;
         private update;
@@ -272,6 +297,10 @@ declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class Player extends ƒ.Node {
         destroyer: Destroyer;
+        private selectedWeapon;
+        private moveDirection;
+        private rotDegreeOnMoveSideways;
+        private camRotBeforeChange;
         private update;
         constructor(name: string);
     }

@@ -178,7 +178,6 @@ var HomeFudge;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function start(_event) {
         HomeFudge._viewport = _event.detail;
-        HomeFudge._viewport.canvas.style.cursor = "url(Textures/AimCurser.svg) 16 16, crosshair";
         HomeFudge._worldNode = HomeFudge._viewport.getBranch();
         console.log(HomeFudge._viewport);
         //Loads Config then initilizes the world 
@@ -188,7 +187,7 @@ var HomeFudge;
             //Sound by IXION!
             audioComp.volume = 0.1;
             audioComp.play(true);
-            HomeFudge._mainCamera.addComponent(audioComp);
+            HomeFudge._mainCamera.camNode.addComponent(audioComp);
         }); // to create ships. first load configs than the ships etc
         async function loadConfig() {
             //loads configs
@@ -201,11 +200,12 @@ var HomeFudge;
             p1 = new HomeFudge.Player("test_P1");
             HomeFudge._viewport.getBranch().addChild(p1);
             HomeFudge._mainCamera.attachToShip(p1.destroyer);
+            HomeFudge._viewport.canvas.style.scale = "(0.1,0.1)";
         }
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
-        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30); // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 35); // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
@@ -233,12 +233,12 @@ var HomeFudge;
     function getPosTest() {
         let pickCam = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, HomeFudge.Mouse.pos);
         let pickViewport = ƒ.Picker.pickViewport(HomeFudge._viewport, HomeFudge.Mouse.pos);
-        console.log("Camera Picker");
+        console.log("%c" + "Camera Picker", "background:red");
         pickCam.forEach(element => {
             console.log("%c" + element.posMesh.toString(), "background:yellow");
         });
         console.log("-------------");
-        console.log("Viewport Picker");
+        console.log("%c" + "Viewport Picker", "background:red");
         pickViewport.forEach(element => {
             console.log("%c" + element.posMesh.toString(), "background:yellow");
         });
@@ -251,6 +251,49 @@ var HomeFudge;
             ƒ.Loop.continue();
         }
     }
+})(HomeFudge || (HomeFudge = {}));
+var HomeFudge;
+(function (HomeFudge) {
+    var ƒ = FudgeCore;
+    class Mathf {
+        /**
+         * The function performs linear interpolation between two numbers based on a given ratio.
+         *
+         * @param a a is a number representing the starting value of the range to interpolate between.
+         * @param b The parameter "b" is a number representing the end value of the range to
+         * interpolate between.
+         * @param t t is a number between 0 and 1 that represents the interpolation factor. It
+         * determines how much of the second value (b) should be blended with the first value (a) to
+         * produce the final result. A value of 0 means that only the first value should be used, while
+         * a
+         * @return the linear interpolation value between `a` and `b` based on the value of `t`.
+         */
+        static lerp(a, b, t) {
+            if (t < 0) {
+                throw new Error(t + " is smaller 0");
+            }
+            if (t > 1) {
+                throw new Error(t + " is larger 1");
+            }
+            return a + (t * b - t * b);
+        }
+        /**
+         * The function calculates the length of a 3D vector using the Pythagorean theorem.
+         *
+         * @param v A 3-dimensional vector represented as an object with properties x, y, and z.
+         * @return The function `vectorLength` returns the length of a 3D vector represented by the
+         * input parameter `v`.
+         */
+        static vectorLength(v) {
+            return Math.sqrt(v.x * v.x +
+                v.y * v.y +
+                v.z * v.z);
+        }
+        static vectorNegate(v) {
+            return new ƒ.Vector3(-v.x, -v.y, -v.z);
+        }
+    }
+    HomeFudge.Mathf = Mathf;
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
@@ -362,7 +405,6 @@ var HomeFudge;
         velocity = null;
         healthPoints = null;
         maxTurnRate = null;
-        //TODO:make private
         gatlingTurret = null;
         beamTurretList = null;
         //list of weapons
@@ -403,6 +445,13 @@ var HomeFudge;
         }
         update = () => {
             this.mtxLocal.translate(new ƒ.Vector3(this.velocity.x * HomeFudge._deltaSeconds, this.velocity.y * HomeFudge._deltaSeconds, this.velocity.z * HomeFudge._deltaSeconds));
+            //TODO:remove test of gatling rot
+            ///TEST----------------TEST\\\
+            let tempRotBase = this.gatlingTurret.baseNode.mtxLocal.rotation;
+            this.gatlingTurret.baseNode.mtxLocal.rotation = new ƒ.Vector3(tempRotBase.x, -(HomeFudge.Mouse.pos.x - (HomeFudge._viewport.canvas.width / 2)) / Math.PI / 3, tempRotBase.z);
+            let tempRotHead = this.gatlingTurret.headNode.mtxLocal.rotation;
+            this.gatlingTurret.headNode.mtxLocal.rotation = new ƒ.Vector3(tempRotHead.x, tempRotHead.y, -(HomeFudge.Mouse.pos.y - (HomeFudge._viewport.canvas.height / 2)) / Math.PI / 4);
+            ///TEST----------------TEST\\\
         };
         alive() {
             //console.error("Method not implemented.");
@@ -419,13 +468,38 @@ var HomeFudge;
             //console.error("Method not implemented.");
             return null;
         }
+        fireWeapon(_weapon) {
+            switch (_weapon) {
+                case Weapons.BeamTurret:
+                    this.fireBeam();
+                    break;
+                case Weapons.RocketPod:
+                    //TODO:Implement Rocket Pod
+                    console.error("RocketPod not implement!!");
+                    break;
+                case Weapons.GatlingTurret:
+                    this.fireGatling();
+                    break;
+                default:
+                    break;
+            }
+        }
         fireGatling() {
             this.gatlingTurret.fire(this.velocity);
+            //TODO:remove test
         }
         fireBeam() {
             this.beamTurretList.forEach(turret => {
                 turret.fire();
             });
+        }
+        move(moveDirection) {
+            //TODO:Make smooth
+            if (HomeFudge.Mathf.vectorLength(moveDirection) >= 0.001) {
+                moveDirection.normalize();
+            }
+            moveDirection.scale(this.maxSpeed);
+            this.velocity = moveDirection;
         }
         constructor(startPosition) {
             super("Destroyer");
@@ -463,7 +537,8 @@ var HomeFudge;
                 return;
             }
             this.maxLifeTime -= HomeFudge._deltaSeconds;
-            this.mtxLocal.translate(new ƒ.Vector3((2 * this.parentVelocity.x + this.maxSpeed) * HomeFudge._deltaSeconds, 2 * this.parentVelocity.y * HomeFudge._deltaSeconds, 2 * this.parentVelocity.z * HomeFudge._deltaSeconds));
+            this.mtxLocal.translate(new ƒ.Vector3((this.parentVelocity.x + this.maxSpeed) * HomeFudge._deltaSeconds, 2 * this.parentVelocity.y * HomeFudge._deltaSeconds, 2 * this.parentVelocity.z * HomeFudge._deltaSeconds));
+            //TODO:Get Distance to Player cam and scale the size a of the mesh to make the bullet better visible at long distance
             //life check.
             if (!this.alive()) {
                 this.destroyNode();
@@ -508,8 +583,13 @@ var HomeFudge;
         constructor(spawnTransform, _parentVelocity) {
             super("Gatling");
             this.addComponent(new ƒ.ComponentTransform(spawnTransform));
+            ///\\\
             this.parentVelocity = _parentVelocity;
             this.initBulletConfig();
+            //TODO:Make that cleaner TEMP FIX 
+            let copy = _parentVelocity.clone;
+            copy.scale(HomeFudge._deltaSeconds * 5);
+            this.mtxLocal.translate(copy);
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
         }
     }
@@ -519,6 +599,7 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class GatlingTurret extends ƒ.Node {
+        //TODO: make Private again
         headNode = null;
         baseNode = null;
         shootNode = null;
@@ -632,11 +713,25 @@ var HomeFudge;
                 return;
             }
             if (this.roundsTimer >= 1 / this.roundsPerSecond) {
-                new HomeFudge.GatlingBullet(this.shootNode.mtxWorld.clone, parentVelocity);
+                // new GatlingBullet(this.shootNode.mtxWorld.clone, parentVelocity);
+                //TODO remove test
+                let shot2 = this.shootNode.mtxWorld.clone;
+                let shot3 = this.shootNode.mtxWorld.clone;
+                let spread1x = Math.random() * 0.2 - (Math.random()) * 0.2;
+                let spread1y = Math.random() * 0.2 - (Math.random()) * 0.2;
+                let spread1z = Math.random() * 0.2 - (Math.random()) * 0.2;
+                let spread2x = Math.random() * 0.5 - (Math.random()) * 0.5;
+                let spread2y = Math.random() * 0.5 - (Math.random()) * 0.5;
+                let spread2z = Math.random() * 0.5 - (Math.random()) * 0.5;
+                shot2.rotate(new ƒ.Vector3(spread1x, spread1y, spread1z));
+                shot3.rotate(new ƒ.Vector3(spread2x, spread2y, spread2z));
+                new HomeFudge.GatlingBullet(shot2, parentVelocity);
+                new HomeFudge.GatlingBullet(shot3, parentVelocity);
+                //TEST end
                 this.roundsTimer = 0;
                 this.magazineRounds--;
                 FudgeCore.Debug.log("RoundsLeft: " + this.magazineRounds);
-                this.shootNode.getComponent(ƒ.ComponentAudio).volume = 4;
+                this.shootNode.getComponent(ƒ.ComponentAudio).volume = 10;
                 this.shootNode.getComponent(ƒ.ComponentAudio).play(true);
             }
         }
@@ -650,44 +745,32 @@ var HomeFudge;
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
-    class Mathf {
-        static Lerp(a, b, t) {
-            if (t < 0) {
-                throw new Error(t + " is smaller 0");
-            }
-            if (t > 1) {
-                throw new Error(t + " is larger 1");
-            }
-            return a + (t * b - t * b);
-        }
-    }
-    HomeFudge.Mathf = Mathf;
-})(HomeFudge || (HomeFudge = {}));
-var HomeFudge;
-(function (HomeFudge) {
     var ƒ = FudgeCore;
     class Camera extends ƒ.Node {
         attachedTo = null;
         camComp = null;
+        camNode = null;
         offset = null;
         attachToShip(ship) {
             this.offset = HomeFudge.JSONparser.toVector3(HomeFudge.Config.camera.offset);
-            this.camComp.mtxPivot.translation = this.offset;
+            this.camNode.mtxLocal.translation = this.offset;
             this.attachedTo = ship;
             this.mtxLocal.set(ship.mtxWorld);
-            this.camComp.mtxPivot.rotation = new ƒ.Vector3(0, -270, 0); //TODO: Sound Bug when Pivot is rotated 
+            this.camNode.mtxLocal.rotation = new ƒ.Vector3(0, -270, 0); //TODO: Sound Bug when Pivot is rotated 
             //TODO: add node for campComp
             ship.addChild(this);
         }
         update = () => {
             //TODO: remove test rotation
-            this.mtxLocal.rotateY(10 * HomeFudge._deltaSeconds);
+            //  this.mtxLocal.rotateY(10*_deltaSeconds);
         };
         init() {
             this.camComp = new ƒ.ComponentCamera();
-            this.camComp.projectCentral(1.77, 70, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
-            this.camComp = this.camComp;
-            this.addComponent(this.camComp);
+            this.camComp.projectCentral(1.77, 75, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.1, 30000);
+            this.camNode = new ƒ.Node("camPivotNode");
+            this.camNode.addComponent(new ƒ.ComponentTransform());
+            this.camNode.addComponent(this.camComp);
+            this.addChild(this.camNode);
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.ZERO())));
         }
         constructor(name) {
@@ -787,15 +870,67 @@ var HomeFudge;
     var ƒ = FudgeCore;
     class Player extends ƒ.Node {
         destroyer = null;
+        selectedWeapon = null; //TODO:Check if ok
+        moveDirection = ƒ.Vector3.ZERO();
+        rotDegreeOnMoveSideways = 2;
+        camRotBeforeChange = null;
         update = () => {
+            this.camRotBeforeChange = HomeFudge._mainCamera.camComp.mtxPivot.rotation;
             if (HomeFudge.Mouse.isPressedOne([HomeFudge.MOUSE_CODE.LEFT])) {
-                this.destroyer.fireGatling();
+                this.destroyer.fireWeapon(this.selectedWeapon);
             }
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) {
+                //LEFT
+                this.moveDirection = new ƒ.Vector3(this.moveDirection.x, this.moveDirection.y, -1);
+                HomeFudge._mainCamera.camComp.mtxPivot.rotation = new ƒ.Vector3(this.camRotBeforeChange.x, this.rotDegreeOnMoveSideways, this.camRotBeforeChange.z);
+            }
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D])) {
+                //RIGHT
+                this.moveDirection = new ƒ.Vector3(this.moveDirection.x, this.moveDirection.y, 1);
+                HomeFudge._mainCamera.camComp.mtxPivot.rotation = new ƒ.Vector3(this.camRotBeforeChange.x, -this.rotDegreeOnMoveSideways, this.camRotBeforeChange.z);
+            }
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W])) {
+                //FORWARD
+                this.moveDirection = new ƒ.Vector3(1, this.moveDirection.y, this.moveDirection.z);
+            }
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S])) {
+                //BACKWARD
+                this.moveDirection = new ƒ.Vector3(-1, this.moveDirection.y, this.moveDirection.z);
+            }
+            //TODO move if check int a function to initiate the curser
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ONE])) {
+                //Gatling
+                if (this.selectedWeapon != this.destroyer.weapons.GatlingTurret) {
+                    this.selectedWeapon = this.destroyer.weapons.GatlingTurret;
+                    HomeFudge._viewport.canvas.style.cursor = "url(Textures/MouseAimCurser.png) 16 16, crosshair";
+                }
+            }
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.TWO])) {
+                //Beam
+                if (this.selectedWeapon != this.destroyer.weapons.BeamTurret) {
+                    this.selectedWeapon = this.destroyer.weapons.BeamTurret;
+                    HomeFudge._viewport.canvas.style.cursor = "url(Textures/GatlingTurretAimCurser.png) 16 16, crosshair";
+                }
+            }
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.THREE])) {
+                //Rocket
+                if (this.selectedWeapon != this.destroyer.weapons.RocketPod) {
+                    this.selectedWeapon = this.destroyer.weapons.RocketPod;
+                }
+            }
+            this.destroyer.move(this.moveDirection);
+            this.moveDirection = ƒ.Vector3.ZERO();
+            //TODO: use PlayerCamera instant of mainCamera
+            //TODO: pan camera only a specific threshold
+            HomeFudge._mainCamera.camComp.mtxPivot.rotation = new ƒ.Vector3(HomeFudge._mainCamera.camComp.mtxPivot.rotation.x, -(HomeFudge.Mouse.pos.x - (HomeFudge._viewport.canvas.width / 2)) / 100, HomeFudge._mainCamera.camComp.mtxPivot.rotation.z);
+            HomeFudge._mainCamera.camComp.mtxPivot.rotation = this.camRotBeforeChange; // Resets cam rotation before using the cam rot mouse.
         };
         constructor(name) {
             super(name);
             this.destroyer = new HomeFudge.Destroyer(ƒ.Vector3.ZERO());
             this.addChild(this.destroyer);
+            this.selectedWeapon = this.destroyer.weapons.GatlingTurret; //Set WP to one
+            HomeFudge._viewport.canvas.style.cursor = "url(Textures/MouseAimCurser.png) 16 16, crosshair"; //TODO: remove temp setting
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
         }
     }
