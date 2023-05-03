@@ -23,12 +23,13 @@ namespace HomeFudge {
                 return
             }
             this.maxLifeTime -= _deltaSeconds;
-
             this.mtxLocal.translate( new ƒ.Vector3(
-                (2*this.parentVelocity.x + this.maxSpeed) * _deltaSeconds,
+                (this.parentVelocity.x + this.maxSpeed) * _deltaSeconds,
                 2*this.parentVelocity.y * _deltaSeconds,
                 2*this.parentVelocity.z * _deltaSeconds
                 ));
+
+                //TODO:Get Distance to Player cam and scale the size a of the mesh to make the bullet better visible at long distance
 
             //life check.
             if (!this.alive()) {
@@ -80,8 +81,13 @@ namespace HomeFudge {
         constructor(spawnTransform: ƒ.Matrix4x4, _parentVelocity: ƒ.Vector3) {
             super("Gatling");
             this.addComponent(new ƒ.ComponentTransform(spawnTransform));
+            ///\\\
             this.parentVelocity = _parentVelocity;
             this.initBulletConfig();
+            //TODO:Make that cleaner TEMP FIX 
+            let copy =_parentVelocity.clone;
+            copy.scale(_deltaSeconds*5);
+            this.mtxLocal.translate(copy);
             ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
         }
     }
