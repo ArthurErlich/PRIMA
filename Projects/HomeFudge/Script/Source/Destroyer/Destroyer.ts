@@ -7,7 +7,6 @@ namespace HomeFudge {
         protected healthPoints: number = null;
         protected maxTurnRate: number = null;
 
-        //TODO:make private
         private gatlingTurret: GatlingTurret = null;
         private beamTurretList: BeamTurret[] = null;
 
@@ -18,7 +17,7 @@ namespace HomeFudge {
         static mesh: ƒ.Mesh = null;
         static material: ƒ.Material = null;
 
-        private async initAllConfigs(startPosition:ƒ.Vector3) {
+        private async initAllConfigs(startPosition: ƒ.Vector3) {
             Destroyer.graph = await Ship.getGraphResources(Config.destroyer.graphID);
             let node: ƒ.Node = await Ship.getComponentNode("Destroyer", Destroyer.graph);
 
@@ -30,7 +29,7 @@ namespace HomeFudge {
             Destroyer.material = node.getComponent(ƒ.ComponentMaterial).material;
 
             //init configs
-            if(this.velocity == null){
+            if (this.velocity == null) {
                 this.velocity = new ƒ.Vector3(0, 0, 0);
             }
             this.maxAcceleration = Config.destroyer.maxAcceleration;
@@ -60,7 +59,23 @@ namespace HomeFudge {
             this.mtxLocal.translate(new ƒ.Vector3(
                 this.velocity.x * _deltaSeconds,
                 this.velocity.y * _deltaSeconds,
-                this.velocity.z * _deltaSeconds)); 
+                this.velocity.z * _deltaSeconds));
+
+            //TODO:remove test of gatling rot
+            ///TEST----------------TEST\\\
+            let tempRotBase: ƒ.Vector3 = this.gatlingTurret.baseNode.mtxLocal.rotation;
+            this.gatlingTurret.baseNode.mtxLocal.rotation = new ƒ.Vector3(
+                tempRotBase.x,
+                -(Mouse.pos.x - (_viewport.canvas.width / 2)) / Math.PI/3,
+                tempRotBase.z
+            );
+            let tempRotHead: ƒ.Vector3 = this.gatlingTurret.headNode.mtxLocal.rotation;
+            this.gatlingTurret.headNode.mtxLocal.rotation = new ƒ.Vector3(
+                tempRotHead.x,
+                tempRotHead.y,
+                -(Mouse.pos.y - (_viewport.canvas.height/2)) / Math.PI/4
+            );
+            ///TEST----------------TEST\\\
         }
         public alive(): boolean {
             //console.error("Method not implemented.");
@@ -77,13 +92,40 @@ namespace HomeFudge {
             //console.error("Method not implemented.");
             return null;
         }
-        public fireGatling(){
-            this.gatlingTurret.fire(this.velocity);
+        public fireWeapon(_weapon: Weapons) {
+            switch (_weapon) {
+                case Weapons.BeamTurret:
+                    this.fireBeam();
+                    break;
+                case Weapons.RocketPod:
+                    //TODO:Implement Rocket Pod
+                    console.error("RocketPod not implement!!");
+                    break;
+                case Weapons.GatlingTurret:
+                    this.fireGatling();
+                    break;
+
+                default:
+                    break;
+
+            }
         }
-        public fireBeam(){
+        public fireGatling() {
+            this.gatlingTurret.fire(this.velocity);
+            //TODO:remove test
+        }
+        public fireBeam() {
             this.beamTurretList.forEach(turret => {
                 turret.fire();
             });
+        }
+        public move(moveDirection: ƒ.Vector3) {
+            //TODO:Make smooth
+            if(Mathf.vectorLength(moveDirection) >= 0.001){
+                moveDirection.normalize();
+            }
+            moveDirection.scale(this.maxSpeed);
+            this.velocity = moveDirection;
         }
         constructor(startPosition: ƒ.Vector3) {
             super("Destroyer");
@@ -91,7 +133,7 @@ namespace HomeFudge {
             ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
         }
     }
-    enum Weapons{
+    enum Weapons {
         GatlingTurret,
         BeamTurret,
         RocketPod
