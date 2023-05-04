@@ -228,9 +228,9 @@ var HomeFudge;
             console.warn("Active bullets in scene: " + HomeFudge._worldNode.getChildrenByName("BulletGatling").length);
             ƒ.Loop.stop();
         }
-        if (HomeFudge.Mouse.isPressedOne([HomeFudge.MOUSE_CODE.LEFT])) {
-            getPosTest();
-        }
+        // if(Mouse.isPressedOne([MOUSE_CODE.LEFT])){
+        //   getPosTest();
+        // }
         // let aimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AimingRayCaster
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         HomeFudge._viewport.draw();
@@ -846,6 +846,7 @@ var HomeFudge;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
+    //TODO: add MouseClickOnce to get a one click press
     /**
      * The  Mouse class is a TypeScript class that tracks mouse movement and button presses.
      *
@@ -854,13 +855,13 @@ var HomeFudge;
      * @ArthurErlich <arthur.erlich@hs-furtwangen.de>}
      */
     class Mouse {
-        static position = null;
-        static movedDistance = null;
+        static position = new ƒ.Vector2(0, 0);
+        static movedDistance = new ƒ.Vector2(0, 0);
         /**
          * This array should be the same length as the {@link MOUSE_CODE }
          */
         static isPressed = new Array(3); // length of MOUSE_CODE enum
-        static tempPos = null;
+        static tempPos = new ƒ.Vector2(0, 0);
         /**
          * This function initializes mouse event listeners and sets up variables for tracking mouse
          * movement.
@@ -870,9 +871,6 @@ var HomeFudge;
             HomeFudge._viewport.canvas.addEventListener("mousemove", Mouse.moveUpdate);
             HomeFudge._viewport.canvas.addEventListener("mousedown", Mouse.mouseDown);
             HomeFudge._viewport.canvas.addEventListener("mouseup", Mouse.mouseUp);
-            Mouse.position = new ƒ.Vector2(0, 0);
-            Mouse.movedDistance = new ƒ.Vector2(0, 0);
-            Mouse.tempPos = new ƒ.Vector2(0, 0);
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, Mouse.update);
         }
         /**
@@ -884,7 +882,7 @@ var HomeFudge;
          * @ArthurErlich <arthur.erlich@hs-furtwangen.de>
          */
         static update = () => {
-            Mouse.movedDistance = new ƒ.Vector2(Mouse.tempPos.x - Mouse.position.x, Mouse.tempPos.y - Mouse.position.y);
+            Mouse.movedDistance.set(Mouse.tempPos.x - Mouse.position.x, Mouse.tempPos.y - Mouse.position.y);
             Mouse.tempPos = Mouse.position;
         };
         /**
@@ -896,8 +894,9 @@ var HomeFudge;
          * of the `MouseEvent`.
         */
         static moveUpdate = (_event) => {
-            Mouse.movedDistance = new ƒ.Vector2(_event.movementX, _event.movementY);
-            Mouse.position = new ƒ.Vector2(_event.x, _event.y);
+            //switched to set for performance reasons.
+            Mouse.movedDistance.set(_event.movementX, _event.movementY);
+            Mouse.position.set(_event.clientX, _event.clientY);
         };
         /**
          * The function sets the corresponding value in the Mouse.isPressed array based on the button

@@ -82,9 +82,9 @@ namespace HomeFudge {
       ƒ.Loop.stop();
     }
      
-    if(Mouse.isPressedOne([MOUSE_CODE.LEFT])){
-      getPosTest();
-    }
+    // if(Mouse.isPressedOne([MOUSE_CODE.LEFT])){
+    //   getPosTest();
+    // }
     // let aimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AimingRayCaster
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\

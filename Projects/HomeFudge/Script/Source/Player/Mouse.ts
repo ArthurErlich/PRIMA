@@ -1,5 +1,6 @@
 namespace HomeFudge {
     import ƒ = FudgeCore;
+    //TODO: add MouseClickOnce to get a one click press
     /**  
      * The  Mouse class is a TypeScript class that tracks mouse movement and button presses.
      * 
@@ -9,15 +10,15 @@ namespace HomeFudge {
      */
     export class Mouse {
 
-        public static position: ƒ.Vector2 = null;
-        public static movedDistance: ƒ.Vector2 = null;
+        public static position: ƒ.Vector2 = new ƒ.Vector2(0, 0);
+        public static movedDistance: ƒ.Vector2 = new ƒ.Vector2(0, 0);
 
         /**
          * This array should be the same length as the {@link MOUSE_CODE }
          */
         private static isPressed: Array<MOUSE_CODE> = new Array<MOUSE_CODE>(3); // length of MOUSE_CODE enum
 
-        private static tempPos: ƒ.Vector2 = null;
+        private static tempPos: ƒ.Vector2 = new ƒ.Vector2(0, 0);
 
         /**
          * This function initializes mouse event listeners and sets up variables for tracking mouse
@@ -28,11 +29,6 @@ namespace HomeFudge {
             _viewport.canvas.addEventListener("mousemove", Mouse.moveUpdate);
             _viewport.canvas.addEventListener("mousedown", Mouse.mouseDown);
             _viewport.canvas.addEventListener("mouseup", Mouse.mouseUp);
-
-            Mouse.position = new ƒ.Vector2(0, 0);
-            Mouse.movedDistance = new ƒ.Vector2(0, 0);
-            Mouse.tempPos = new ƒ.Vector2(0, 0);
-
             ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, Mouse.update);
         }
 
@@ -45,7 +41,7 @@ namespace HomeFudge {
          * @ArthurErlich <arthur.erlich@hs-furtwangen.de>
          */
         private static update = (): void => {
-            Mouse.movedDistance = new ƒ.Vector2(
+            Mouse.movedDistance.set(
                 Mouse.tempPos.x - Mouse.position.x,
                 Mouse.tempPos.y - Mouse.position.y
             );
@@ -60,8 +56,9 @@ namespace HomeFudge {
          * of the `MouseEvent`. 
         */
         private static moveUpdate = (_event: MouseEvent): void => {
-            Mouse.movedDistance = new ƒ.Vector2(_event.movementX, _event.movementY);
-            Mouse.position = new ƒ.Vector2(_event.x, _event.y);
+            //switched to set for performance reasons.
+            Mouse.movedDistance.set(_event.movementX,_event.movementY);
+            Mouse.position.set(_event.clientX,_event.clientY);    
         }
 
         /**
