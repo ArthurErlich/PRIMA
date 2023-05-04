@@ -54,7 +54,6 @@ namespace HomeFudge {
         }
         private update = (): void => {
             this.mtxLocal.rotateY(15*_deltaSeconds);
-
         }
         public fire() {
             throw new Error("Method not implemented.");
