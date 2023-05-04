@@ -7,7 +7,7 @@ var McFudge;
         static meshCube = new ƒ.MeshCube();
         static materialCube = new ƒ.Material("mtr", ƒ.ShaderFlat, new ƒ.CoatRemissive()); // you can also grab the Matrial from the resources!
         constructor(_position, _color) {
-            super("Block"); // always call super!
+            super(_position.toString()); // always call super!
             //now we add them to the Componnets
             let transform = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position));
             let mesh = new ƒ.ComponentMesh(Block.meshCube);
@@ -96,6 +96,7 @@ var McFudge;
                 }
             }
         }
+        viewport.canvas.addEventListener("pointerdown", pickByCamera);
         //------------------------T-E-S-T---A-R-E-A----------------------\\
         //-----------------------------------------------------------------\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
@@ -105,6 +106,36 @@ var McFudge;
         // ƒ.Physics.simulate();  // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
+    }
+    function pickByCamera(_event) {
+        console.log("pickCamera");
+        let picks = ƒ.Picker.pickViewport(viewport, new ƒ.Vector2(_event.clientX, _event.clientY));
+        picks.sort((_a, _b) => _a.zBuffer < _b.zBuffer ? -1 : 1);
+        if (_event.button == 1) {
+            hitBlockRemove(picks[0]?.node);
+            console.log("remove");
+        }
+        if (_event.button == 2) {
+            let normal = picks[0]?.normal;
+            let pos = picks[0]?.node.mtxWorld.translation;
+            let adPos = new ƒ.Vector3(pos.x + normal.x, pos.y + normal.y, pos.z + normal.z);
+            hitBlockAdd(adPos);
+        }
+    }
+    function hitBlockRemove(_block) {
+        if (!_block)
+            return;
+        console.log(_block.name);
+        _block.getParent().removeChild(_block);
+        viewport.draw();
+    }
+    function hitBlockAdd(adPos) {
+        let randomCubeColorIndex = Math.floor(Math.random() * (cubeColorList.length));
+        let cubeColor = cubeColorList[randomCubeColorIndex];
+        let instance = new McFudge.Block(adPos, cubeColor);
+        instance.mtxLocal.scale(new ƒ.Vector3(0.97, 0.97, 0.97));
+        viewport.getBranch().addChild(instance);
+        viewport.draw();
     }
 })(McFudge || (McFudge = {}));
 //# sourceMappingURL=Script.js.map
