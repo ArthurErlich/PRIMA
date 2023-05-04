@@ -263,6 +263,58 @@
       "url": "Mesh\\Destroyer\\HomeFuge_BeamTurret.obj"
     }
   },
+  "MeshObj|2023-05-04T07:20:34.873Z|35777": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-05-04T07:20:34.873Z|35777",
+      "name": "Mesh_TempBeam.obj",
+      "type": "MeshObj",
+      "url": "Mesh\\Destroyer\\HomeFuge_Beam.obj"
+    }
+  },
+  "Material|2023-05-04T07:22:09.793Z|27759": {
+    "ƒ.Material": {
+      "name": "MatLit_BeamTurret",
+      "idResource": "Material|2023-05-04T07:22:09.793Z|27759",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-05-04T07:22:43.747Z|68477"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-05-04T07:22:43.747Z|68477": {
+    "ƒ.TextureImage": {
+      "url": "Mesh\\Destroyer\\BeamTextureSheet.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-05-04T07:22:43.747Z|68477",
+        "name": "TextSheet_BeamTurret",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "AnimationSprite|2023-05-04T07:26:04.970Z|01730": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-05-04T07:26:04.970Z|01730",
+      "idTexture": "TextureImage|2023-05-04T07:22:43.747Z|68477",
+      "frames": 45,
+      "wrapAfter": 54,
+      "start": "[0, 0]",
+      "size": "[1023.9998779296875, 1024.0001220703125]",
+      "next": "[1023.9999389648438, 0]",
+      "wrap": "[0, 0]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-05-04T07:26:04.970Z|01730",
+        "name": "AnimSprite_LaserBeam",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 15,
+        "animationStructure": {}
+      }
+    }
+  },
   "Graph|2023-04-25T14:30:46.195Z|98798": {
     "ƒ.Graph": {
       "name": "GameResources",
@@ -410,7 +462,7 @@
                       "scaling": "[1, 1, 1]"
                     },
                     "Component": {
-                      "active": true
+                      "active": false
                     }
                   }
                 }
@@ -478,10 +530,75 @@
             },
             "children": []
           }
+        },
+        {
+          "ƒ.Node": {
+            "name": "LaserBeam",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2023-05-04T07:20:34.873Z|35777",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": true,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0.95652174949646, 0]",
+                      "rotation": 0,
+                      "scaling": "[0.021739130839705467, 1.0000001192092896]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-05-04T07:22:09.793Z|27759"
+                  }
+                }
+              ],
+              "ComponentAnimator": [
+                {
+                  "ƒ.ComponentAnimator": {
+                    "Component": {
+                      "active": true
+                    },
+                    "idAnimation": "AnimationSprite|2023-05-04T07:26:04.970Z|01730",
+                    "playmode": "playOnce",
+                    "quantization": "discrete",
+                    "scale": 1,
+                    "scaleWithGameTime": true,
+                    "animateInEditor": true
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
         }
       ],
       "idResource": "Graph|2023-04-25T14:30:46.195Z|98798",
       "type": "Graph"
+    }
+  },
+  "MeshObj|2023-05-04T07:18:22.497Z|96617": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-05-04T07:18:22.497Z|96617",
+      "name": "Mesh\\Destroyeobj",
+      "type": "MeshObj",
+      "url": "Mesh\\Destroyer\\HomeFuge_Beam.obj"
     }
   }
 }
