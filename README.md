@@ -1,6 +1,6 @@
 # PRIMA
 
-[![wakatime](https://wakatime.com/badge/github/ArthurErlich/PRIMA.svg)](https://wakatime.com/badge/github/ArthurErlich/PRIMA)
+Invested Time: [![wakatime](https://wakatime.com/badge/github/ArthurErlich/PRIMA.svg)](https://wakatime.com/badge/github/ArthurErlich/PRIMA)
 
 ## Making, Breaking, Destroying, Trying creating -> prototypes!
 
