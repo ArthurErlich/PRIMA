@@ -25,8 +25,8 @@ Invested Time: [![wakatime](https://wakatime.com/badge/github/ArthurErlich/PRIMA
 
 | Nr | Criterion           | Explanation                                                                                                                                     |   |
 | -- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------|---|
-|  1 | Units and Positions | Where is 0, what is 1? Explain your setup of coordinate systems of the entities.                                                                |[ ]|
-|  2 | Hierarchy           | Explain the setup of the graphs and the advantages you gain by it.                                                                              |[ ]|
+|  1 | Units and Positions | Where is 0, what is 1? Explain your setup of coordinate systems of the entities.                                                                |[0]|
+|  2 | Hierarchy           | Explain the setup of the graphs and the advantages you gain by it.                                                                              |[0]|
 |  3 | Editor              | Use the visual editor and explain which parts are better done by coding and why.                                                                |[ ]|
 |  4 | Scriptcomponents    | Use scriptcomponents and explain if they were useful in your context or not and why.                                                            |[ ]|
 |  5 | Extend              | Derive classes from FudgeCore other than ScriptComponent and explain if that was useful in your context or not and why.                         |[ ]|
