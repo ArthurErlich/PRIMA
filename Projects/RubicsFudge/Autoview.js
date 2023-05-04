@@ -55,8 +55,9 @@ async function startInteractiveViewport(_graphId)/* : void */ {
   let cameraOrbit/* : ƒ.Node */ = ƒAid.Viewport.expandCameraToInteractiveOrbit(viewport);
 
   // hide the cursor when interacting, also suppressing right-click menu
-  canvas.addEventListener("mousedown", canvas.requestPointerLock);
-  canvas.addEventListener("mouseup", function () { document.exitPointerLock(); });
+  // canvas.addEventListener("mousedown", canvas.requestPointerLock);
+  // canvas.addEventListener("mouseup", function () { document.exitPointerLock(); });
+  window.addEventListener("contextmenu", e => e.preventDefault());
 
   // setup audio
   let cmpListener/* : ƒ.ComponentAudioListener */ = new ƒ.ComponentAudioListener();

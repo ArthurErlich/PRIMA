@@ -1,4 +1,4 @@
-namespace HomeFudge {
+namespace McFudge {
     import ƒ = FudgeCore;
     //TODO: add MouseClickOnce to get a one click press
     /**  
@@ -20,15 +20,18 @@ namespace HomeFudge {
 
         private static tempPos: ƒ.Vector2 = new ƒ.Vector2(0, 0);
 
-        /**
-         * This function initializes mouse event listeners and sets up variables for tracking mouse
-         * movement.
-         * @ArthurErlich <arthur.erlich@hs-furtwangen.de>
-         */
-        public static init(): void {
-            _viewport.canvas.addEventListener("mousemove", Mouse.moveUpdate);
-            _viewport.canvas.addEventListener("mousedown", Mouse.mouseDown);
-            _viewport.canvas.addEventListener("mouseup", Mouse.mouseUp);
+       
+       /**
+        * This function initializes mouse event listeners and adds them to the canvas and the loop.
+        * 
+        * @param canvas HTMLCanvasElement - This is the canvas element on which the mouse events will
+        * be registered and tracked.
+        * @ArthurErlich <arthur.erlich@hs-furtwangen.de>
+        */
+        public static init(canvas:HTMLCanvasElement): void {
+            canvas.addEventListener("mousemove", Mouse.moveUpdate);
+            canvas.addEventListener("mousedown", Mouse.mouseDown);
+            canvas.addEventListener("mouseup", Mouse.mouseUp);
             ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, Mouse.update);
         }
 
