@@ -77,6 +77,7 @@ namespace HomeFudge {
   }
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
+<<<<<<< Updated upstream
   function getAimPos(): ƒ.Vector3 {
     let pick:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,new ƒ.Vector2(_viewport.canvas.width/2,_viewport.canvas.height/2));
     return pick[0].posWorld;
@@ -105,6 +106,27 @@ namespace HomeFudge {
     return [new Destroyer(new ƒ.Vector3(0, 0, 0))];
   }
 
+=======
+  function getPosTest():void {
+    let pickCam:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,Mouse.position);
+    let pickViewport:ƒ.Pick[] = ƒ.Picker.pickViewport(_viewport,Mouse.position);
+
+    let test:ƒ.Vector3 = ƒ.Vector3.ONE();
+    test.magnitudeSquared;
+
+    console.log("%c"+"Camera Picker","background:red");
+    pickCam.forEach(element => {
+      console.log("%c"+element.posMesh.toString(),"background:yellow");
+    });
+    console.log("-------------");
+    console.log("%c"+"Viewport Picker","background:red");
+    pickViewport.forEach(element => {
+      console.log("%c"+element.posMesh.toString(),"background:yellow");
+    });
+    console.log("-------------");
+  }
+  /// ------------T-E-S-T--A-R-E-A------------------\\\
+>>>>>>> Stashed changes
   //DEBUG
   function contionuLoop(event:KeyboardEvent){
     if(event.code == "Insert"){
