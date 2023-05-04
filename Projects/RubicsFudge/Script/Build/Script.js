@@ -83,19 +83,7 @@ var McFudge;
         // creating a block instance
         // let instance: Block = new Block(new ƒ.Vector3(0,0,0), ƒ.Color.CSS("red"));
         // viewport.getBranch().addChild(instance);
-        for (let x = 0; x < 3; x++) {
-            for (let y = 0; y < 3; y++) {
-                for (let z = 0; z < 3; z++) {
-                    let randomCubeColorIndex = Math.floor(Math.random() * (cubeColorList.length));
-                    let cubeColor = cubeColorList[randomCubeColorIndex];
-                    let instance = new McFudge.Block(new ƒ.Vector3(x, y, z), cubeColor);
-                    //set color
-                    //look at fudge test-> Picking and rays
-                    instance.mtxLocal.scale(new ƒ.Vector3(0.97, 0.97, 0.97));
-                    viewport.getBranch().addChild(instance);
-                }
-            }
-        }
+        generateWorld(5);
         viewport.canvas.addEventListener("pointerdown", pickByCamera);
         //------------------------T-E-S-T---A-R-E-A----------------------\\
         //-----------------------------------------------------------------\\
@@ -130,12 +118,26 @@ var McFudge;
         viewport.draw();
     }
     function hitBlockAdd(adPos) {
+        crateBlock(adPos);
+        viewport.draw();
+    }
+    function crateBlock(pos) {
         let randomCubeColorIndex = Math.floor(Math.random() * (cubeColorList.length));
         let cubeColor = cubeColorList[randomCubeColorIndex];
-        let instance = new McFudge.Block(adPos, cubeColor);
+        let instance = new McFudge.Block(pos, cubeColor);
         instance.mtxLocal.scale(new ƒ.Vector3(0.97, 0.97, 0.97));
         viewport.getBranch().addChild(instance);
         viewport.draw();
+    }
+    //world gen
+    function generateWorld(size) {
+        for (let x = 0; x < size; x++) {
+            for (let y = 0; y < size; y++) {
+                for (let z = 0; z < size; z++) {
+                    crateBlock(new ƒ.Vector3(x, y, z));
+                }
+            }
+        }
     }
 })(McFudge || (McFudge = {}));
 //# sourceMappingURL=Script.js.map

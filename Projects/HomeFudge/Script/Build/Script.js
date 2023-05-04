@@ -226,7 +226,6 @@ var HomeFudge;
     function initAllDestroyers() {
         return [new HomeFudge.Destroyer(new ƒ.Vector3(0, 0, 0))];
     }
-    //DEBUG
     function contionuLoop(event) {
         if (event.code == "Insert") {
             ƒ.Loop.continue();
