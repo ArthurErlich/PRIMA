@@ -4,15 +4,22 @@ var HomeFudge;
     class Config {
         static gatlingBullet = null;
         static gatlingTurret = null;
+        static beamTurret = null;
         static destroyer = null;
         static camera = null;
+        /**
+         * The function initializes configurations by fetching JSON files and assigning their contents
+         * to corresponding variables.
+         */
         static async initConfigs() {
-            let gatTurretResponse = await fetch("Configs/gatTurretConfig.json");
             let gatBulletResponse = await fetch("Configs/gatBulletConfig.json");
+            let gatTurretResponse = await fetch("Configs/gatTurretConfig.json");
+            let beamTurretResponse = await fetch("Configs/beamTurretConfig.json");
             let destroyerResponse = await fetch("Configs/destroyerConfig.json");
             let cameraResponse = await fetch("Configs/cameraConfig.json");
             Config.gatlingBullet = await gatBulletResponse.json();
             Config.gatlingTurret = await gatTurretResponse.json();
+            Config.beamTurret = await beamTurretResponse.json();
             Config.destroyer = await destroyerResponse.json();
             Config.camera = await cameraResponse.json();
         }
@@ -221,9 +228,9 @@ var HomeFudge;
             console.warn("Active bullets in scene: " + HomeFudge._worldNode.getChildrenByName("BulletGatling").length);
             ƒ.Loop.stop();
         }
-        if (HomeFudge.Mouse.isPressedOne([HomeFudge.MOUSE_CODE.LEFT])) {
-            getPosTest();
-        }
+        // if(Mouse.isPressedOne([MOUSE_CODE.LEFT])){
+        //   getPosTest();
+        // }
         // let aimPos:ƒ.Vector3 = getAimPos(); //TODO:Remove unused AimingRayCaster
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         HomeFudge._viewport.draw();
@@ -387,14 +394,66 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class BeamTurret extends ƒ.Node {
+        // public static side = SIDE;
+        static graph = null;
+        static mesh = null;
+        static material = null;
+        maxRotSpeed;
+        maxPitch;
+        minPitch;
+        maxBeamTime;
+        maxReloadTime;
+        range;
+        async init() {
+            BeamTurret.graph = await this.getGraphResources(HomeFudge.Config.beamTurret.graphID);
+            let resourceNode = await this.getComponentNode("BeamTurret", BeamTurret.graph);
+            BeamTurret.material = resourceNode.getComponent(ƒ.ComponentMaterial).material;
+            BeamTurret.mesh = resourceNode.getComponent(ƒ.ComponentMesh).mesh;
+            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.basePosition))));
+            this.addComponent(new ƒ.ComponentMaterial(BeamTurret.material));
+            this.addComponent(new ƒ.ComponentMesh(BeamTurret.mesh));
+            //Left Right check
+            this.mtxLocal.rotateX(90);
+            //Init turret configs
+            this.maxRotSpeed = HomeFudge.Config.beamTurret.maxRotSpeed;
+            this.maxPitch = HomeFudge.Config.beamTurret.maxPitch;
+            this.minPitch = HomeFudge.Config.beamTurret.minPitch;
+            this.maxBeamTime = HomeFudge.Config.beamTurret.beamTime;
+            this.maxReloadTime = HomeFudge.Config.beamTurret.reloadTime;
+            this.range = HomeFudge.Config.beamTurret.range;
+        }
+        async getGraphResources(graphID) {
+            let graph = ƒ.Project.resources[graphID];
+            if (graph == null) {
+                console.warn(graph + " not found with ID: " + graphID);
+            }
+            return graph;
+        }
+        async getComponentNode(nodeName, graph) {
+            let node = graph.getChildrenByName(nodeName)[0];
+            if (node == null) {
+                console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
+            }
+            return node;
+        }
+        update = () => {
+            this.mtxLocal.rotateY(15 * HomeFudge._deltaSeconds);
+        };
         fire() {
-            console.warn("NO FIRE HERE");
+            throw new Error("Method not implemented.");
         }
         constructor() {
-            super("BamTurret");
+            super("BeamTurret");
+            this.init();
+            ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
         }
     }
     HomeFudge.BeamTurret = BeamTurret;
+    let SIDE;
+    (function (SIDE) {
+        SIDE[SIDE["LEFT"] = 0] = "LEFT";
+        SIDE[SIDE["RIGHT"] = 1] = "RIGHT";
+    })(SIDE || (SIDE = {}));
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
@@ -406,7 +465,7 @@ var HomeFudge;
         healthPoints = null;
         maxTurnRate = null;
         gatlingTurret = null;
-        beamTurretList = null;
+        beamTurretList = new Array(2);
         //list of weapons
         weapons = Weapons;
         static graph = null;
@@ -433,7 +492,10 @@ var HomeFudge;
         }
         addWeapons() {
             this.gatlingTurret = new HomeFudge.GatlingTurret();
+            this.beamTurretList[0] = new HomeFudge.BeamTurret();
+            // this.beamTurretList[1] = new BeamTurret(BeamTurret.side.LEFT);
             this.addChild(this.gatlingTurret);
+            this.addChild(this.beamTurretList[0]); //TODO:add second Beam turret
         }
         setAllComponents() {
             if (Destroyer.material == null || Destroyer.mesh == null) {
@@ -526,7 +588,6 @@ var HomeFudge;
         spreadRadius = null;
         parentVelocity = ƒ.Vector3.ZERO();
         static graph = null;
-        static worldNode = null;
         static mesh = null;
         static material = null;
         //TODO: try faction out.
@@ -598,6 +659,7 @@ var HomeFudge;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
+    //TODO:create super class Turret. GatlingTurret and BeamTurret extends Turret
     class GatlingTurret extends ƒ.Node {
         //TODO: make Private again
         headNode = null;
@@ -624,7 +686,7 @@ var HomeFudge;
             this.reloadsEverySecond = HomeFudge.Config.gatlingTurret.reloadTime;
             this.magazineCapacity = HomeFudge.Config.gatlingTurret.magazineCapacity;
             this.magazineRounds = this.magazineCapacity;
-            this.shootNode.addComponent(new ƒ.ComponentAudio(new ƒ.Audio("Sound/autocannon.mp3"))); //TODO: REMOVE TEMP AUDIO
+            this.shootNode.addComponent(new ƒ.ComponentAudio(new ƒ.Audio("Sound/autocannon.mp3"))); //TODO: REMOVE TEMP AUDIO move to Resources
             this.headNode.addChild(this.shootNode);
             this.baseNode.addChild(this.headNode);
             this.addChild(this.baseNode);
@@ -784,6 +846,7 @@ var HomeFudge;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
+    //TODO: add MouseClickOnce to get a one click press
     /**
      * The  Mouse class is a TypeScript class that tracks mouse movement and button presses.
      *
@@ -792,13 +855,13 @@ var HomeFudge;
      * @ArthurErlich <arthur.erlich@hs-furtwangen.de>}
      */
     class Mouse {
-        static position = null;
-        static movedDistance = null;
+        static position = new ƒ.Vector2(0, 0);
+        static movedDistance = new ƒ.Vector2(0, 0);
         /**
          * This array should be the same length as the {@link MOUSE_CODE }
          */
         static isPressed = new Array(3); // length of MOUSE_CODE enum
-        static tempPos = null;
+        static tempPos = new ƒ.Vector2(0, 0);
         /**
          * This function initializes mouse event listeners and sets up variables for tracking mouse
          * movement.
@@ -808,9 +871,6 @@ var HomeFudge;
             HomeFudge._viewport.canvas.addEventListener("mousemove", Mouse.moveUpdate);
             HomeFudge._viewport.canvas.addEventListener("mousedown", Mouse.mouseDown);
             HomeFudge._viewport.canvas.addEventListener("mouseup", Mouse.mouseUp);
-            Mouse.position = new ƒ.Vector2(0, 0);
-            Mouse.movedDistance = new ƒ.Vector2(0, 0);
-            Mouse.tempPos = new ƒ.Vector2(0, 0);
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, Mouse.update);
         }
         /**
@@ -822,7 +882,7 @@ var HomeFudge;
          * @ArthurErlich <arthur.erlich@hs-furtwangen.de>
          */
         static update = () => {
-            Mouse.movedDistance = new ƒ.Vector2(Mouse.tempPos.x - Mouse.position.x, Mouse.tempPos.y - Mouse.position.y);
+            Mouse.movedDistance.set(Mouse.tempPos.x - Mouse.position.x, Mouse.tempPos.y - Mouse.position.y);
             Mouse.tempPos = Mouse.position;
         };
         /**
@@ -834,8 +894,9 @@ var HomeFudge;
          * of the `MouseEvent`.
         */
         static moveUpdate = (_event) => {
-            Mouse.movedDistance = new ƒ.Vector2(_event.movementX, _event.movementY);
-            Mouse.position = new ƒ.Vector2(_event.x, _event.y);
+            //switched to set for performance reasons.
+            Mouse.movedDistance.set(_event.movementX, _event.movementY);
+            Mouse.position.set(_event.clientX, _event.clientY);
         };
         /**
          * The function sets the corresponding value in the Mouse.isPressed array based on the button
