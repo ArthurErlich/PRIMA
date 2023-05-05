@@ -504,7 +504,7 @@
                       "scaling": "[1, 1, 1]"
                     },
                     "Component": {
-                      "active": true
+                      "active": false
                     }
                   }
                 }
@@ -558,9 +558,9 @@
                     "clrPrimary": "[1, 1, 1, 1]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
-                      "translation": "[0.95652174949646, 0]",
+                      "translation": "[0.9565216302871704, 0]",
                       "rotation": 0,
-                      "scaling": "[0.021739130839705467, 1.0000001192092896]"
+                      "scaling": "[0.02173912711441517, 1.0000001192092896]"
                     },
                     "Component": {
                       "active": true
@@ -587,6 +587,174 @@
             },
             "children": []
           }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Astroid_L_01",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2023-05-05T17:24:23.730Z|05336",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-05-05T17:27:19.710Z|32221"
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Astroid_L_02",
+            "active": true,
+            "components": {
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-05-05T17:27:19.710Z|32221"
+                  }
+                }
+              ],
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2023-05-05T17:24:23.731Z|81799",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Astroid_L_03",
+            "active": true,
+            "components": {
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-05-05T17:27:19.710Z|32221"
+                  }
+                }
+              ],
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2023-05-05T17:24:23.732Z|28944",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Astroid_L_04",
+            "active": true,
+            "components": {
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-05-05T17:27:19.710Z|32221"
+                  }
+                }
+              ],
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2023-05-05T17:24:23.732Z|76165",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
         }
       ],
       "idResource": "Graph|2023-04-25T14:30:46.195Z|98798",
@@ -599,6 +767,64 @@
       "name": "Mesh\\Destroyeobj",
       "type": "MeshObj",
       "url": "Mesh\\Destroyer\\HomeFuge_Beam.obj"
+    }
+  },
+  "TextureImage|2023-05-05T17:24:11.100Z|53599": {
+    "ƒ.TextureImage": {
+      "url": "Mesh\\Astroids\\L\\HomeFudge_Astroid_Large.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-05-05T17:24:11.100Z|53599",
+        "name": "Text_Astroid_L",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "MeshObj|2023-05-05T17:24:23.730Z|05336": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-05-05T17:24:23.730Z|05336",
+      "name": "MeshAstroid_L_1",
+      "type": "MeshObj",
+      "url": "Mesh\\Astroids\\L\\HomeFuge_Astroid_L001.obj"
+    }
+  },
+  "MeshObj|2023-05-05T17:24:23.731Z|81799": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-05-05T17:24:23.731Z|81799",
+      "name": "MeshAstroid_L_2",
+      "type": "MeshObj",
+      "url": "Mesh\\Astroids\\L\\HomeFuge_Astroid_L002.obj"
+    }
+  },
+  "MeshObj|2023-05-05T17:24:23.732Z|28944": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-05-05T17:24:23.732Z|28944",
+      "name": "MeshAstroid_L_3",
+      "type": "MeshObj",
+      "url": "Mesh\\Astroids\\L\\HomeFuge_Astroid_L003.obj"
+    }
+  },
+  "MeshObj|2023-05-05T17:24:23.732Z|76165": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-05-05T17:24:23.732Z|76165",
+      "name": "MeshAstroid_L_4",
+      "type": "MeshObj",
+      "url": "Mesh\\Astroids\\L\\HomeFuge_Astroid_L004.obj"
+    }
+  },
+  "Material|2023-05-05T17:27:19.710Z|32221": {
+    "ƒ.Material": {
+      "name": "Mat_Astroid_L",
+      "idResource": "Material|2023-05-05T17:27:19.710Z|32221",
+      "shader": "ShaderFlatTextured",
+      "coat": {
+        "ƒ.CoatRemissiveTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-05-05T17:24:11.100Z|53599",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
     }
   }
 }
