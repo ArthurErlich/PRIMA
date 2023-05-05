@@ -14,6 +14,11 @@ namespace HomeFudge {
             if (Mouse.isPressedOne([MOUSE_CODE.LEFT])) {
                 this.destroyer.fireWeapon(this.selectedWeapon);
             }
+            console.log(LaserBeam.getComponent(ƒ.ComponentAnimator).time);
+            console.log(LaserBeam.getComponent(ƒ.ComponentAnimator).animation);
+                
+            
+            
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) {
                 //LEFT
                 this.moveDirection = new ƒ.Vector3(

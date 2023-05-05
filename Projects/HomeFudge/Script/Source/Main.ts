@@ -3,11 +3,11 @@ namespace HomeFudge {
   ƒ.Debug.info("Main Program Template running!");
 
 
-  
+
   //@ts-ignore
   document.addEventListener("interactiveViewportStarted", (event) => <EventListener>start(event));
   document.addEventListener("keydown", (event) => continueLoop(event))
-  
+
 
   ///World Node\\\
   export let _worldNode: ƒ.Node = null;
@@ -17,25 +17,24 @@ namespace HomeFudge {
 
   ///Viewport\\\
   export let _viewport: ƒ.Viewport = null;
- 
+
   ///Player\\\
-  let p1:Player = null;
+  let p1: Player = null;
 
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
-  //Bullet list, every bullet wil register itself here for the update Method.
-  ///camera setup for worldSize of 25km\\\
+  export let LaserBeam: ƒ.Node = null; //TODO:remove lase Beam test
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
 
   async function start(_event: CustomEvent): Promise<void> {
     _viewport = _event.detail;
     _worldNode = _viewport.getBranch();
-    
+
     console.log(_viewport);
     //Loads Config then initilizes the world 
-    await loadConfig().then(initWorld).then(() => { 
-      let audioComp=new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true); //TODO:Move sound to recourses
+    await loadConfig().then(initWorld).then(() => {
+      let audioComp = new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true); //TODO:Move sound to recourses
       console.warn("ConfigsLoaded and world Initialized");
       //Sound by IXION!
       audioComp.volume = 0.1;
@@ -49,16 +48,33 @@ namespace HomeFudge {
       await Config.initConfigs();
       Mouse.init();
     }
-  
+
     async function initWorld(): Promise<void> {
       p1 = new Player("test_P1");
       _viewport.getBranch().addChild(p1);
-      _mainCamera.attachToShip(p1.destroyer);  
-    _viewport.canvas.style.scale = "(0.1,0.1)";
+      _mainCamera.attachToShip(p1.destroyer);
+      _viewport.canvas.style.scale = "(0.1,0.1)";
 
     }
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
+    // laser beam
+    let graphID: string = "Graph|2023-04-25T14:30:46.195Z|98798";
+    let graph: ƒ.Graph = <ƒ.Graph>ƒ.Project.resources[graphID]
+    if (graph == null) {
+      console.warn(graph + " not found with ID: " + graphID);
+    }
+
+    let nodeName: string = "LaserBeam";
+     LaserBeam = graph.getChildrenByName(nodeName)[0];
+    if (LaserBeam == null) {
+      console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
+    }
+    LaserBeam.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0,0,0))));
+    LaserBeam.getComponent(ƒ.ComponentAnimator).activate(true);
+    console.warn(LaserBeam);
+    _worldNode.addChild(LaserBeam);
+
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
@@ -81,7 +97,7 @@ namespace HomeFudge {
       console.warn("Active bullets in scene: " + _worldNode.getChildrenByName("BulletGatling").length);
       ƒ.Loop.stop();
     }
-     
+
     // if(Mouse.isPressedOne([MOUSE_CODE.LEFT])){
     //   getPosTest();
     // }
@@ -94,26 +110,26 @@ namespace HomeFudge {
   }
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
-  function getPosTest():void {
-    let pickCam:ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(),_viewport.camera,Mouse.position);
-    let pickViewport:ƒ.Pick[] = ƒ.Picker.pickViewport(_viewport,Mouse.position);
+  function getPosTest(): void {
+    let pickCam: ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(), _viewport.camera, Mouse.position);
+    let pickViewport: ƒ.Pick[] = ƒ.Picker.pickViewport(_viewport, Mouse.position);
 
-    console.log("%c"+"Camera Picker","background:red");
+    console.log("%c" + "Camera Picker", "background:red");
     pickCam.forEach(element => {
-      console.log("%c"+element.posMesh.toString(),"background:yellow");
+      console.log("%c" + element.posMesh.toString(), "background:yellow");
     });
     console.log("-------------");
-    console.log("%c"+"Viewport Picker","background:red");
+    console.log("%c" + "Viewport Picker", "background:red");
     pickViewport.forEach(element => {
-      console.log("%c"+element.posMesh.toString(),"background:yellow");
+      console.log("%c" + element.posMesh.toString(), "background:yellow");
     });
     console.log("-------------");
   }
   /// ------------T-E-S-T--A-R-E-A------------------\\\
-  
+
   //DEBUG
-  function continueLoop(event:KeyboardEvent){
-    if(event.code == "Insert"){
+  function continueLoop(event: KeyboardEvent) {
+    if (event.code == "Insert") {
       ƒ.Loop.continue();
     }
   }

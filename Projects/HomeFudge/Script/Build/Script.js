@@ -180,8 +180,7 @@ var HomeFudge;
     ///Player\\\
     let p1 = null;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    //Bullet list, every bullet wil register itself here for the update Method.
-    ///camera setup for worldSize of 25km\\\
+    HomeFudge.LaserBeam = null; //TODO:remove lase Beam test
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function start(_event) {
         HomeFudge._viewport = _event.detail;
@@ -210,6 +209,21 @@ var HomeFudge;
             HomeFudge._viewport.canvas.style.scale = "(0.1,0.1)";
         }
         /// ------------T-E-S-T--A-R-E-A------------------\\\
+        // laser beam
+        let graphID = "Graph|2023-04-25T14:30:46.195Z|98798";
+        let graph = ƒ.Project.resources[graphID];
+        if (graph == null) {
+            console.warn(graph + " not found with ID: " + graphID);
+        }
+        let nodeName = "LaserBeam";
+        HomeFudge.LaserBeam = graph.getChildrenByName(nodeName)[0];
+        if (HomeFudge.LaserBeam == null) {
+            console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
+        }
+        HomeFudge.LaserBeam.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0, 0, 0))));
+        HomeFudge.LaserBeam.getComponent(ƒ.ComponentAnimator).activate(true);
+        console.warn(HomeFudge.LaserBeam);
+        HomeFudge._worldNode.addChild(HomeFudge.LaserBeam);
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 35); // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
@@ -987,6 +1001,8 @@ var HomeFudge;
             if (HomeFudge.Mouse.isPressedOne([HomeFudge.MOUSE_CODE.LEFT])) {
                 this.destroyer.fireWeapon(this.selectedWeapon);
             }
+            console.log(HomeFudge.LaserBeam.getComponent(ƒ.ComponentAnimator).time);
+            console.log(HomeFudge.LaserBeam.getComponent(ƒ.ComponentAnimator).animation);
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) {
                 //LEFT
                 this.moveDirection = new ƒ.Vector3(this.moveDirection.x, this.moveDirection.y, -1);

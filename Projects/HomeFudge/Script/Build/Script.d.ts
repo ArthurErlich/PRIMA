@@ -94,6 +94,7 @@ declare namespace HomeFudge {
     let _worldNode: ƒ.Node;
     let _deltaSeconds: number;
     let _viewport: ƒ.Viewport;
+    let LaserBeam: ƒ.Node;
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;

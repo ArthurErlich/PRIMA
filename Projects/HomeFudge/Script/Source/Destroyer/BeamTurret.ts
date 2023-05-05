@@ -37,6 +37,7 @@ namespace HomeFudge {
             this.maxBeamTime = Config.beamTurret.beamTime;
             this.maxReloadTime = Config.beamTurret.reloadTime;
             this.range = Config.beamTurret.range;
+
         }
         private async getGraphResources(graphID: string): Promise<ƒ.Graph> {
             let graph: ƒ.Graph = <ƒ.Graph>ƒ.Project.resources[graphID]
