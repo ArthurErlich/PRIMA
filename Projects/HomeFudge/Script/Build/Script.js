@@ -252,8 +252,22 @@ var HomeFudge;
         console.log("-------------");
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    //DEBUG
-    function continueLoop(event) {
+    async function loadConfig() {
+        //loads configs
+        performance.now();
+        console.warn("LoadingConfigs");
+        await HomeFudge.Config.initConfigs();
+        HomeFudge.Mouse.init();
+    }
+    async function initWorld() {
+        let destroyer = initAllDestroyers();
+        HomeFudge._viewport.getBranch().addChild(destroyer[0]);
+        HomeFudge._mainCamera.attachToShip(destroyer[0]);
+    }
+    function initAllDestroyers() {
+        return [new HomeFudge.Destroyer(new ƒ.Vector3(0, 0, 0))];
+    }
+    function contionuLoop(event) {
         if (event.code == "Insert") {
             ƒ.Loop.continue();
         }
