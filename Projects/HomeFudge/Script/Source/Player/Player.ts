@@ -22,10 +22,6 @@ namespace HomeFudge {
                     this.moveDirection.y,
                     -1
                 );
-                _mainCamera.camComp.mtxPivot.rotation = new ƒ.Vector3(
-                    this.camRotBeforeChange.x,
-                    this.rotDegreeOnMoveSideways,
-                    this.camRotBeforeChange.z);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D])) {
                 //RIGHT
@@ -34,11 +30,6 @@ namespace HomeFudge {
                     this.moveDirection.y,
                     1
                 );
-
-                _mainCamera.camComp.mtxPivot.rotation = new ƒ.Vector3(
-                    this.camRotBeforeChange.x,
-                    -this.rotDegreeOnMoveSideways,
-                    this.camRotBeforeChange.z);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W])) {
                 //FORWARD
@@ -100,6 +91,12 @@ namespace HomeFudge {
             this.addChild(this.destroyer);
             this.selectedWeapon = this.destroyer.weapons.GatlingTurret;//Set WP to one
             _viewport.canvas.style.cursor = "url(Textures/MouseAimCurser.png) 16 16, crosshair";//TODO: remove temp setting
+            //inits Music Soundtrack
+            let audioComp = new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true); //TODO:Move sound to recourses
+            //Sound by IXION!
+            audioComp.volume = 0.1;
+            audioComp.play(true);
+            _mainCamera.camNode.addComponent(audioComp);
             ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
         }
     }
