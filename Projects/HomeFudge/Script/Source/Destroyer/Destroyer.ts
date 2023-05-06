@@ -47,12 +47,17 @@ namespace HomeFudge {
 
         private addWeapons(): void {
             this.gatlingTurret = new GatlingTurret();
-            this.beamTurretList[0] = new BeamTurret();
-            // this.beamTurretList[1] = new BeamTurret(BeamTurret.side.LEFT);
+            this.beamTurretList[0] = new BeamTurret(BeamTurret.side.LEFT);
+            // this.beamTurretList[1] = new BeamTurret(BeamTurret.side.RIGHT);
 
 
             this.addChild(this.gatlingTurret);
-            this.addChild(this.beamTurretList[0]); //TODO:add second Beam turret
+            this.beamTurretList.forEach(beamTurret => {
+                if(beamTurret == null)
+                    return;
+
+                this.addChild(beamTurret);
+            });
         }
 
         private setAllComponents(): void {
