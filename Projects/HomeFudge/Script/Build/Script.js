@@ -190,12 +190,7 @@ var HomeFudge;
         console.log(HomeFudge._viewport);
         //Loads Config then initilizes the world in the right order
         await loadConfig().then(initWorld).then(() => {
-            let audioComp = new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true); //TODO:Move sound to recourses
             console.warn("ConfigsLoaded and world Initialized");
-            //Sound by IXION!
-            audioComp.volume = 0.1;
-            audioComp.play(true);
-            HomeFudge._mainCamera.camNode.addComponent(audioComp);
         }); // to create ships. first load configs than the ships etc
         async function loadConfig() {
             //loads configs
@@ -299,6 +294,12 @@ var HomeFudge;
         }
         static vectorNegate(v) {
             return new ƒ.Vector3(-v.x, -v.y, -v.z);
+        }
+        static DegreeToRadiant(degree) {
+            // return degree * (180/Math.PI);
+        }
+        static RadiantToDegree(radiant) {
+            // return radiant * (Math.PI/180);
         }
     }
     HomeFudge.Mathf = Mathf;
@@ -426,67 +427,73 @@ var HomeFudge;
         static mesh = null;
         static material = null;
         beam = null;
-        /*
-        private maxRotSpeed: number;
-        private maxPitch: number;
-        private minPitch: number;
-        private maxBeamTime: number;
-        private maxReloadTime: number;
-        private range: number;
-        */
-        async init() {
-            BeamTurret.graph = await this.getGraphResources(HomeFudge.Config.beamTurret.graphID);
-            let resourceNode = await this.getComponentNode("BeamTurret", BeamTurret.graph);
-            BeamTurret.material = resourceNode.getComponent(ƒ.ComponentMaterial).material;
-            BeamTurret.mesh = resourceNode.getComponent(ƒ.ComponentMesh).mesh;
-            //TODO:add Left Right check
-            //add beam
-            let beamPos = HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.beamPosition);
-            this.addBeam();
+        maxRotSpeed;
+        maxPitch;
+        minPitch;
+        maxBeamTime;
+        maxReloadTime;
+        range;
+        async init(side) {
+            BeamTurret.graph = await HomeFudge.Resources.getGraphResources(HomeFudge.Config.beamTurret.graphID);
+            let resourceNode = await HomeFudge.Resources.getComponentNode("BeamTurret", BeamTurret.graph);
+            if (BeamTurret.material == null || BeamTurret.mesh) {
+                BeamTurret.material = resourceNode.getComponent(ƒ.ComponentMaterial).material;
+                BeamTurret.mesh = resourceNode.getComponent(ƒ.ComponentMesh).mesh;
+            }
             //Init turret configs
-            /*
-            this.maxRotSpeed = Config.beamTurret.maxRotSpeed;
-            this.maxPitch = Config.beamTurret.maxPitch;
-            this.minPitch = Config.beamTurret.minPitch;
-            this.maxBeamTime = Config.beamTurret.beamTime;
-            this.maxReloadTime = Config.beamTurret.reloadTime;
-            this.range = Config.beamTurret.range;
-            */
-            this.addComponents();
-            this.mtxLocal.rotateX(90);
-        }
-        async getGraphResources(graphID) {
-            let graph = ƒ.Project.resources[graphID];
-            if (graph == null) {
-                console.warn(graph + " not found with ID: " + graphID);
+            this.maxRotSpeed = HomeFudge.Config.beamTurret.maxRotSpeed;
+            this.maxPitch = HomeFudge.Config.beamTurret.maxPitch;
+            this.minPitch = HomeFudge.Config.beamTurret.minPitch;
+            this.maxBeamTime = HomeFudge.Config.beamTurret.beamTime;
+            this.maxReloadTime = HomeFudge.Config.beamTurret.reloadTime;
+            this.range = HomeFudge.Config.beamTurret.range;
+            let turretPos = HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.basePosition);
+            switch (side) {
+                case SIDE.LEFT:
+                    console.log("adding Beam: LEFT");
+                    this.addBeam("LEFT");
+                    turretPos.set(turretPos.x, turretPos.y, -turretPos.z);
+                    this.addComponents(turretPos);
+                    this.mtxLocal.rotateX(-90);
+                    //fix Pitch
+                    let tempPitch = this.maxPitch;
+                    this.maxPitch = this.minPitch;
+                    this.minPitch = tempPitch;
+                    break;
+                case SIDE.RIGHT:
+                    console.log("adding Beam: RIGHT");
+                    this.addBeam("RIGHT");
+                    this.addComponents(turretPos);
+                    this.mtxLocal.rotateX(90);
+                    break;
+                default:
+                    break;
             }
-            return graph;
         }
-        async getComponentNode(nodeName, graph) {
-            let node = graph.getChildrenByName(nodeName)[0];
-            if (node == null) {
-                console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
-            }
-            return node;
+        addBeam(side) {
+            let beamPos = HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.beamPosition);
+            this.beam = new HomeFudge.LaserBeam(side, beamPos);
+            this.addChild(this.beam);
         }
-        addBeam() {
-            //TODO: add beam to here
-            this.addChild(new HomeFudge.LaserBeam("Right"));
-        }
-        addComponents() {
-            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.basePosition))));
+        addComponents(position) {
+            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)));
             this.addComponent(new ƒ.ComponentMaterial(BeamTurret.material));
             this.addComponent(new ƒ.ComponentMesh(BeamTurret.mesh));
         }
         update = () => {
-            this.mtxLocal.rotateY(15 * HomeFudge._deltaSeconds);
+            this.rotate(15 * HomeFudge._deltaSeconds);
         };
         fire() {
             throw new Error("Method not implemented.");
         }
-        constructor() {
+        rotate(rot) {
+            //ROTATION is only between -180° and 180°. Y starts at 0°
+            console.log(Math.round(this.mtxWorldInverse.rotation.y));
+            this.mtxLocal.rotateY(rot);
+        }
+        constructor(side) {
             super("BeamTurret");
-            this.init();
+            this.init(side);
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
         }
     }
@@ -530,10 +537,14 @@ var HomeFudge;
         }
         addWeapons() {
             this.gatlingTurret = new HomeFudge.GatlingTurret();
-            this.beamTurretList[0] = new HomeFudge.BeamTurret();
-            // this.beamTurretList[1] = new BeamTurret(BeamTurret.side.LEFT);
+            this.beamTurretList[0] = new HomeFudge.BeamTurret(HomeFudge.BeamTurret.side.LEFT);
+            // this.beamTurretList[1] = new BeamTurret(BeamTurret.side.RIGHT);
             this.addChild(this.gatlingTurret);
-            this.addChild(this.beamTurretList[0]); //TODO:add second Beam turret
+            this.beamTurretList.forEach(beamTurret => {
+                if (beamTurret == null)
+                    return;
+                this.addChild(beamTurret);
+            });
         }
         setAllComponents() {
             if (Destroyer.material == null || Destroyer.mesh == null) {
@@ -819,17 +830,11 @@ var HomeFudge;
                 // new GatlingBullet(this.shootNode.mtxWorld.clone, parentVelocity);
                 //TODO remove test
                 let shot2 = this.shootNode.mtxWorld.clone;
-                let shot3 = this.shootNode.mtxWorld.clone;
                 let spread1x = Math.random() * 0.2 - (Math.random()) * 0.2;
                 let spread1y = Math.random() * 0.2 - (Math.random()) * 0.2;
                 let spread1z = Math.random() * 0.2 - (Math.random()) * 0.2;
-                let spread2x = Math.random() * 0.5 - (Math.random()) * 0.5;
-                let spread2y = Math.random() * 0.5 - (Math.random()) * 0.5;
-                let spread2z = Math.random() * 0.5 - (Math.random()) * 0.5;
                 shot2.rotate(new ƒ.Vector3(spread1x, spread1y, spread1z));
-                shot3.rotate(new ƒ.Vector3(spread2x, spread2y, spread2z));
                 new HomeFudge.GatlingBullet(shot2, parentVelocity);
-                new HomeFudge.GatlingBullet(shot3, parentVelocity);
                 //TEST end
                 this.roundsTimer = 0;
                 this.magazineRounds--;
@@ -852,22 +857,24 @@ var HomeFudge;
     class LaserBeam extends ƒ.Node {
         static graph = null;
         static mesh = null;
-        static material = null;
-        async init() {
+        material = null;
+        async init(pos) {
             LaserBeam.graph = await HomeFudge.Resources.getGraphResources(HomeFudge.Config.laserBeam.graphID);
             let tempResource = await HomeFudge.Resources.getComponentNode("LaserBeam", LaserBeam.graph);
-            LaserBeam.material = tempResource.getComponent(ƒ.ComponentMaterial).material;
-            LaserBeam.mesh = tempResource.getComponent(ƒ.ComponentMesh).mesh;
-            this.addComponents(HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.beamPosition));
+            if (LaserBeam.mesh == null) {
+                LaserBeam.mesh = tempResource.getComponent(ƒ.ComponentMesh).mesh;
+            }
+            this.material = tempResource.getComponent(ƒ.ComponentMaterial).material;
+            this.addComponents(pos);
         }
         addComponents(pos) {
-            this.addComponent(new ƒ.ComponentMaterial(LaserBeam.material));
+            this.addComponent(new ƒ.ComponentMaterial(this.material));
             this.addComponent(new ƒ.ComponentMesh(LaserBeam.mesh));
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(pos)));
         }
-        constructor(side) {
+        constructor(side, position) {
             super("LaserBeam" + side);
-            this.init();
+            this.init(position);
         }
     }
     HomeFudge.LaserBeam = LaserBeam;
@@ -1057,12 +1064,10 @@ var HomeFudge;
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) {
                 //LEFT
                 this.moveDirection = new ƒ.Vector3(this.moveDirection.x, this.moveDirection.y, -1);
-                HomeFudge._mainCamera.camComp.mtxPivot.rotation = new ƒ.Vector3(this.camRotBeforeChange.x, this.rotDegreeOnMoveSideways, this.camRotBeforeChange.z);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D])) {
                 //RIGHT
                 this.moveDirection = new ƒ.Vector3(this.moveDirection.x, this.moveDirection.y, 1);
-                HomeFudge._mainCamera.camComp.mtxPivot.rotation = new ƒ.Vector3(this.camRotBeforeChange.x, -this.rotDegreeOnMoveSideways, this.camRotBeforeChange.z);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W])) {
                 //FORWARD
@@ -1106,6 +1111,12 @@ var HomeFudge;
             this.addChild(this.destroyer);
             this.selectedWeapon = this.destroyer.weapons.GatlingTurret; //Set WP to one
             HomeFudge._viewport.canvas.style.cursor = "url(Textures/MouseAimCurser.png) 16 16, crosshair"; //TODO: remove temp setting
+            //inits Music Soundtrack
+            let audioComp = new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true); //TODO:Move sound to recourses
+            //Sound by IXION!
+            audioComp.volume = 0.1;
+            audioComp.play(true);
+            HomeFudge._mainCamera.camNode.addComponent(audioComp);
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
         }
     }

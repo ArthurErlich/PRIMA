@@ -125,6 +125,8 @@ declare namespace HomeFudge {
          */
         static vectorLength(v: ƒ.Vector3): number;
         static vectorNegate(v: ƒ.Vector3): ƒ.Vector3;
+        static DegreeToRadiant(degree: number): number;
+        static RadiantToDegree(radiant: number): number;
     }
 }
 declare namespace HomeFudge {
@@ -207,14 +209,19 @@ declare namespace HomeFudge {
         private static mesh;
         private static material;
         private beam;
+        private maxRotSpeed;
+        private maxPitch;
+        private minPitch;
+        private maxBeamTime;
+        private maxReloadTime;
+        private range;
         private init;
-        private getGraphResources;
-        private getComponentNode;
         private addBeam;
         private addComponents;
         private update;
         fire(): void;
-        constructor();
+        rotate(rot: number): void;
+        constructor(side: SIDE);
     }
     export {};
 }
@@ -303,10 +310,10 @@ declare namespace HomeFudge {
     class LaserBeam extends ƒ.Node {
         private static graph;
         private static mesh;
-        private static material;
+        private material;
         private init;
         private addComponents;
-        constructor(side: string);
+        constructor(side: string, position: ƒ.Vector3);
     }
 }
 declare namespace HomeFudge {
