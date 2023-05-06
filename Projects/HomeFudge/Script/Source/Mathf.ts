@@ -38,6 +38,12 @@ namespace HomeFudge {
         public static vectorNegate(v:ƒ.Vector3):ƒ.Vector3{
             return new ƒ.Vector3(-v.x,-v.y,-v.z);
         }
+        public static DegreeToRadiant(degree:number):number{
+            // return degree * (180/Math.PI);
+        }
+        public static RadiantToDegree(radiant:number):number{
+            // return radiant * (Math.PI/180);
+        }
     }
 
 }
