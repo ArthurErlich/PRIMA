@@ -4,27 +4,26 @@ namespace HomeFudge {
 
         private static graph: ƒ.Graph = null;
         private static mesh: ƒ.Mesh = null;
-        private static material: ƒ.Material = null;
+        private material: ƒ.Material = null;
 
-        private async init() {
+        private async init(pos:ƒ.Vector3) {
             LaserBeam.graph = await Resources.getGraphResources(Config.laserBeam.graphID);
             let tempResource: ƒ.Node = await Resources.getComponentNode("LaserBeam", LaserBeam.graph);
-            LaserBeam.material = tempResource.getComponent(ƒ.ComponentMaterial).material;
-            LaserBeam.mesh = tempResource.getComponent(ƒ.ComponentMesh).mesh;
-
-
-            
-            this.addComponents(JSONparser.toVector3(Config.beamTurret.beamPosition));
+            if(LaserBeam.mesh == null){
+                LaserBeam.mesh = tempResource.getComponent(ƒ.ComponentMesh).mesh;
+            }
+            this.material = tempResource.getComponent(ƒ.ComponentMaterial).material;
+            this.addComponents(pos);
         }
         private addComponents(pos:ƒ.Vector3) {
-            this.addComponent(new ƒ.ComponentMaterial(LaserBeam.material));
+            this.addComponent(new ƒ.ComponentMaterial(this.material));
             this.addComponent(new ƒ.ComponentMesh(LaserBeam.mesh));
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(pos)));
         }
 
-        constructor( side: string) {
+        constructor(side: string,position:ƒ.Vector3) {
             super("LaserBeam" + side)
-            this.init();
+            this.init(position);
         }
     }
 }

@@ -11,78 +11,87 @@ namespace HomeFudge {
         private static graph: ƒ.Graph = null;
         private static mesh: ƒ.Mesh = null;
         private static material: ƒ.Material = null;
-        private beam: LaserBeam = null;
 
-        /*
+        private beam:LaserBeam = null
+
+        
         private maxRotSpeed: number;
         private maxPitch: number;
         private minPitch: number;
         private maxBeamTime: number;
         private maxReloadTime: number;
         private range: number;
-        */
+        
 
 
-        private async init(): Promise<void> {
-            BeamTurret.graph = await this.getGraphResources(Config.beamTurret.graphID);
-            let resourceNode: ƒ.Node = await this.getComponentNode("BeamTurret", BeamTurret.graph);
-
-            BeamTurret.material = resourceNode.getComponent(ƒ.ComponentMaterial).material;
-            BeamTurret.mesh = resourceNode.getComponent(ƒ.ComponentMesh).mesh;
-
-            //TODO:add Left Right check
-
-            //add beam
-            let beamPos: ƒ.Vector3 = JSONparser.toVector3(Config.beamTurret.beamPosition);
-            this.addBeam();
+        private async init(side: SIDE): Promise<void> {
+            BeamTurret.graph = await Resources.getGraphResources(Config.beamTurret.graphID);
+            let resourceNode: ƒ.Node = await Resources.getComponentNode("BeamTurret", BeamTurret.graph);
+            if (BeamTurret.material == null || BeamTurret.mesh) {
+                BeamTurret.material = resourceNode.getComponent(ƒ.ComponentMaterial).material;
+                BeamTurret.mesh = resourceNode.getComponent(ƒ.ComponentMesh).mesh;
+            }
 
             //Init turret configs
-            /*
+            
             this.maxRotSpeed = Config.beamTurret.maxRotSpeed;
             this.maxPitch = Config.beamTurret.maxPitch;
             this.minPitch = Config.beamTurret.minPitch;
             this.maxBeamTime = Config.beamTurret.beamTime;
             this.maxReloadTime = Config.beamTurret.reloadTime;
             this.range = Config.beamTurret.range;
-            */
+            
+            let turretPos: ƒ.Vector3 = JSONparser.toVector3(Config.beamTurret.basePosition)
+            switch (side) {
+                case SIDE.LEFT:
+                    console.log("adding Beam: LEFT");
+                    this.addBeam("LEFT");
+                    turretPos.set(turretPos.x, turretPos.y, -turretPos.z)
+                    this.addComponents(turretPos);
+                    this.mtxLocal.rotateX(-90);
 
+                    //fix Pitch
+                    let tempPitch = this.maxPitch;
+                    this.maxPitch = this.minPitch;
+                    this.minPitch = tempPitch;
+                    break;
+                case SIDE.RIGHT:
+                    console.log("adding Beam: RIGHT");
+                    this.addBeam("RIGHT");
+                    this.addComponents(turretPos);
+                    this.mtxLocal.rotateX(90);
+                    break;
+                default:
+                    break;
+            }
+        }
+        private addBeam(side: string): void {
+            let beamPos: ƒ.Vector3 = JSONparser.toVector3(Config.beamTurret.beamPosition);
+            this.beam = new LaserBeam(side, beamPos)
+            this.addChild(this.beam);
 
-            this.addComponents();
-            this.mtxLocal.rotateX(90);
         }
-        private async getGraphResources(graphID: string): Promise<ƒ.Graph> {
-            let graph: ƒ.Graph = <ƒ.Graph>ƒ.Project.resources[graphID]
-            if (graph == null) {
-                console.warn(graph + " not found with ID: " + graphID);
-            }
-            return graph;
-        }
-        private async getComponentNode(nodeName: string, graph: ƒ.Graph): Promise<ƒ.Node> {
-            let node: ƒ.Node = graph.getChildrenByName(nodeName)[0];
-            if (node == null) {
-                console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
-            }
-            return node;
-        }
-        private addBeam(): void {
-            //TODO: add beam to here
-            this.addChild(new LaserBeam("Right"));
-        }
-        private addComponents() {
-            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(JSONparser.toVector3(Config.beamTurret.basePosition))));
+        private addComponents(position: ƒ.Vector3) {
+            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)));
             this.addComponent(new ƒ.ComponentMaterial(BeamTurret.material));
             this.addComponent(new ƒ.ComponentMesh(BeamTurret.mesh));
         }
         private update = (): void => {
-            this.mtxLocal.rotateY(15 * _deltaSeconds);
+            this.rotate(15 * _deltaSeconds);
         }
         public fire() {
             throw new Error("Method not implemented.");
         }
+        public rotate(rot:number){
+            //ROTATION is only between -180° and 180°. Y starts at 0°
+            console.log(Math.round(this.mtxWorldInverse.rotation.y));
+            this.mtxLocal.rotateY(rot);
+            
+        }
 
-        constructor() {
+        constructor(side: SIDE) {
             super("BeamTurret");
-            this.init();
+            this.init(side);
             ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
         }
     }
