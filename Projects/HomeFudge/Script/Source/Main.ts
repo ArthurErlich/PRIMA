@@ -23,7 +23,7 @@ namespace HomeFudge {
 
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
-  export let LaserBeam: ƒ.Node = null; //TODO:remove lase Beam test
+  export let laserBeam: ƒ.Node = null; //TODO:remove lase Beam test
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
 
@@ -32,7 +32,7 @@ namespace HomeFudge {
     _worldNode = _viewport.getBranch();
 
     console.log(_viewport);
-    //Loads Config then initilizes the world 
+    //Loads Config then initilizes the world in the right order
     await loadConfig().then(initWorld).then(() => {
       let audioComp = new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true); //TODO:Move sound to recourses
       console.warn("ConfigsLoaded and world Initialized");
@@ -48,7 +48,6 @@ namespace HomeFudge {
       await Config.initConfigs();
       Mouse.init();
     }
-
     async function initWorld(): Promise<void> {
       p1 = new Player("test_P1");
       _viewport.getBranch().addChild(p1);
@@ -66,14 +65,14 @@ namespace HomeFudge {
     }
 
     let nodeName: string = "LaserBeam";
-     LaserBeam = graph.getChildrenByName(nodeName)[0];
-    if (LaserBeam == null) {
+    laserBeam = graph.getChildrenByName(nodeName)[0];
+    if (laserBeam == null) {
       console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
     }
-    LaserBeam.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0,0,0))));
-    LaserBeam.getComponent(ƒ.ComponentAnimator).activate(true);
+    laserBeam.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0,0,0))));
+    laserBeam.getComponent(ƒ.ComponentAnimator).activate(true);
     console.warn(LaserBeam);
-    _worldNode.addChild(LaserBeam);
+    _worldNode.addChild(laserBeam);
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
 
@@ -82,7 +81,7 @@ namespace HomeFudge {
   }
 
   function update(_event: Event): void {
-    // ƒ.Physics.simulate();  // if physics is included and used
+    ƒ.Physics.simulate();  // make an update loop just for the Physics. fixed at 30fps
     _deltaSeconds = ƒ.Loop.timeFrameGame / 1000;
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\

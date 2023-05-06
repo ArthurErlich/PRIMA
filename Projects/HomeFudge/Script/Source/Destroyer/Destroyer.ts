@@ -41,7 +41,10 @@ namespace HomeFudge {
             //init Components
             this.setAllComponents();
 
+            this.addRigidBody();
+
         }
+
         private addWeapons(): void {
             this.gatlingTurret = new GatlingTurret();
             this.beamTurretList[0] = new BeamTurret();
@@ -51,6 +54,7 @@ namespace HomeFudge {
             this.addChild(this.gatlingTurret);
             this.addChild(this.beamTurretList[0]); //TODO:add second Beam turret
         }
+
         private setAllComponents(): void {
             if (Destroyer.material == null || Destroyer.mesh == null) {
                 console.warn(this.name + " Mesh and/or Material is missing");
@@ -59,25 +63,30 @@ namespace HomeFudge {
             this.addComponent(new ƒ.ComponentMaterial(Destroyer.material));
             this.addComponent(new ƒ.ComponentMesh(Destroyer.mesh));
         }
+        private addRigidBody() {
+
+        }
+
         protected update = (): void => {
             this.mtxLocal.translate(new ƒ.Vector3(
                 this.velocity.x * _deltaSeconds,
                 this.velocity.y * _deltaSeconds,
-                this.velocity.z * _deltaSeconds));
+                this.velocity.z * _deltaSeconds)
+            );
 
             //TODO:remove test of gatling rot
             ///TEST----------------TEST\\\
             let tempRotBase: ƒ.Vector3 = this.gatlingTurret.baseNode.mtxLocal.rotation;
             this.gatlingTurret.baseNode.mtxLocal.rotation = new ƒ.Vector3(
                 tempRotBase.x,
-                -(Mouse.position.x - (_viewport.canvas.width / 2)) / Math.PI/3,
+                -(Mouse.position.x - (_viewport.canvas.width / 2)) / Math.PI / 3,
                 tempRotBase.z
             );
             let tempRotHead: ƒ.Vector3 = this.gatlingTurret.headNode.mtxLocal.rotation;
             this.gatlingTurret.headNode.mtxLocal.rotation = new ƒ.Vector3(
                 tempRotHead.x,
                 tempRotHead.y,
-                -(Mouse.position.y - (_viewport.canvas.height/2)) / Math.PI/4
+                -(Mouse.position.y - (_viewport.canvas.height / 2)) / Math.PI / 4
             );
             ///TEST----------------TEST\\\
         }
@@ -125,10 +134,11 @@ namespace HomeFudge {
         }
         public move(moveDirection: ƒ.Vector3) {
             //TODO:Make smooth
-            if(Mathf.vectorLength(moveDirection) >= 0.001){
+            if (Mathf.vectorLength(moveDirection) >= 0.001) {
                 moveDirection.normalize();
             }
             moveDirection.scale(this.maxSpeed);
+            //TODO:add smooth acceleration
             this.velocity = moveDirection;
         }
         constructor(startPosition: ƒ.Vector3) {

@@ -180,13 +180,13 @@ var HomeFudge;
     ///Player\\\
     let p1 = null;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    HomeFudge.LaserBeam = null; //TODO:remove lase Beam test
+    HomeFudge.laserBeam = null; //TODO:remove lase Beam test
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function start(_event) {
         HomeFudge._viewport = _event.detail;
         HomeFudge._worldNode = HomeFudge._viewport.getBranch();
         console.log(HomeFudge._viewport);
-        //Loads Config then initilizes the world 
+        //Loads Config then initilizes the world in the right order
         await loadConfig().then(initWorld).then(() => {
             let audioComp = new ƒ.ComponentAudio(new ƒ.Audio("Sound/Background/10.Cycles.mp3"), true); //TODO:Move sound to recourses
             console.warn("ConfigsLoaded and world Initialized");
@@ -216,20 +216,20 @@ var HomeFudge;
             console.warn(graph + " not found with ID: " + graphID);
         }
         let nodeName = "LaserBeam";
-        HomeFudge.LaserBeam = graph.getChildrenByName(nodeName)[0];
-        if (HomeFudge.LaserBeam == null) {
+        HomeFudge.laserBeam = graph.getChildrenByName(nodeName)[0];
+        if (HomeFudge.laserBeam == null) {
             console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
         }
-        HomeFudge.LaserBeam.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0, 0, 0))));
-        HomeFudge.LaserBeam.getComponent(ƒ.ComponentAnimator).activate(true);
+        HomeFudge.laserBeam.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0, 0, 0))));
+        HomeFudge.laserBeam.getComponent(ƒ.ComponentAnimator).activate(true);
         console.warn(HomeFudge.LaserBeam);
-        HomeFudge._worldNode.addChild(HomeFudge.LaserBeam);
+        HomeFudge._worldNode.addChild(HomeFudge.laserBeam);
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 35); // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
-        // ƒ.Physics.simulate();  // if physics is included and used
+        ƒ.Physics.simulate(); // make an update loop just for the Physics. fixed at 30fps
         HomeFudge._deltaSeconds = ƒ.Loop.timeFrameGame / 1000;
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.DELETE])) {
@@ -503,6 +503,7 @@ var HomeFudge;
             this.addWeapons();
             //init Components
             this.setAllComponents();
+            this.addRigidBody();
         }
         addWeapons() {
             this.gatlingTurret = new HomeFudge.GatlingTurret();
@@ -518,6 +519,8 @@ var HomeFudge;
             }
             this.addComponent(new ƒ.ComponentMaterial(Destroyer.material));
             this.addComponent(new ƒ.ComponentMesh(Destroyer.mesh));
+        }
+        addRigidBody() {
         }
         update = () => {
             this.mtxLocal.translate(new ƒ.Vector3(this.velocity.x * HomeFudge._deltaSeconds, this.velocity.y * HomeFudge._deltaSeconds, this.velocity.z * HomeFudge._deltaSeconds));
@@ -575,6 +578,7 @@ var HomeFudge;
                 moveDirection.normalize();
             }
             moveDirection.scale(this.maxSpeed);
+            //TODO:add smooth acceleration
             this.velocity = moveDirection;
         }
         constructor(startPosition) {
@@ -822,6 +826,16 @@ var HomeFudge;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
+    class LaserBeam extends ƒ.Node {
+        constructor(side) {
+            super("LaserBeam" + side);
+        }
+    }
+    HomeFudge.LaserBeam = LaserBeam;
+})(HomeFudge || (HomeFudge = {}));
+var HomeFudge;
+(function (HomeFudge) {
+    var ƒ = FudgeCore;
     class Camera extends ƒ.Node {
         attachedTo = null;
         camComp = null;
@@ -1001,8 +1015,6 @@ var HomeFudge;
             if (HomeFudge.Mouse.isPressedOne([HomeFudge.MOUSE_CODE.LEFT])) {
                 this.destroyer.fireWeapon(this.selectedWeapon);
             }
-            console.log(HomeFudge.LaserBeam.getComponent(ƒ.ComponentAnimator).time);
-            console.log(HomeFudge.LaserBeam.getComponent(ƒ.ComponentAnimator).animation);
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) {
                 //LEFT
                 this.moveDirection = new ƒ.Vector3(this.moveDirection.x, this.moveDirection.y, -1);

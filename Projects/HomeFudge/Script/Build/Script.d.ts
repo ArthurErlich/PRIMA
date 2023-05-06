@@ -94,7 +94,7 @@ declare namespace HomeFudge {
     let _worldNode: ƒ.Node;
     let _deltaSeconds: number;
     let _viewport: ƒ.Viewport;
-    let LaserBeam: ƒ.Node;
+    let laserBeam: ƒ.Node;
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -221,6 +221,7 @@ declare namespace HomeFudge {
         private initAllConfigs;
         private addWeapons;
         private setAllComponents;
+        private addRigidBody;
         protected update: () => void;
         alive(): boolean;
         destroyNode(): void;
@@ -281,6 +282,12 @@ declare namespace HomeFudge {
         moveTurret(xRot: number, yRot: number): void;
         fire(parentVelocity: ƒ.Vector3): void;
         constructor();
+    }
+}
+declare namespace HomeFudge {
+    import ƒ = FudgeCore;
+    class LaserBeam extends ƒ.Node {
+        constructor(side: string);
     }
 }
 declare namespace HomeFudge {

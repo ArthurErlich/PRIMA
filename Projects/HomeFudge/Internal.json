@@ -632,7 +632,7 @@
                       "scaling": "[0.021739130839705467, 1]"
                     },
                     "Component": {
-                      "active": true
+                      "active": false
                     },
                     "idMaterial": "Material|2023-05-05T17:59:58.827Z|03398"
                   }
@@ -689,7 +689,7 @@
                       "scaling": "[1, 1]"
                     },
                     "Component": {
-                      "active": true
+                      "active": false
                     },
                     "idMaterial": "Material|2023-05-05T17:27:19.710Z|32221"
                   }
@@ -716,7 +716,7 @@
                       "scaling": "[1, 1]"
                     },
                     "Component": {
-                      "active": true
+                      "active": false
                     },
                     "idMaterial": "Material|2023-05-05T17:27:19.710Z|32221"
                   }
@@ -758,7 +758,7 @@
                       "scaling": "[1, 1]"
                     },
                     "Component": {
-                      "active": true
+                      "active": false
                     },
                     "idMaterial": "Material|2023-05-05T17:27:19.710Z|32221"
                   }
@@ -800,7 +800,7 @@
                       "scaling": "[1, 1]"
                     },
                     "Component": {
-                      "active": true
+                      "active": false
                     },
                     "idMaterial": "Material|2023-05-05T17:27:19.710Z|32221"
                   }
@@ -824,6 +824,63 @@
             },
             "children": []
           }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Exhoust",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2023-05-06T09:34:43.642Z|07145",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[-2.220446049250313e-16, 0.75]",
+                      "rotation": 0,
+                      "scaling": "[0.25, 0.25]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-05-06T09:37:38.954Z|46265"
+                  }
+                }
+              ],
+              "ComponentAnimator": [
+                {
+                  "ƒ.ComponentAnimator": {
+                    "Component": {
+                      "active": true
+                    },
+                    "idAnimation": "AnimationSprite|2023-05-06T09:40:20.448Z|91079",
+                    "playmode": "loop",
+                    "quantization": "discrete",
+                    "scale": 1,
+                    "scaleWithGameTime": true,
+                    "animateInEditor": false
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
         }
       ],
       "idResource": "Graph|2023-04-25T14:30:46.195Z|98798",
@@ -833,9 +890,61 @@
   "MeshObj|2023-05-04T07:18:22.497Z|96617": {
     "ƒ.MeshObj": {
       "idResource": "MeshObj|2023-05-04T07:18:22.497Z|96617",
-      "name": "Mesh\\Destroyeobj",
+      "name": "Mesh_LaserBeam",
       "type": "MeshObj",
       "url": "Mesh\\Destroyer\\HomeFuge_Beam.obj"
+    }
+  },
+  "MeshObj|2023-05-06T09:34:43.642Z|07145": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2023-05-06T09:34:43.642Z|07145",
+      "name": "Mesh_ThursterExhoust",
+      "type": "MeshObj",
+      "url": "Mesh\\Thrusters\\Trhuster.obj"
+    }
+  },
+  "TextureImage|2023-05-06T09:37:14.357Z|08913": {
+    "ƒ.TextureImage": {
+      "url": "Mesh\\Thrusters\\Texture\\Trhust_Exhoust_test-sheet.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-05-06T09:37:14.357Z|08913",
+        "name": "TextSheet_Exhoust",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Material|2023-05-06T09:37:38.954Z|46265": {
+    "ƒ.Material": {
+      "name": "Mat_LitExhoust",
+      "idResource": "Material|2023-05-06T09:37:38.954Z|46265",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-05-06T09:37:14.357Z|08913"
+        }
+      }
+    }
+  },
+  "AnimationSprite|2023-05-06T09:40:20.448Z|91079": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-05-06T09:40:20.448Z|91079",
+      "idTexture": "TextureImage|2023-05-06T09:37:14.357Z|08913",
+      "frames": 14,
+      "wrapAfter": 4,
+      "start": "[0, 0]",
+      "size": "[256, 256]",
+      "next": "[256, 0]",
+      "wrap": "[0, 256]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-05-06T09:40:20.448Z|91079",
+        "name": "AnimSprite_ThursterExhoust",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 15,
+        "animationStructure": {}
+      }
     }
   }
 }
