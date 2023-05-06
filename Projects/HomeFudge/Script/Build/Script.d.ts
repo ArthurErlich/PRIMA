@@ -3,6 +3,7 @@ declare namespace HomeFudge {
         static gatlingBullet: GatlingBulletConfig;
         static gatlingTurret: GatlingTurretConfig;
         static beamTurret: BeamTurretConfig;
+        static laserBeam: LaserBeam;
         static destroyer: DestroyerConfig;
         static camera: CameraConfig;
         /**
@@ -42,6 +43,10 @@ declare namespace HomeFudge {
         basePosition: number[];
         beamPosition: number[];
         [key: string]: string | number | number[];
+    }
+    interface LaserBeam {
+        graphID: string;
+        [key: string]: string;
     }
     interface DestroyerConfig {
         graphID: string;
@@ -94,7 +99,6 @@ declare namespace HomeFudge {
     let _worldNode: ƒ.Node;
     let _deltaSeconds: number;
     let _viewport: ƒ.Viewport;
-    let laserBeam: ƒ.Node;
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -121,6 +125,13 @@ declare namespace HomeFudge {
          */
         static vectorLength(v: ƒ.Vector3): number;
         static vectorNegate(v: ƒ.Vector3): ƒ.Vector3;
+    }
+}
+declare namespace HomeFudge {
+    import ƒ = FudgeCore;
+    class Resources {
+        static getGraphResources(graphID: string): Promise<ƒ.Graph>;
+        static getComponentNode(nodeName: string, graph: ƒ.Graph): Promise<ƒ.Node>;
     }
 }
 declare namespace HomeFudge {
@@ -186,23 +197,26 @@ declare namespace HomeFudge {
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
-    class BeamTurret extends ƒ.Node {
+    enum SIDE {
+        LEFT = 0,
+        RIGHT = 1
+    }
+    export class BeamTurret extends ƒ.Node {
+        static side: typeof SIDE;
         private static graph;
         private static mesh;
         private static material;
-        private maxRotSpeed;
-        private maxPitch;
-        private minPitch;
-        private maxBeamTime;
-        private maxReloadTime;
-        private range;
+        private beam;
         private init;
         private getGraphResources;
         private getComponentNode;
+        private addBeam;
+        private addComponents;
         private update;
         fire(): void;
         constructor();
     }
+    export {};
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
@@ -287,6 +301,11 @@ declare namespace HomeFudge {
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
     class LaserBeam extends ƒ.Node {
+        private static graph;
+        private static mesh;
+        private static material;
+        private init;
+        private addComponents;
         constructor(side: string);
     }
 }

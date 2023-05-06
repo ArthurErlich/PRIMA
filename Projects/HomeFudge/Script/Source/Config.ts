@@ -3,6 +3,7 @@ namespace HomeFudge {
         public static gatlingBullet: GatlingBulletConfig = null;
         public static gatlingTurret: GatlingTurretConfig = null;
         public static beamTurret: BeamTurretConfig = null;
+        public static laserBeam: LaserBeam = null;
         public static destroyer: DestroyerConfig = null;
         public static camera: CameraConfig = null;
 
@@ -14,12 +15,14 @@ namespace HomeFudge {
             let gatBulletResponse: Response = await fetch("Configs/gatBulletConfig.json");
             let gatTurretResponse: Response = await fetch("Configs/gatTurretConfig.json");
             let beamTurretResponse: Response = await fetch("Configs/beamTurretConfig.json");
+            let laserBeamResponse:Response = await fetch("Configs/laserBeamConfig.json")
             let destroyerResponse: Response = await fetch("Configs/destroyerConfig.json");
             let cameraResponse: Response = await fetch("Configs/cameraConfig.json");
 
             Config.gatlingBullet = await gatBulletResponse.json();
             Config.gatlingTurret = await gatTurretResponse.json();
             Config.beamTurret = await beamTurretResponse.json();
+            Config.laserBeam = await laserBeamResponse.json();
             Config.destroyer = await destroyerResponse.json();
             Config.camera = await cameraResponse.json();
         }
@@ -52,16 +55,20 @@ namespace HomeFudge {
     }
     interface BeamTurretConfig {
         graphID: string;
-        maxRotSpeed: number,
-        maxPitch: number,
-        minPitch: number,
-        beamTime: number,
-        reloadTime: number,
-        range: number,
-        basePosition: number[],
-        beamPosition: number[]
+        maxRotSpeed: number;
+        maxPitch: number;
+        minPitch: number;
+        beamTime: number;
+        reloadTime: number;
+        range: number;
+        basePosition: number[];
+        beamPosition: number[];
 
         [key: string]: string | number | number[];
+    }
+    interface LaserBeam {
+        graphID: string;
+        [key: string]: string;
     }
     interface DestroyerConfig {
         graphID: string;

@@ -5,6 +5,7 @@ var HomeFudge;
         static gatlingBullet = null;
         static gatlingTurret = null;
         static beamTurret = null;
+        static laserBeam = null;
         static destroyer = null;
         static camera = null;
         /**
@@ -15,11 +16,13 @@ var HomeFudge;
             let gatBulletResponse = await fetch("Configs/gatBulletConfig.json");
             let gatTurretResponse = await fetch("Configs/gatTurretConfig.json");
             let beamTurretResponse = await fetch("Configs/beamTurretConfig.json");
+            let laserBeamResponse = await fetch("Configs/laserBeamConfig.json");
             let destroyerResponse = await fetch("Configs/destroyerConfig.json");
             let cameraResponse = await fetch("Configs/cameraConfig.json");
             Config.gatlingBullet = await gatBulletResponse.json();
             Config.gatlingTurret = await gatTurretResponse.json();
             Config.beamTurret = await beamTurretResponse.json();
+            Config.laserBeam = await laserBeamResponse.json();
             Config.destroyer = await destroyerResponse.json();
             Config.camera = await cameraResponse.json();
         }
@@ -180,7 +183,6 @@ var HomeFudge;
     ///Player\\\
     let p1 = null;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    HomeFudge.laserBeam = null; //TODO:remove lase Beam test
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function start(_event) {
         HomeFudge._viewport = _event.detail;
@@ -209,21 +211,6 @@ var HomeFudge;
             HomeFudge._viewport.canvas.style.scale = "(0.1,0.1)";
         }
         /// ------------T-E-S-T--A-R-E-A------------------\\\
-        // laser beam
-        let graphID = "Graph|2023-04-25T14:30:46.195Z|98798";
-        let graph = ƒ.Project.resources[graphID];
-        if (graph == null) {
-            console.warn(graph + " not found with ID: " + graphID);
-        }
-        let nodeName = "LaserBeam";
-        HomeFudge.laserBeam = graph.getChildrenByName(nodeName)[0];
-        if (HomeFudge.laserBeam == null) {
-            console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
-        }
-        HomeFudge.laserBeam.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0, 0, 0))));
-        HomeFudge.laserBeam.getComponent(ƒ.ComponentAnimator).activate(true);
-        console.warn(HomeFudge.LaserBeam);
-        HomeFudge._worldNode.addChild(HomeFudge.laserBeam);
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 35); // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
@@ -319,6 +306,27 @@ var HomeFudge;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
+    class Resources {
+        static async getGraphResources(graphID) {
+            let graph = ƒ.Project.resources[graphID];
+            if (graph == null) {
+                console.warn(graph + " not found with ID: " + graphID);
+            }
+            return graph;
+        }
+        static async getComponentNode(nodeName, graph) {
+            let node = graph.getChildrenByName(nodeName)[0];
+            if (node == null) {
+                console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
+            }
+            return node;
+        }
+    }
+    HomeFudge.Resources = Resources;
+})(HomeFudge || (HomeFudge = {}));
+var HomeFudge;
+(function (HomeFudge) {
+    var ƒ = FudgeCore;
     /* This is a TypeScript class definition for an abstract class called `Bullet` that extends the
     `ƒ.Node` class. The `export` keyword makes the class available for use in other modules. */
     class Bullet extends ƒ.Node {
@@ -407,34 +415,45 @@ var HomeFudge;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
+    let SIDE;
+    (function (SIDE) {
+        SIDE[SIDE["LEFT"] = 0] = "LEFT";
+        SIDE[SIDE["RIGHT"] = 1] = "RIGHT";
+    })(SIDE || (SIDE = {}));
     class BeamTurret extends ƒ.Node {
-        // public static side = SIDE;
+        static side = SIDE;
         static graph = null;
         static mesh = null;
         static material = null;
-        maxRotSpeed;
-        maxPitch;
-        minPitch;
-        maxBeamTime;
-        maxReloadTime;
-        range;
+        beam = null;
+        /*
+        private maxRotSpeed: number;
+        private maxPitch: number;
+        private minPitch: number;
+        private maxBeamTime: number;
+        private maxReloadTime: number;
+        private range: number;
+        */
         async init() {
             BeamTurret.graph = await this.getGraphResources(HomeFudge.Config.beamTurret.graphID);
             let resourceNode = await this.getComponentNode("BeamTurret", BeamTurret.graph);
             BeamTurret.material = resourceNode.getComponent(ƒ.ComponentMaterial).material;
             BeamTurret.mesh = resourceNode.getComponent(ƒ.ComponentMesh).mesh;
-            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.basePosition))));
-            this.addComponent(new ƒ.ComponentMaterial(BeamTurret.material));
-            this.addComponent(new ƒ.ComponentMesh(BeamTurret.mesh));
-            //Left Right check
-            this.mtxLocal.rotateX(90);
+            //TODO:add Left Right check
+            //add beam
+            let beamPos = HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.beamPosition);
+            this.addBeam();
             //Init turret configs
-            this.maxRotSpeed = HomeFudge.Config.beamTurret.maxRotSpeed;
-            this.maxPitch = HomeFudge.Config.beamTurret.maxPitch;
-            this.minPitch = HomeFudge.Config.beamTurret.minPitch;
-            this.maxBeamTime = HomeFudge.Config.beamTurret.beamTime;
-            this.maxReloadTime = HomeFudge.Config.beamTurret.reloadTime;
-            this.range = HomeFudge.Config.beamTurret.range;
+            /*
+            this.maxRotSpeed = Config.beamTurret.maxRotSpeed;
+            this.maxPitch = Config.beamTurret.maxPitch;
+            this.minPitch = Config.beamTurret.minPitch;
+            this.maxBeamTime = Config.beamTurret.beamTime;
+            this.maxReloadTime = Config.beamTurret.reloadTime;
+            this.range = Config.beamTurret.range;
+            */
+            this.addComponents();
+            this.mtxLocal.rotateX(90);
         }
         async getGraphResources(graphID) {
             let graph = ƒ.Project.resources[graphID];
@@ -450,6 +469,15 @@ var HomeFudge;
             }
             return node;
         }
+        addBeam() {
+            //TODO: add beam to here
+            this.addChild(new HomeFudge.LaserBeam("Right"));
+        }
+        addComponents() {
+            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.basePosition))));
+            this.addComponent(new ƒ.ComponentMaterial(BeamTurret.material));
+            this.addComponent(new ƒ.ComponentMesh(BeamTurret.mesh));
+        }
         update = () => {
             this.mtxLocal.rotateY(15 * HomeFudge._deltaSeconds);
         };
@@ -463,11 +491,6 @@ var HomeFudge;
         }
     }
     HomeFudge.BeamTurret = BeamTurret;
-    let SIDE;
-    (function (SIDE) {
-        SIDE[SIDE["LEFT"] = 0] = "LEFT";
-        SIDE[SIDE["RIGHT"] = 1] = "RIGHT";
-    })(SIDE || (SIDE = {}));
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
@@ -827,8 +850,24 @@ var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
     class LaserBeam extends ƒ.Node {
+        static graph = null;
+        static mesh = null;
+        static material = null;
+        async init() {
+            LaserBeam.graph = await HomeFudge.Resources.getGraphResources(HomeFudge.Config.laserBeam.graphID);
+            let tempResource = await HomeFudge.Resources.getComponentNode("LaserBeam", LaserBeam.graph);
+            LaserBeam.material = tempResource.getComponent(ƒ.ComponentMaterial).material;
+            LaserBeam.mesh = tempResource.getComponent(ƒ.ComponentMesh).mesh;
+            this.addComponents(HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.beamPosition));
+        }
+        addComponents(pos) {
+            this.addComponent(new ƒ.ComponentMaterial(LaserBeam.material));
+            this.addComponent(new ƒ.ComponentMesh(LaserBeam.mesh));
+            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(pos)));
+        }
         constructor(side) {
             super("LaserBeam" + side);
+            this.init();
         }
     }
     HomeFudge.LaserBeam = LaserBeam;

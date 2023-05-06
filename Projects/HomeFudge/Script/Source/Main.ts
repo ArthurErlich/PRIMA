@@ -23,7 +23,7 @@ namespace HomeFudge {
 
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
-  export let laserBeam: ƒ.Node = null; //TODO:remove lase Beam test
+
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
 
@@ -57,24 +57,7 @@ namespace HomeFudge {
     }
 
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    // laser beam
-    let graphID: string = "Graph|2023-04-25T14:30:46.195Z|98798";
-    let graph: ƒ.Graph = <ƒ.Graph>ƒ.Project.resources[graphID]
-    if (graph == null) {
-      console.warn(graph + " not found with ID: " + graphID);
-    }
-
-    let nodeName: string = "LaserBeam";
-    laserBeam = graph.getChildrenByName(nodeName)[0];
-    if (laserBeam == null) {
-      console.warn("+\"" + nodeName + "\" not found inside: " + graph.name + "->Graph");
-    }
-    laserBeam.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0,0,0))));
-    laserBeam.getComponent(ƒ.ComponentAnimator).activate(true);
-    console.warn(LaserBeam);
-    _worldNode.addChild(laserBeam);
-
-    /// ------------T-E-S-T--A-R-E-A------------------\\\
+        /// ------------T-E-S-T--A-R-E-A------------------\\\
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 35);  // start the game loop to continuously draw the _viewport, update the audiosystem and drive the physics i/a
