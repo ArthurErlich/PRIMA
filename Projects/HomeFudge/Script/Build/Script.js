@@ -229,7 +229,8 @@ var HomeFudge;
             p1 = new HomeFudge.Player("test_P1");
             HomeFudge._viewport.getBranch().addChild(p1);
             HomeFudge._mainCamera.attachToShip(p1.destroyer);
-            HomeFudge._viewport.canvas.style.scale = "(0.1,0.1)";
+            let destroyer = new HomeFudge.Destroyer(new ƒ.Vector3(500, 0, 0));
+            HomeFudge._worldNode.appendChild(destroyer);
         }
         /// ------------T-E-S-T--A-R-E-A------------------\\\
         /// ------------T-E-S-T--A-R-E-A------------------\\\
@@ -497,9 +498,10 @@ var HomeFudge;
             }
         }
         addBeam(side) {
-            let beamPos = HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.beamPosition);
-            this.beam = new HomeFudge.LaserBeam(side, beamPos);
-            this.rotNode.addChild(this.beam);
+            //TODO: BeamMaterial is disabled
+            // let beamPos: ƒ.Vector3 = JSONparser.toVector3(Config.beamTurret.beamPosition);
+            // this.beam = new LaserBeam(side, beamPos)
+            // this.rotNode.addChild(this.beam);
         }
         addComponents(position) {
             console.log("attaching mtx translation: " + position);
@@ -514,9 +516,6 @@ var HomeFudge;
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
                 this.rotate(-this.maxRotSpeed * HomeFudge._deltaSeconds);
         };
-        fire() {
-            throw new Error("Method not implemented.");
-        }
         rotate(rot) {
             //ROTATION is only between -180° and 180°. Y starts at 0°
             //TODO:add rotation LOCK
@@ -526,6 +525,12 @@ var HomeFudge;
             if (this.mtxLocal.rotation.x == 90) {
                 this.rotNode.mtxLocal.rotateY(-rot);
             }
+        }
+        fire() {
+            throw new Error("Method not implemented.");
+        }
+        rotateTo(cordY) {
+            this.rotate(cordY);
         }
         constructor(side) {
             2;
@@ -539,14 +544,23 @@ var HomeFudge;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
+    let Weapons;
+    (function (Weapons) {
+        Weapons[Weapons["GatlingTurret"] = 0] = "GatlingTurret";
+        Weapons[Weapons["BeamTurret"] = 1] = "BeamTurret";
+        Weapons[Weapons["RocketPod"] = 2] = "RocketPod";
+    })(Weapons || (Weapons = {}));
     class Destroyer extends HomeFudge.Ship {
         maxSpeed = null;
         maxAcceleration = null;
-        velocity = null;
+        velocity = new ƒ.Vector3(0, 0, 0);
+        ;
         healthPoints = null;
-        maxTurnRate = null;
+        maxTurnSpeed = 0;
         gatlingTurret = null;
         beamTurretList = new Array(2);
+        rotation = 0;
+        rotThruster = new Array(4);
         //list of weapons
         weapons = Weapons;
         static graph = null;
@@ -561,13 +575,12 @@ var HomeFudge;
             Destroyer.mesh = node.getComponent(ƒ.ComponentMesh).mesh;
             Destroyer.material = node.getComponent(ƒ.ComponentMaterial).material;
             //init configs
-            if (this.velocity == null) {
-                this.velocity = new ƒ.Vector3(0, 0, 0);
-            }
             this.maxAcceleration = HomeFudge.Config.destroyer.maxAcceleration;
             this.maxSpeed = HomeFudge.Config.destroyer.maxSpeed;
+            this.maxTurnSpeed = HomeFudge.Config.destroyer.maxTurnSpeed;
             //init Weapons
             this.addWeapons();
+            this.addThrusters();
             //init Components
             this.setAllComponents();
             this.addRigidBody();
@@ -581,6 +594,15 @@ var HomeFudge;
             this.addChild(this.beamTurretList[0]);
             this.addChild(this.beamTurretList[1]);
         }
+        addThrusters() {
+            this.rotThruster[0] = new HomeFudge.RotThrusters("FL", HomeFudge.JSONparser.toVector3(HomeFudge.Config.destroyer.RotThruster_FL));
+            this.rotThruster[1] = new HomeFudge.RotThrusters("FR", HomeFudge.JSONparser.toVector3(HomeFudge.Config.destroyer.RotThruster_FR));
+            this.rotThruster[2] = new HomeFudge.RotThrusters("BL", HomeFudge.JSONparser.toVector3(HomeFudge.Config.destroyer.RotThruster_BL));
+            this.rotThruster[3] = new HomeFudge.RotThrusters("BR", HomeFudge.JSONparser.toVector3(HomeFudge.Config.destroyer.RotThruster_BR));
+            this.rotThruster.forEach(thruster => {
+                this.addChild(thruster);
+            });
+        }
         setAllComponents() {
             if (Destroyer.material == null || Destroyer.mesh == null) {
                 console.warn(this.name + " Mesh and/or Material is missing");
@@ -592,16 +614,24 @@ var HomeFudge;
         addRigidBody() {
         }
         update = () => {
+            //DISABLE THRUSTERS
+            //TODO:Find a new Solution if rotation moves to Player
+            if (this.rotThruster[0].getComponent(ƒ.ComponentMesh).activate) {
+                this.rotThruster.forEach(thruster => {
+                    thruster.getComponent(ƒ.ComponentMesh).activate(false);
+                });
+            }
             this.mtxLocal.translate(new ƒ.Vector3(this.velocity.x * HomeFudge._deltaSeconds, this.velocity.y * HomeFudge._deltaSeconds, this.velocity.z * HomeFudge._deltaSeconds));
-            this.mtxLocal.rotateY(5 * HomeFudge._deltaSeconds); //TODO:Remove rotation
+            this.mtxLocal.rotateY(this.rotation * HomeFudge._deltaSeconds);
+            this.rotation = 0; //TODO: move to player. make the control there smoother
             //TODO:remove test of gatling rot
             ///TEST----------------TEST\\\
             let tempRotBase = this.gatlingTurret.baseNode.mtxLocal.rotation;
             this.gatlingTurret.baseNode.mtxLocal.rotation = new ƒ.Vector3(tempRotBase.x, -(HomeFudge.Mouse.position.x - (HomeFudge._viewport.canvas.width / 2)) / Math.PI / 3, tempRotBase.z);
             let tempRotHead = this.gatlingTurret.headNode.mtxLocal.rotation;
-            this.gatlingTurret.headNode.mtxLocal.rotation = new ƒ.Vector3(tempRotHead.x, tempRotHead.y);
-            this.beamTurretList[0].rotate(-(HomeFudge.Mouse.position.y - (HomeFudge._viewport.canvas.height / 2)) / Math.PI / 4);
-            this.beamTurretList[1].rotate(-(HomeFudge.Mouse.position.y - (HomeFudge._viewport.canvas.height / 2)) / Math.PI / 4);
+            this.gatlingTurret.headNode.mtxLocal.rotation = new ƒ.Vector3(tempRotHead.x, tempRotHead.y, -(HomeFudge.Mouse.position.y - (HomeFudge._viewport.canvas.width / 2)) / Math.PI / 4);
+            // this.beamTurretList[0].rotateTo(-(Mouse.position.y - (_viewport.canvas.height / 2)) / Math.PI / 4);
+            // this.beamTurretList[1].rotateTo(-(Mouse.position.y - (_viewport.canvas.height / 2)) / Math.PI / 4);
             ///TEST----------------TEST\\\
         };
         alive() {
@@ -652,6 +682,22 @@ var HomeFudge;
             //TODO:add smooth acceleration
             this.velocity = moveDirection;
         }
+        rotate(rotateY) {
+            if (this.maxTurnSpeed == null) {
+                return;
+            }
+            if (rotateY < 0) {
+                //RIGHT TURN
+                this.rotThruster[0].getComponent(ƒ.ComponentMesh).activate(true);
+                this.rotThruster[3].getComponent(ƒ.ComponentMesh).activate(true);
+            }
+            else if (rotateY > 0) {
+                //LEFT TURN
+                this.rotThruster[1].getComponent(ƒ.ComponentMesh).activate(true);
+                this.rotThruster[2].getComponent(ƒ.ComponentMesh).activate(true);
+            }
+            this.rotation = this.maxTurnSpeed * rotateY;
+        }
         constructor(startPosition) {
             super("Destroyer");
             this.initAllConfigs(startPosition);
@@ -659,12 +705,6 @@ var HomeFudge;
         }
     }
     HomeFudge.Destroyer = Destroyer;
-    let Weapons;
-    (function (Weapons) {
-        Weapons[Weapons["GatlingTurret"] = 0] = "GatlingTurret";
-        Weapons[Weapons["BeamTurret"] = 1] = "BeamTurret";
-        Weapons[Weapons["RocketPod"] = 2] = "RocketPod";
-    })(Weapons || (Weapons = {}));
 })(HomeFudge || (HomeFudge = {}));
 var HomeFudge;
 (function (HomeFudge) {
@@ -919,6 +959,57 @@ var HomeFudge;
 var HomeFudge;
 (function (HomeFudge) {
     var ƒ = FudgeCore;
+    class RotThrusters extends ƒ.Node {
+        static graph = null;
+        static mesh = null;
+        static material = null;
+        static animation = null;
+        async init(side, position) {
+            console.log("addding: " + this.name);
+            RotThrusters.graph = await HomeFudge.Resources.getGraphResources(HomeFudge.Config.destroyer.graphID);
+            let node = await HomeFudge.Resources.getComponentNode("ThrustExhaust", RotThrusters.graph);
+            if (RotThrusters.material == null || RotThrusters.mesh == null) {
+                RotThrusters.material = node.getComponent(ƒ.ComponentMaterial).material;
+                RotThrusters.mesh = node.getComponent(ƒ.ComponentMesh).mesh;
+                RotThrusters.animation = node.getComponent(ƒ.ComponentAnimator).animation;
+            }
+            this.createComponents(position);
+            this.mtxLocal.scale(new ƒ.Vector3(4, 4, 4));
+            switch (side) {
+                case "FL":
+                    this.mtxLocal.rotateY(-90);
+                    break;
+                case "FR":
+                    this.mtxLocal.rotateY(90);
+                    break;
+                case "BL":
+                    this.mtxLocal.rotateY(-90);
+                    break;
+                case "BR":
+                    this.mtxLocal.rotateY(90);
+                    break;
+                default:
+                    break;
+            }
+        }
+        createComponents(position) {
+            this.addComponent(new ƒ.ComponentMesh(RotThrusters.mesh));
+            this.addComponent(new ƒ.ComponentMaterial(RotThrusters.material));
+            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)));
+            let animator = new ƒ.ComponentAnimator(RotThrusters.animation);
+            animator.quantization = ƒ.ANIMATION_QUANTIZATION.DISCRETE;
+            this.addComponent(animator);
+        }
+        constructor(side, position) {
+            super(side + "RotThruster");
+            this.init(side, position);
+        }
+    }
+    HomeFudge.RotThrusters = RotThrusters;
+})(HomeFudge || (HomeFudge = {}));
+var HomeFudge;
+(function (HomeFudge) {
+    var ƒ = FudgeCore;
     class Camera extends ƒ.Node {
         attachedTo = null;
         camComp = null;
@@ -1099,11 +1190,11 @@ var HomeFudge;
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) {
                 //LEFT
-                this.moveDirection = new ƒ.Vector3(this.moveDirection.x, this.moveDirection.y, -1);
+                this.destroyer.rotate(1);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D])) {
                 //RIGHT
-                this.moveDirection = new ƒ.Vector3(this.moveDirection.x, this.moveDirection.y, 1);
+                this.destroyer.rotate(-1);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W])) {
                 //FORWARD

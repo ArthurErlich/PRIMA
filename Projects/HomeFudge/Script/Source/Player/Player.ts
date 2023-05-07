@@ -15,19 +15,11 @@ namespace HomeFudge {
 
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A])) {
                 //LEFT
-                this.moveDirection = new ƒ.Vector3(
-                    this.moveDirection.x,
-                    this.moveDirection.y,
-                    -1
-                );
+                this.destroyer.rotate(1);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D])) {
                 //RIGHT
-                this.moveDirection = new ƒ.Vector3(
-                    this.moveDirection.x,
-                    this.moveDirection.y,
-                    1
-                );
+                this.destroyer.rotate(-1);
             }
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W])) {
                 //FORWARD

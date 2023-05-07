@@ -4,7 +4,7 @@ namespace HomeFudge{
         protected abstract velocity:ƒ.Vector3; 
         protected abstract maxSpeed:number;
         protected abstract maxAcceleration:number;
-        protected abstract maxTurnRate:number;
+        protected abstract maxTurnSpeed:number;
 
         protected abstract healthPoints:number;
 

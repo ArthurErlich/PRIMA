@@ -65,9 +65,11 @@ namespace HomeFudge {
             }
         }
         private addBeam(side: string): void {
-            let beamPos: ƒ.Vector3 = JSONparser.toVector3(Config.beamTurret.beamPosition);
-            this.beam = new LaserBeam(side, beamPos)
-            this.rotNode.addChild(this.beam);
+            //TODO: BeamMaterial is disabled
+            // let beamPos: ƒ.Vector3 = JSONparser.toVector3(Config.beamTurret.beamPosition);
+            // this.beam = new LaserBeam(side, beamPos)
+            // this.rotNode.addChild(this.beam);
+   
 
         }
         private addComponents(position: ƒ.Vector3) {
@@ -83,10 +85,7 @@ namespace HomeFudge {
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
                 this.rotate(-this.maxRotSpeed * _deltaSeconds);
         }
-        public fire() {
-            throw new Error("Method not implemented.");
-        }
-        public rotate(rot: number) {
+        private rotate(rot: number) {
             //ROTATION is only between -180° and 180°. Y starts at 0°
             //TODO:add rotation LOCK
 
@@ -97,6 +96,12 @@ namespace HomeFudge {
             if(this.mtxLocal.rotation.x == 90){
                 this.rotNode.mtxLocal.rotateY(-rot);
             }
+        }
+        public fire() {
+            throw new Error("Method not implemented.");
+        }
+        public rotateTo(cordY:number){
+            this.rotate(cordY);
         }
 
         constructor(side: number) {2

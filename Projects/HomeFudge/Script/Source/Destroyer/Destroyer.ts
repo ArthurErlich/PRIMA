@@ -1,14 +1,23 @@
 namespace HomeFudge {
     import ƒ = FudgeCore;
+    enum Weapons {
+        GatlingTurret,
+        BeamTurret,
+        RocketPod
+    }
     export class Destroyer extends Ship {
         protected maxSpeed: number = null;
         protected maxAcceleration: number = null;
-        protected velocity: ƒ.Vector3 = null;
+        protected velocity: ƒ.Vector3 = new ƒ.Vector3(0, 0, 0);;
+
         protected healthPoints: number = null;
-        protected maxTurnRate: number = null;
+        protected maxTurnSpeed: number = 0;
 
         private gatlingTurret: GatlingTurret = null;
         private beamTurretList: BeamTurret[] = new Array(2);
+        private rotation: number = 0;
+
+        private rotThruster: RotThrusters[] = new Array(4);
 
         //list of weapons
         public weapons = Weapons;
@@ -29,19 +38,21 @@ namespace HomeFudge {
             Destroyer.material = node.getComponent(ƒ.ComponentMaterial).material;
 
             //init configs
-            if (this.velocity == null) {
-                this.velocity = new ƒ.Vector3(0, 0, 0);
-            }
             this.maxAcceleration = Config.destroyer.maxAcceleration;
-            this.maxSpeed = Config.destroyer.maxSpeed
+            this.maxSpeed = Config.destroyer.maxSpeed;
+            this.maxTurnSpeed = Config.destroyer.maxTurnSpeed;
+
+
+
 
             //init Weapons
             this.addWeapons();
-
+            this.addThrusters();
             //init Components
             this.setAllComponents();
 
             this.addRigidBody();
+
 
         }
 
@@ -58,6 +69,17 @@ namespace HomeFudge {
 
         }
 
+        private addThrusters(): void {
+            this.rotThruster[0] = new RotThrusters("FL", JSONparser.toVector3(Config.destroyer.RotThruster_FL));
+            this.rotThruster[1] = new RotThrusters("FR", JSONparser.toVector3(Config.destroyer.RotThruster_FR));
+            this.rotThruster[2] = new RotThrusters("BL", JSONparser.toVector3(Config.destroyer.RotThruster_BL));
+            this.rotThruster[3] = new RotThrusters("BR", JSONparser.toVector3(Config.destroyer.RotThruster_BR));
+
+            this.rotThruster.forEach(thruster => {
+                this.addChild(thruster);
+            });
+        }
+
         private setAllComponents(): void {
             if (Destroyer.material == null || Destroyer.mesh == null) {
                 console.warn(this.name + " Mesh and/or Material is missing");
@@ -71,12 +93,22 @@ namespace HomeFudge {
         }
 
         protected update = (): void => {
+            //DISABLE THRUSTERS
+            //TODO:Find a new Solution if rotation moves to Player
+            if(this.rotThruster[0].getComponent(ƒ.ComponentMesh).activate){
+                this.rotThruster.forEach(thruster => {
+                    thruster.getComponent(ƒ.ComponentMesh).activate(false);
+                });
+            }
+           
+
             this.mtxLocal.translate(new ƒ.Vector3(
                 this.velocity.x * _deltaSeconds,
                 this.velocity.y * _deltaSeconds,
                 this.velocity.z * _deltaSeconds)
             );
-            this.mtxLocal.rotateY(5*_deltaSeconds);//TODO:Remove rotation
+            this.mtxLocal.rotateY(this.rotation * _deltaSeconds);
+            this.rotation = 0;//TODO: move to player. make the control there smoother
 
             //TODO:remove test of gatling rot
             ///TEST----------------TEST\\\
@@ -90,10 +122,11 @@ namespace HomeFudge {
             this.gatlingTurret.headNode.mtxLocal.rotation = new ƒ.Vector3(
                 tempRotHead.x,
                 tempRotHead.y,
-                
+                -(Mouse.position.y - (_viewport.canvas.width / 2)) / Math.PI / 4,
+
             );
-            this.beamTurretList[0].rotate(-(Mouse.position.y - (_viewport.canvas.height / 2)) / Math.PI / 4);
-            this.beamTurretList[1].rotate(-(Mouse.position.y - (_viewport.canvas.height / 2)) / Math.PI / 4);
+            // this.beamTurretList[0].rotateTo(-(Mouse.position.y - (_viewport.canvas.height / 2)) / Math.PI / 4);
+            // this.beamTurretList[1].rotateTo(-(Mouse.position.y - (_viewport.canvas.height / 2)) / Math.PI / 4);
 
 
             ///TEST----------------TEST\\\
@@ -147,16 +180,28 @@ namespace HomeFudge {
             //TODO:add smooth acceleration
             this.velocity = moveDirection;
         }
+        public rotate(rotateY: number) {
+            if (this.maxTurnSpeed == null) {
+                return;
+            }
+            if (rotateY < 0) {
+                //RIGHT TURN
+                this.rotThruster[0].getComponent(ƒ.ComponentMesh).activate(true);
+                this.rotThruster[3].getComponent(ƒ.ComponentMesh).activate(true);
+
+            }
+            else if (rotateY > 0) {
+                //LEFT TURN
+                this.rotThruster[1].getComponent(ƒ.ComponentMesh).activate(true);
+                this.rotThruster[2].getComponent(ƒ.ComponentMesh).activate(true);
+            }
+            this.rotation = this.maxTurnSpeed * rotateY;
+        }
         constructor(startPosition: ƒ.Vector3) {
             super("Destroyer");
             this.initAllConfigs(startPosition);
             ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
         }
-    }
-    enum Weapons {
-        GatlingTurret,
-        BeamTurret,
-        RocketPod
     }
 }
 

@@ -48,7 +48,8 @@ namespace HomeFudge {
       p1 = new Player("test_P1");
       _viewport.getBranch().addChild(p1);
       _mainCamera.attachToShip(p1.destroyer);
-      _viewport.canvas.style.scale = "(0.1,0.1)";
+      let destroyer = new Destroyer(new ƒ.Vector3(500,0,0));
+      _worldNode.appendChild(destroyer);
 
     }
 

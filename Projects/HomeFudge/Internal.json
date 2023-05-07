@@ -822,7 +822,7 @@
         },
         {
           "ƒ.Node": {
-            "name": "Exhoust",
+            "name": "ThrustExhaust",
             "active": true,
             "components": {
               "ComponentMesh": [
@@ -847,7 +847,7 @@
                     "clrPrimary": "[1, 1, 1, 1]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
-                      "translation": "[-2.220446049250313e-16, 0.75]",
+                      "translation": "[0, 0]",
                       "rotation": 0,
                       "scaling": "[0.25, 0.25]"
                     },
@@ -862,13 +862,13 @@
                 {
                   "ƒ.ComponentAnimator": {
                     "Component": {
-                      "active": true
+                      "active": false
                     },
                     "idAnimation": "AnimationSprite|2023-05-06T09:40:20.448Z|91079",
                     "playmode": "loop",
                     "quantization": "discrete",
                     "scale": 1,
-                    "scaleWithGameTime": true,
+                    "scaleWithGameTime": false,
                     "animateInEditor": false
                   }
                 }
@@ -889,7 +889,7 @@
                     "pivot": {
                       "translation": "[0, 0, 0]",
                       "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 1]"
+                      "scaling": "[1.0000001192092896, 1, 1]"
                     },
                     "Component": {
                       "active": true

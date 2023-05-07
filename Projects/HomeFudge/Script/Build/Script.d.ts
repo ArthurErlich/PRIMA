@@ -54,7 +54,11 @@ declare namespace HomeFudge {
         maxSpeed: number;
         maxTurnSpeed: number;
         maxHealthPoints: number;
-        [key: string]: string | number;
+        RotThruster_FL: number[];
+        RotThruster_FR: number[];
+        RotThruster_BL: number[];
+        RotThruster_BR: number[];
+        [key: string]: string | number | number[];
     }
     interface CameraConfig {
         offset: number[];
@@ -175,7 +179,7 @@ declare namespace HomeFudge {
         protected abstract velocity: ƒ.Vector3;
         protected abstract maxSpeed: number;
         protected abstract maxAcceleration: number;
-        protected abstract maxTurnRate: number;
+        protected abstract maxTurnSpeed: number;
         protected abstract healthPoints: number;
         protected abstract update(): void;
         abstract destroyNode(): void;
@@ -224,28 +228,37 @@ declare namespace HomeFudge {
         private addBeam;
         private addComponents;
         private update;
+        private rotate;
         fire(): void;
-        rotate(rot: number): void;
+        rotateTo(cordY: number): void;
         constructor(side: number);
     }
     export {};
 }
 declare namespace HomeFudge {
     import ƒ = FudgeCore;
+    enum Weapons {
+        GatlingTurret = 0,
+        BeamTurret = 1,
+        RocketPod = 2
+    }
     export class Destroyer extends Ship {
         protected maxSpeed: number;
         protected maxAcceleration: number;
         protected velocity: ƒ.Vector3;
         protected healthPoints: number;
-        protected maxTurnRate: number;
+        protected maxTurnSpeed: number;
         private gatlingTurret;
         private beamTurretList;
+        private rotation;
+        private rotThruster;
         weapons: typeof Weapons;
         static graph: ƒ.Graph;
         static mesh: ƒ.Mesh;
         static material: ƒ.Material;
         private initAllConfigs;
         private addWeapons;
+        private addThrusters;
         private setAllComponents;
         private addRigidBody;
         protected update: () => void;
@@ -257,12 +270,8 @@ declare namespace HomeFudge {
         fireGatling(): void;
         fireBeam(): void;
         move(moveDirection: ƒ.Vector3): void;
+        rotate(rotateY: number): void;
         constructor(startPosition: ƒ.Vector3);
-    }
-    enum Weapons {
-        GatlingTurret = 0,
-        BeamTurret = 1,
-        RocketPod = 2
     }
     export {};
 }
@@ -318,6 +327,18 @@ declare namespace HomeFudge {
         private material;
         private init;
         private addComponents;
+        constructor(side: string, position: ƒ.Vector3);
+    }
+}
+declare namespace HomeFudge {
+    import ƒ = FudgeCore;
+    class RotThrusters extends ƒ.Node {
+        private static graph;
+        private static mesh;
+        private static material;
+        private static animation;
+        private init;
+        private createComponents;
         constructor(side: string, position: ƒ.Vector3);
     }
 }

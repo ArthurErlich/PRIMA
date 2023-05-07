@@ -76,7 +76,11 @@ namespace HomeFudge {
         maxSpeed: number;
         maxTurnSpeed: number;
         maxHealthPoints: number;
-        [key: string]: string | number;
+        RotThruster_FL:  number[];
+        RotThruster_FR:  number[];
+        RotThruster_BL: number[]; 
+        RotThruster_BR: number[];
+        [key: string]: string | number | number[];
     }
     interface CameraConfig {
         offset: number[];
