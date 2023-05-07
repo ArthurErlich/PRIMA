@@ -93,6 +93,7 @@ declare namespace HomeFudge {
     class LoadingScreen {
         private static body;
         private static loadText;
+        private static loadPNG;
         static init(canvas: HTMLCanvasElement): void;
         static remove(): void;
     }
