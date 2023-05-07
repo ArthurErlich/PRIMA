@@ -6,6 +6,8 @@
         "autocannon",
         "Autoview",
         "initilizes",
+        "lerp",
+        "Mathf",
         "WORLDSIZE"
     ],
     "sundial.sunrise": "10:00",

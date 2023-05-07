@@ -5,8 +5,6 @@ namespace HomeFudge {
         private selectedWeapon: number = null; //TODO:Check if ok
 
         private moveDirection: ƒ.Vector3 = ƒ.Vector3.ZERO();
-
-        private rotDegreeOnMoveSideways = 2;
         private camRotBeforeChange: ƒ.Vector3 = null;
 
         private update = (): void => {

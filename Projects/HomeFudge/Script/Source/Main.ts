@@ -28,6 +28,7 @@ namespace HomeFudge {
   /// ------------T-E-S-T--A-R-E-A------------------\\\
 
   async function start(_event: CustomEvent): Promise<void> {
+    LoadingScreen.remove();
     _viewport = _event.detail;
     _worldNode = _viewport.getBranch();
 
@@ -87,21 +88,21 @@ namespace HomeFudge {
   }
 
   /// ------------T-E-S-T--A-R-E-A------------------\\\
-  function getPosTest(): void {
-    let pickCam: ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(), _viewport.camera, Mouse.position);
-    let pickViewport: ƒ.Pick[] = ƒ.Picker.pickViewport(_viewport, Mouse.position);
+  // function getPosTest(): void {
+  //   let pickCam: ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(), _viewport.camera, Mouse.position);
+  //   let pickViewport: ƒ.Pick[] = ƒ.Picker.pickViewport(_viewport, Mouse.position);
 
-    console.log("%c" + "Camera Picker", "background:red");
-    pickCam.forEach(element => {
-      console.log("%c" + element.posMesh.toString(), "background:yellow");
-    });
-    console.log("-------------");
-    console.log("%c" + "Viewport Picker", "background:red");
-    pickViewport.forEach(element => {
-      console.log("%c" + element.posMesh.toString(), "background:yellow");
-    });
-    console.log("-------------");
-  }
+  //   console.log("%c" + "Camera Picker", "background:red");
+  //   pickCam.forEach(element => {
+  //     console.log("%c" + element.posMesh.toString(), "background:yellow");
+  //   });
+  //   console.log("-------------");
+  //   console.log("%c" + "Viewport Picker", "background:red");
+  //   pickViewport.forEach(element => {
+  //     console.log("%c" + element.posMesh.toString(), "background:yellow");
+  //   });
+  //   console.log("-------------");
+  // }
   /// ------------T-E-S-T--A-R-E-A------------------\\\
 
   //DEBUG

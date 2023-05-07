@@ -156,13 +156,24 @@ components. */
 var HomeFudge;
 (function (HomeFudge) {
     class LoadingScreen {
+        static body;
+        static loadText;
         static init(canvas) {
             canvas.style.backgroundColor = "#191919";
-            let body = document.body;
-            let loadText = document.createElement("div");
-            loadText.style.fontSize = "44px";
-            loadText.innerHTML = "HomeFudge is Loading";
-            body.append(loadText);
+            LoadingScreen.body = document.body;
+            LoadingScreen.loadText = document.createElement("div");
+            LoadingScreen.loadText.style.fontSize = "44px";
+            LoadingScreen.loadText.style.textAlign = "center";
+            LoadingScreen.loadText.style.width = "420px";
+            LoadingScreen.loadText.innerHTML = "HomeFudge is Loading";
+            LoadingScreen.loadText.style.position = "fixed";
+            LoadingScreen.loadText.style.left = "0";
+            LoadingScreen.loadText.style.top = "0";
+            LoadingScreen.loadText.style.backgroundColor = "#e8e8e8 ";
+            LoadingScreen.body.append(LoadingScreen.loadText);
+        }
+        static remove() {
+            LoadingScreen.loadText.remove();
         }
     }
     HomeFudge.LoadingScreen = LoadingScreen;
@@ -185,6 +196,7 @@ var HomeFudge;
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     async function start(_event) {
+        HomeFudge.LoadingScreen.remove();
         HomeFudge._viewport = _event.detail;
         HomeFudge._worldNode = HomeFudge._viewport.getBranch();
         console.log(HomeFudge._viewport);
@@ -233,20 +245,20 @@ var HomeFudge;
         ƒ.AudioManager.default.update();
     }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
-    function getPosTest() {
-        let pickCam = ƒ.Picker.pickCamera(HomeFudge._worldNode.getChildren(), HomeFudge._viewport.camera, HomeFudge.Mouse.position);
-        let pickViewport = ƒ.Picker.pickViewport(HomeFudge._viewport, HomeFudge.Mouse.position);
-        console.log("%c" + "Camera Picker", "background:red");
-        pickCam.forEach(element => {
-            console.log("%c" + element.posMesh.toString(), "background:yellow");
-        });
-        console.log("-------------");
-        console.log("%c" + "Viewport Picker", "background:red");
-        pickViewport.forEach(element => {
-            console.log("%c" + element.posMesh.toString(), "background:yellow");
-        });
-        console.log("-------------");
-    }
+    // function getPosTest(): void {
+    //   let pickCam: ƒ.Pick[] = ƒ.Picker.pickCamera(_worldNode.getChildren(), _viewport.camera, Mouse.position);
+    //   let pickViewport: ƒ.Pick[] = ƒ.Picker.pickViewport(_viewport, Mouse.position);
+    //   console.log("%c" + "Camera Picker", "background:red");
+    //   pickCam.forEach(element => {
+    //     console.log("%c" + element.posMesh.toString(), "background:yellow");
+    //   });
+    //   console.log("-------------");
+    //   console.log("%c" + "Viewport Picker", "background:red");
+    //   pickViewport.forEach(element => {
+    //     console.log("%c" + element.posMesh.toString(), "background:yellow");
+    //   });
+    //   console.log("-------------");
+    // }
     /// ------------T-E-S-T--A-R-E-A------------------\\\
     //DEBUG
     function continueLoop(event) {
@@ -296,10 +308,10 @@ var HomeFudge;
             return new ƒ.Vector3(-v.x, -v.y, -v.z);
         }
         static DegreeToRadiant(degree) {
-            // return degree * (180/Math.PI);
+            return degree * (180 / Math.PI);
         }
         static RadiantToDegree(radiant) {
-            // return radiant * (Math.PI/180);
+            return radiant * (Math.PI / 180);
         }
     }
     HomeFudge.Mathf = Mathf;
@@ -481,7 +493,7 @@ var HomeFudge;
             this.addComponent(new ƒ.ComponentMesh(BeamTurret.mesh));
         }
         update = () => {
-            this.rotate(15 * HomeFudge._deltaSeconds);
+            this.rotate(this.maxRotSpeed * HomeFudge._deltaSeconds);
         };
         fire() {
             throw new Error("Method not implemented.");
@@ -1054,7 +1066,6 @@ var HomeFudge;
         destroyer = null;
         selectedWeapon = null; //TODO:Check if ok
         moveDirection = ƒ.Vector3.ZERO();
-        rotDegreeOnMoveSideways = 2;
         camRotBeforeChange = null;
         update = () => {
             this.camRotBeforeChange = HomeFudge._mainCamera.camComp.mtxPivot.rotation;

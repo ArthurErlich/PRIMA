@@ -77,7 +77,7 @@ namespace HomeFudge {
             this.addComponent(new ƒ.ComponentMesh(BeamTurret.mesh));
         }
         private update = (): void => {
-            this.rotate(15 * _deltaSeconds);
+            this.rotate(this.maxRotSpeed * _deltaSeconds);
         }
         public fire() {
             throw new Error("Method not implemented.");

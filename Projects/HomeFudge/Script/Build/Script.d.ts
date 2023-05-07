@@ -91,7 +91,10 @@ declare namespace HomeFudge {
 }
 declare namespace HomeFudge {
     class LoadingScreen {
+        private static body;
+        private static loadText;
         static init(canvas: HTMLCanvasElement): void;
+        static remove(): void;
     }
 }
 declare namespace HomeFudge {
@@ -412,7 +415,6 @@ declare namespace HomeFudge {
         destroyer: Destroyer;
         private selectedWeapon;
         private moveDirection;
-        private rotDegreeOnMoveSideways;
         private camRotBeforeChange;
         private update;
         constructor(name: string);
