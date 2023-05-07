@@ -12,19 +12,21 @@ namespace HomeFudge {
         private static mesh: ƒ.Mesh = null;
         private static material: ƒ.Material = null;
 
-        private beam:LaserBeam = null
+        private rotNode:ƒ.Node = null;
 
-        
+        private beam: LaserBeam = null
+
+
         private maxRotSpeed: number;
         private maxPitch: number;
         private minPitch: number;
         private maxBeamTime: number;
         private maxReloadTime: number;
         private range: number;
-        
 
 
-        private async init(side: SIDE): Promise<void> {
+
+        private async init(side: number): Promise<void> {
             BeamTurret.graph = await Resources.getGraphResources(Config.beamTurret.graphID);
             let resourceNode: ƒ.Node = await Resources.getComponentNode("BeamTurret", BeamTurret.graph);
             if (BeamTurret.material == null || BeamTurret.mesh) {
@@ -32,30 +34,27 @@ namespace HomeFudge {
                 BeamTurret.mesh = resourceNode.getComponent(ƒ.ComponentMesh).mesh;
             }
 
+            this.rotNode = new ƒ.Node("RotNode" +this.name); 
             //Init turret configs
-            
+
             this.maxRotSpeed = Config.beamTurret.maxRotSpeed;
             this.maxPitch = Config.beamTurret.maxPitch;
             this.minPitch = Config.beamTurret.minPitch;
             this.maxBeamTime = Config.beamTurret.beamTime;
             this.maxReloadTime = Config.beamTurret.reloadTime;
             this.range = Config.beamTurret.range;
-            
+
+            this.addChild(this.rotNode);
             let turretPos: ƒ.Vector3 = JSONparser.toVector3(Config.beamTurret.basePosition)
             switch (side) {
-                case SIDE.LEFT:
+                case 0:
                     console.log("adding Beam: LEFT");
                     this.addBeam("LEFT");
                     turretPos.set(turretPos.x, turretPos.y, -turretPos.z)
                     this.addComponents(turretPos);
-                    this.mtxLocal.rotateX(-90);
-
-                    //fix Pitch
-                    let tempPitch = this.maxPitch;
-                    this.maxPitch = this.minPitch;
-                    this.minPitch = tempPitch;
+                    this.mtxLocal.rotateX(-90);;
                     break;
-                case SIDE.RIGHT:
+                case 1:
                     console.log("adding Beam: RIGHT");
                     this.addBeam("RIGHT");
                     this.addComponents(turretPos);
@@ -68,28 +67,39 @@ namespace HomeFudge {
         private addBeam(side: string): void {
             let beamPos: ƒ.Vector3 = JSONparser.toVector3(Config.beamTurret.beamPosition);
             this.beam = new LaserBeam(side, beamPos)
-            this.addChild(this.beam);
+            this.rotNode.addChild(this.beam);
 
         }
         private addComponents(position: ƒ.Vector3) {
+            console.log("attaching mtx translation: " + position);
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)));
-            this.addComponent(new ƒ.ComponentMaterial(BeamTurret.material));
-            this.addComponent(new ƒ.ComponentMesh(BeamTurret.mesh));
+            this.rotNode.addComponent(new ƒ.ComponentTransform());
+            this.rotNode.addComponent(new ƒ.ComponentMaterial(BeamTurret.material));
+            this.rotNode.addComponent(new ƒ.ComponentMesh(BeamTurret.mesh));
         }
         private update = (): void => {
-            this.rotate(this.maxRotSpeed * _deltaSeconds);
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT]))
+                this.rotate(this.maxRotSpeed * _deltaSeconds);
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+                this.rotate(-this.maxRotSpeed * _deltaSeconds);
         }
         public fire() {
             throw new Error("Method not implemented.");
         }
-        public rotate(rot:number){
+        public rotate(rot: number) {
             //ROTATION is only between -180° and 180°. Y starts at 0°
-            console.log(Math.round(this.mtxWorldInverse.rotation.y));
-            this.mtxLocal.rotateY(rot);
-            
+            //TODO:add rotation LOCK
+
+
+            if(this.mtxLocal.rotation.x == -90){
+                this.rotNode.mtxLocal.rotateY(rot);
+            }
+            if(this.mtxLocal.rotation.x == 90){
+                this.rotNode.mtxLocal.rotateY(-rot);
+            }
         }
 
-        constructor(side: SIDE) {
+        constructor(side: number) {2
             super("BeamTurret");
             this.init(side);
             ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);

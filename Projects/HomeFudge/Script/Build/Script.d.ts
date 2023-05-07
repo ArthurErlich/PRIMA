@@ -212,6 +212,7 @@ declare namespace HomeFudge {
         private static graph;
         private static mesh;
         private static material;
+        private rotNode;
         private beam;
         private maxRotSpeed;
         private maxPitch;
@@ -225,7 +226,7 @@ declare namespace HomeFudge {
         private update;
         fire(): void;
         rotate(rot: number): void;
-        constructor(side: SIDE);
+        constructor(side: number);
     }
     export {};
 }

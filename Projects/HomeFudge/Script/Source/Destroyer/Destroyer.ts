@@ -48,16 +48,14 @@ namespace HomeFudge {
         private addWeapons(): void {
             this.gatlingTurret = new GatlingTurret();
             this.beamTurretList[0] = new BeamTurret(BeamTurret.side.LEFT);
-            // this.beamTurretList[1] = new BeamTurret(BeamTurret.side.RIGHT);
+            this.beamTurretList[1] = new BeamTurret(BeamTurret.side.RIGHT);
 
 
+            //if one turret is missing
             this.addChild(this.gatlingTurret);
-            this.beamTurretList.forEach(beamTurret => {
-                if(beamTurret == null)
-                    return;
+            this.addChild(this.beamTurretList[0]);
+            this.addChild(this.beamTurretList[1]);
 
-                this.addChild(beamTurret);
-            });
         }
 
         private setAllComponents(): void {
@@ -78,6 +76,7 @@ namespace HomeFudge {
                 this.velocity.y * _deltaSeconds,
                 this.velocity.z * _deltaSeconds)
             );
+            this.mtxLocal.rotateY(5*_deltaSeconds);//TODO:Remove rotation
 
             //TODO:remove test of gatling rot
             ///TEST----------------TEST\\\
@@ -91,8 +90,12 @@ namespace HomeFudge {
             this.gatlingTurret.headNode.mtxLocal.rotation = new ƒ.Vector3(
                 tempRotHead.x,
                 tempRotHead.y,
-                -(Mouse.position.y - (_viewport.canvas.height / 2)) / Math.PI / 4
+                
             );
+            this.beamTurretList[0].rotate(-(Mouse.position.y - (_viewport.canvas.height / 2)) / Math.PI / 4);
+            this.beamTurretList[1].rotate(-(Mouse.position.y - (_viewport.canvas.height / 2)) / Math.PI / 4);
+
+
             ///TEST----------------TEST\\\
         }
         public alive(): boolean {
@@ -125,12 +128,10 @@ namespace HomeFudge {
 
                 default:
                     break;
-
             }
         }
         public fireGatling() {
             this.gatlingTurret.fire(this.velocity);
-            //TODO:remove test
         }
         public fireBeam() {
             this.beamTurretList.forEach(turret => {

@@ -452,6 +452,7 @@ var HomeFudge;
         static graph = null;
         static mesh = null;
         static material = null;
+        rotNode = null;
         beam = null;
         maxRotSpeed;
         maxPitch;
@@ -466,6 +467,7 @@ var HomeFudge;
                 BeamTurret.material = resourceNode.getComponent(ƒ.ComponentMaterial).material;
                 BeamTurret.mesh = resourceNode.getComponent(ƒ.ComponentMesh).mesh;
             }
+            this.rotNode = new ƒ.Node("RotNode" + this.name);
             //Init turret configs
             this.maxRotSpeed = HomeFudge.Config.beamTurret.maxRotSpeed;
             this.maxPitch = HomeFudge.Config.beamTurret.maxPitch;
@@ -473,20 +475,18 @@ var HomeFudge;
             this.maxBeamTime = HomeFudge.Config.beamTurret.beamTime;
             this.maxReloadTime = HomeFudge.Config.beamTurret.reloadTime;
             this.range = HomeFudge.Config.beamTurret.range;
+            this.addChild(this.rotNode);
             let turretPos = HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.basePosition);
             switch (side) {
-                case SIDE.LEFT:
+                case 0:
                     console.log("adding Beam: LEFT");
                     this.addBeam("LEFT");
                     turretPos.set(turretPos.x, turretPos.y, -turretPos.z);
                     this.addComponents(turretPos);
                     this.mtxLocal.rotateX(-90);
-                    //fix Pitch
-                    let tempPitch = this.maxPitch;
-                    this.maxPitch = this.minPitch;
-                    this.minPitch = tempPitch;
+                    ;
                     break;
-                case SIDE.RIGHT:
+                case 1:
                     console.log("adding Beam: RIGHT");
                     this.addBeam("RIGHT");
                     this.addComponents(turretPos);
@@ -499,25 +499,36 @@ var HomeFudge;
         addBeam(side) {
             let beamPos = HomeFudge.JSONparser.toVector3(HomeFudge.Config.beamTurret.beamPosition);
             this.beam = new HomeFudge.LaserBeam(side, beamPos);
-            this.addChild(this.beam);
+            this.rotNode.addChild(this.beam);
         }
         addComponents(position) {
+            console.log("attaching mtx translation: " + position);
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(position)));
-            this.addComponent(new ƒ.ComponentMaterial(BeamTurret.material));
-            this.addComponent(new ƒ.ComponentMesh(BeamTurret.mesh));
+            this.rotNode.addComponent(new ƒ.ComponentTransform());
+            this.rotNode.addComponent(new ƒ.ComponentMaterial(BeamTurret.material));
+            this.rotNode.addComponent(new ƒ.ComponentMesh(BeamTurret.mesh));
         }
         update = () => {
-            this.rotate(this.maxRotSpeed * HomeFudge._deltaSeconds);
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT]))
+                this.rotate(this.maxRotSpeed * HomeFudge._deltaSeconds);
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+                this.rotate(-this.maxRotSpeed * HomeFudge._deltaSeconds);
         };
         fire() {
             throw new Error("Method not implemented.");
         }
         rotate(rot) {
             //ROTATION is only between -180° and 180°. Y starts at 0°
-            console.log(Math.round(this.mtxWorldInverse.rotation.y));
-            this.mtxLocal.rotateY(rot);
+            //TODO:add rotation LOCK
+            if (this.mtxLocal.rotation.x == -90) {
+                this.rotNode.mtxLocal.rotateY(rot);
+            }
+            if (this.mtxLocal.rotation.x == 90) {
+                this.rotNode.mtxLocal.rotateY(-rot);
+            }
         }
         constructor(side) {
+            2;
             super("BeamTurret");
             this.init(side);
             ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, this.update);
@@ -564,13 +575,11 @@ var HomeFudge;
         addWeapons() {
             this.gatlingTurret = new HomeFudge.GatlingTurret();
             this.beamTurretList[0] = new HomeFudge.BeamTurret(HomeFudge.BeamTurret.side.LEFT);
-            // this.beamTurretList[1] = new BeamTurret(BeamTurret.side.RIGHT);
+            this.beamTurretList[1] = new HomeFudge.BeamTurret(HomeFudge.BeamTurret.side.RIGHT);
+            //if one turret is missing
             this.addChild(this.gatlingTurret);
-            this.beamTurretList.forEach(beamTurret => {
-                if (beamTurret == null)
-                    return;
-                this.addChild(beamTurret);
-            });
+            this.addChild(this.beamTurretList[0]);
+            this.addChild(this.beamTurretList[1]);
         }
         setAllComponents() {
             if (Destroyer.material == null || Destroyer.mesh == null) {
@@ -584,12 +593,15 @@ var HomeFudge;
         }
         update = () => {
             this.mtxLocal.translate(new ƒ.Vector3(this.velocity.x * HomeFudge._deltaSeconds, this.velocity.y * HomeFudge._deltaSeconds, this.velocity.z * HomeFudge._deltaSeconds));
+            this.mtxLocal.rotateY(5 * HomeFudge._deltaSeconds); //TODO:Remove rotation
             //TODO:remove test of gatling rot
             ///TEST----------------TEST\\\
             let tempRotBase = this.gatlingTurret.baseNode.mtxLocal.rotation;
             this.gatlingTurret.baseNode.mtxLocal.rotation = new ƒ.Vector3(tempRotBase.x, -(HomeFudge.Mouse.position.x - (HomeFudge._viewport.canvas.width / 2)) / Math.PI / 3, tempRotBase.z);
             let tempRotHead = this.gatlingTurret.headNode.mtxLocal.rotation;
-            this.gatlingTurret.headNode.mtxLocal.rotation = new ƒ.Vector3(tempRotHead.x, tempRotHead.y, -(HomeFudge.Mouse.position.y - (HomeFudge._viewport.canvas.height / 2)) / Math.PI / 4);
+            this.gatlingTurret.headNode.mtxLocal.rotation = new ƒ.Vector3(tempRotHead.x, tempRotHead.y);
+            this.beamTurretList[0].rotate(-(HomeFudge.Mouse.position.y - (HomeFudge._viewport.canvas.height / 2)) / Math.PI / 4);
+            this.beamTurretList[1].rotate(-(HomeFudge.Mouse.position.y - (HomeFudge._viewport.canvas.height / 2)) / Math.PI / 4);
             ///TEST----------------TEST\\\
         };
         alive() {
@@ -625,7 +637,6 @@ var HomeFudge;
         }
         fireGatling() {
             this.gatlingTurret.fire(this.velocity);
-            //TODO:remove test
         }
         fireBeam() {
             this.beamTurretList.forEach(turret => {
