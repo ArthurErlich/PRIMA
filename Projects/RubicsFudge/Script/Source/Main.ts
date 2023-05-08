@@ -8,6 +8,8 @@ namespace McFudge {
   /// Graphs and Nodes \\\
   let gameGraph: ƒ.Graph = null;
   let worldNode: ƒ.Node = null;
+  /// that is steve \\\
+  let steve:Steve = null;
 
   /// colorers \\\
   let cubeColorList: ƒ.Color[] = [
@@ -21,24 +23,27 @@ namespace McFudge {
   
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
+    viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
     Mouse.init(viewport.canvas);
-
-
+    
+    
+    
     //-----------------------T-E-S-T---A-R-E-A-----------------------\\
     //-----------------------------------------------------------------\\
+    viewport.canvas.addEventListener("pointerdown", pickByCamera);
 
     ///init Graphs
     gameGraph = viewport.getBranch() as ƒ.Graph;
     worldNode = gameGraph.getChildrenByName("World")[0];
+    steve = new Steve();
+    worldNode.addChild(steve);
+    
 
 
-    // creating a block instance
-    // let instance: Block = new Block(new ƒ.Vector3(0,0,0), ƒ.Color.CSS("red"));
-    // viewport.getBranch().addChild(instance);
+
+    generateWorld(5);
 
 
-    generateWorld(10);
-    viewport.canvas.addEventListener("pointerdown", pickByCamera);
 
     //------------------------T-E-S-T---A-R-E-A----------------------\\
     //-----------------------------------------------------------------\\
@@ -54,10 +59,14 @@ namespace McFudge {
       }
     });
 
+    steve.getComponent(ƒ.ComponentRigidbody).applyForce(new ƒ.Vector3(1,0,0));
+
+
     ƒ.Physics.simulate();  // if physics is included and used
     viewport.draw();
     ƒ.AudioManager.default.update();
   }
+
   function pickByCamera(_event: PointerEvent): void {
     let picks: ƒ.Pick[] = ƒ.Picker.pickViewport(viewport, new ƒ.Vector2(_event.clientX, _event.clientY));
     picks.sort((_a, _b) => (_a.zBuffer < _b.zBuffer) ? -1 : 1);
@@ -101,11 +110,13 @@ namespace McFudge {
     let randomCubeColorIndex: number = Math.floor(Math.random() * (cubeColorList.length));
     let cubeColor: ƒ.Color = cubeColorList[randomCubeColorIndex];
     let instance: Block = new Block(pos, cubeColor);
-    let rigidBody:ƒ.ComponentRigidbody = new ƒ.ComponentRigidbody(20,ƒ.BODY_TYPE.DYNAMIC,ƒ.COLLIDER_TYPE.CUBE,ƒ.COLLISION_GROUP.DEFAULT);
+    let rigidBody:ƒ.ComponentRigidbody = new ƒ.ComponentRigidbody(1,ƒ.BODY_TYPE.DYNAMIC,ƒ.COLLIDER_TYPE.CUBE,ƒ.COLLISION_GROUP.DEFAULT);
     // instance.mtxLocal.scale(new ƒ.Vector3(0.97, 0.97, 0.97));
     instance.addComponent(rigidBody);
     if(pos.y == 0){
       instance.getComponent(ƒ.ComponentRigidbody).typeBody= ƒ.BODY_TYPE.STATIC;
+      instance.getComponent(ƒ.ComponentRigidbody).restitution = 0;
+
     }
     viewport.getBranch().addChild(instance);
     viewport.draw();
@@ -114,7 +125,7 @@ namespace McFudge {
   //world gen
   function generateWorld(size: number) {
     for (let x: number = 0; x < size; x++) {
-      for (let y: number = 0; y < 2; y++) {
+      for (let y: number = 0; y < 1; y++) { // set that to 2 for fun
         for (let z: number = 0; z < size; z++) {
           let tempBlock:Block = crateBlock(new ƒ.Vector3(x, y, z));
           if(y == 0){

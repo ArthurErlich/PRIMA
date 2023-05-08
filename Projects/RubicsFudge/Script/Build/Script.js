@@ -3,7 +3,7 @@ var McFudge;
 (function (McFudge) {
     var ƒ = FudgeCore;
     class Block extends ƒ.Node {
-        //used onesce
+        //used once
         static meshCube = new ƒ.MeshCube();
         static materialCube = new ƒ.Material("mtr", ƒ.ShaderFlat, new ƒ.CoatRemissive()); // you can also grab the Matrial from the resources!
         constructor(_position, _color) {
@@ -66,6 +66,8 @@ var McFudge;
     /// Graphs and Nodes \\\
     let gameGraph = null;
     let worldNode = null;
+    /// that is steve \\\
+    let steve = null;
     /// colorers \\\
     let cubeColorList = [
         ƒ.Color.CSS("white"),
@@ -75,17 +77,17 @@ var McFudge;
     ];
     function start(_event) {
         viewport = _event.detail;
+        viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
         McFudge.Mouse.init(viewport.canvas);
         //-----------------------T-E-S-T---A-R-E-A-----------------------\\
         //-----------------------------------------------------------------\\
+        viewport.canvas.addEventListener("pointerdown", pickByCamera);
         ///init Graphs
         gameGraph = viewport.getBranch();
         worldNode = gameGraph.getChildrenByName("World")[0];
-        // creating a block instance
-        // let instance: Block = new Block(new ƒ.Vector3(0,0,0), ƒ.Color.CSS("red"));
-        // viewport.getBranch().addChild(instance);
-        generateWorld(10);
-        viewport.canvas.addEventListener("pointerdown", pickByCamera);
+        steve = new McFudge.Steve();
+        worldNode.addChild(steve);
+        generateWorld(5);
         //------------------------T-E-S-T---A-R-E-A----------------------\\
         //-----------------------------------------------------------------\\
         ƒ.Loop.addEventListener("loopFrame" /* ƒ.EVENT.LOOP_FRAME */, update);
@@ -98,6 +100,7 @@ var McFudge;
                 child.getParent().removeChild(child);
             }
         });
+        steve.getComponent(ƒ.ComponentRigidbody).applyForce(new ƒ.Vector3(1, 0, 0));
         ƒ.Physics.simulate(); // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
@@ -134,11 +137,12 @@ var McFudge;
         let randomCubeColorIndex = Math.floor(Math.random() * (cubeColorList.length));
         let cubeColor = cubeColorList[randomCubeColorIndex];
         let instance = new McFudge.Block(pos, cubeColor);
-        let rigidBody = new ƒ.ComponentRigidbody(20, ƒ.BODY_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.COLLISION_GROUP.DEFAULT);
+        let rigidBody = new ƒ.ComponentRigidbody(1, ƒ.BODY_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.COLLISION_GROUP.DEFAULT);
         // instance.mtxLocal.scale(new ƒ.Vector3(0.97, 0.97, 0.97));
         instance.addComponent(rigidBody);
         if (pos.y == 0) {
             instance.getComponent(ƒ.ComponentRigidbody).typeBody = ƒ.BODY_TYPE.STATIC;
+            instance.getComponent(ƒ.ComponentRigidbody).restitution = 0;
         }
         viewport.getBranch().addChild(instance);
         viewport.draw();
@@ -147,7 +151,7 @@ var McFudge;
     //world gen
     function generateWorld(size) {
         for (let x = 0; x < size; x++) {
-            for (let y = 0; y < 2; y++) {
+            for (let y = 0; y < 1; y++) { // set that to 2 for fun
                 for (let z = 0; z < size; z++) {
                     let tempBlock = crateBlock(new ƒ.Vector3(x, y, z));
                     if (y == 0) {
@@ -289,5 +293,26 @@ var McFudge;
         MOUSE_CODE[MOUSE_CODE["MIDDLE"] = 1] = "MIDDLE";
         MOUSE_CODE[MOUSE_CODE["RIGHT"] = 2] = "RIGHT";
     })(MOUSE_CODE = McFudge.MOUSE_CODE || (McFudge.MOUSE_CODE = {}));
+})(McFudge || (McFudge = {}));
+var McFudge;
+(function (McFudge) {
+    var ƒ = FudgeCore;
+    class Steve extends ƒ.Node {
+        constructor() {
+            super("steve");
+            this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshCube));
+            this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("mat", ƒ.ShaderFlat, new ƒ.CoatRemissive())));
+            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0, 4, 0))));
+            this.addComponent(new ƒ.ComponentRigidbody(1, ƒ.BODY_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.COLLISION_GROUP.DEFAULT));
+            this.addComponent(new ƒ.ComponentCamera());
+            this.getComponent(ƒ.ComponentCamera).activate(true);
+            this.getComponent(ƒ.ComponentRigidbody).mtxPivot.scale(new ƒ.Vector3(0.5, 0.5, 0.5));
+            this.getComponent(ƒ.ComponentRigidbody).effectRotation = new ƒ.Vector3(0, 1, 0);
+            this.getComponent(ƒ.ComponentRigidbody).friction = 0;
+            this.getComponent(ƒ.ComponentMesh).mtxPivot.scaleX(0.5);
+            this.getComponent(ƒ.ComponentMesh).mtxPivot.scaleZ(0.5);
+        }
+    }
+    McFudge.Steve = Steve;
 })(McFudge || (McFudge = {}));
 //# sourceMappingURL=Script.js.map

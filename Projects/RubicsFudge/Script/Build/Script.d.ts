@@ -96,3 +96,9 @@ declare namespace McFudge {
         RIGHT = 2
     }
 }
+declare namespace McFudge {
+    import ƒ = FudgeCore;
+    class Steve extends ƒ.Node {
+        constructor();
+    }
+}

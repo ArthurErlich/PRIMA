@@ -497,9 +497,11 @@ example of checking it wiht a ray:
 let ray: ƒ.Ray = viewport.getRayFromClient(new ƒ.Vector2(_event.clientX, _event.clientY));
 
 ```
+
 ## Random number generator in Fudge
 
 for less coding, here is an exampe of a implementation of random in Fudge
+
 ```typescript
   ƒ.Random.default.getElement(["A","b","C"]);
   ƒ.Random.default.getBoolean();
@@ -610,4 +612,49 @@ function hitByPicking (_event:PointerEvent):void{
 
 ```
 
+## The Physics System
 
+Audio - Graphics - Physcis -> these systems are not conected itself. But in Fudge we connect all the systems togheter.
+
+
+The physics view have a way of rendereing. We can view the WireFrame of the Coliders.
+
+* There are differnt colider shapes.
+* All viewable in the Editor
+
+### There differrnt colider types
+
+* TypeBody
+  * DYNAMIC
+  * STATIC
+    KINEMTAIK
+* TypeColider
+  * CUBE
+  * SPHERE
+  * CAPSUEL
+
+We use the Capsuel colider for Steve [Minecraft main Character]
+
+in order to see the Phisics debug.
+```typescript
+  viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
+
+```
+
+The phiysics engine calculates the Units of 1 to one meter. It is imporandt!
+
+We need a capsuel colider so steve can walk over slopes.
+The colider needs to have the right transform. The transform shuld be on the node.
+Colider can bounce.
+
+Forece = mass * acceleration;
+g = 10ms²
+
+1kg = 10newton
+
+to lock achses you can use 
+```typescript
+this.getComponent(ƒ.ComponentRigidbody).effectRotation = new ƒ.Vector3(0,1,0);
+````
+
+TASK: CREATE KAYBOARD CONTROLL AND MOVE ON THE CREATED WORLD FOR STEVE
