@@ -655,6 +655,10 @@ g = 10ms²
 to lock achses you can use 
 ```typescript
 this.getComponent(ƒ.ComponentRigidbody).effectRotation = new ƒ.Vector3(0,1,0);
+
 ````
 
 TASK: CREATE KAYBOARD CONTROLL AND MOVE ON THE CREATED WORLD FOR STEVE
+Jumpint : impulse
+Or set add velocity you can also set the velociyt
+Turn = torq 
