@@ -14,7 +14,7 @@ Invested Time: [![wakatime](https://wakatime.com/badge/github/ArthurErlich/PRIMA
 * Docent: Prof. Dipl.-Ing. Jirka R. Dell'Oro-Friedl, HFU
 * Link to the finished and executable application on Github-Pages
 * Link to the source code :[CODE](https://arthurerlich.github.io/PRIMA/Projects/HomeFudge/index.html)
-* Link to the design document:[DD](https://github.com/ArthurErlich/PRIMA/blob/main/Projects/HomeFudge/Doc/HomeFudge.md)
+* Link to the design document:[DD](https://github.com/ArthurErlich/HomeFudge/blob/main/HomeFudge/Doc/HomeFudge.md)
 * Description for users on how to interact: **PENDING**
 
 
