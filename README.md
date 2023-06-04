@@ -38,3 +38,13 @@ Invested Time: [![wakatime](https://wakatime.com/badge/github/ArthurErlich/PRIMA
 |  C | Net                 | Add multiplayer functionality via network (3)                                                                                                   |[]|
 |  D | State Machines      | Create autonomous entities using the StateMachine (1) and/or ComponentStateMachine (1) defined in FudgeAid                                      |[]|
 |  E | Animation           | Animate using the animation system of FudgeCore (1) and/or Sprites (1) as defined in FudgeAid                                                   |[]|
+
+## GameZone TODO
+- Two screenshots of the running application of the sizes
+  - 250 x 100 pixel
+  - 1920 x 400 pixel 
+* Genre, if applicable
+* Tags
+* Subtitel (max 40 characters), to encourage to start the application
+* Short instructions (max 250 characters) on how to play
+* A declaration of consent with the display of the application in the GameZone with an explicit reference to the author.
