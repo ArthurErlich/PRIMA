@@ -41,6 +41,10 @@ Invested Time: [![wakatime](https://wakatime.com/badge/github/ArthurErlich/PRIMA
 |  D | State Machines      | Create autonomous entities using the StateMachine (1) and/or ComponentStateMachine (1) defined in FudgeAid                                      |[]|
 |  E | Animation           | Animate using the animation system of FudgeCore (1) and/or Sprites (1) as defined in FudgeAid                                                   |[]|
 
+| Points	|10	|11	|12	|13|
+| Grade	|4.0	|3.0	|2.0	|1.0|
+
+
 ## GameZone TODO
 - Two screenshots of the running application of the sizes
   - 250 x 100 pixel
