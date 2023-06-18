@@ -16,6 +16,8 @@ Invested Time: [![wakatime](https://wakatime.com/badge/github/ArthurErlich/PRIMA
 * Link to the source [code](https://github.com/ArthurErlich/HomeFudge/tree/main/HomeFudge)
 * Link to the design document and description for users on how to interact: [**PRE_DOC**](https://github.com/ArthurErlich/HomeFudge/blob/main/HomeFudge/Doc/%5BPRE%5D%20Home%20Fudge.pdf)
 
+  **Be aware that the Game is moved to its own Repository!**
+
 
 
 
@@ -24,10 +26,10 @@ Invested Time: [![wakatime](https://wakatime.com/badge/github/ArthurErlich/PRIMA
 
 | Nr | Criterion           | Explanation                                                                                                                                     |   |
 | -- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------|---|
-|  1 | Units and Positions | Where is 0, what is 1? Explain your setup of coordinate systems of the entities.                                                                |[]|
-|  2 | Hierarchy           | Explain the setup of the graphs and the advantages you gain by it.                                                                              |[]|
+|  1 | Units and Positions | I Use XYZ from the zero point of the Cardasiean Coordninats sytesm. Y stands for Up, X for forward and Z for right in the local space. The player has for now 5 Axsis of freedom: Roll,Forward,Bacwards,Left turn and Right Turn. One Unit is eqal to 1 Meter. The World is about 50Km large.                                                             |[X]|
+|  2 | Hierarchy           | "Explain the setup of the graphs and the advantages you gain by it."       I have two main graphs. One is the Recourses Graph where all my "Blueprints" for the GameObject. That makes me help to crate the Destryoer for exampel. And GameObjects are nodes with Transform-, Mesh-, Materials- components. The other main Graph is the Game Graph, inside the Main Grpah is the World graph wich is the main Game scene. This can help me to create other scenes (Levels for the game). I dont shift Nodes to other Graphs or to delet them or to hide the Nodes.                                                                |[?]|
 |  3 | Editor              | Use the visual editor and explain which parts are better done by coding and why.                                                                |[]|
-|  4 | Scriptcomponents    | Use scriptcomponents and explain if they were useful in your context or not and why.                                                            |[]|
+|  4 | Scriptcomponents    | Use scriptcomponents and explain if they were useful in your context or not and why.       (PlayerSpawner)                                                     |[]|
 |  5 | Extend              | Derive classes from FudgeCore other than ScriptComponent and explain if that was useful in your context or not and why.                         |[]|
 |  6 | Sound               | Use sounds and explain your choice of sounds and placement in respect to the user's perception.                                                 |[]|
 |  7 | VUI                 | Create a virtual user interface using the interface controller and mutables. Explain the interface.                                             |[]|
