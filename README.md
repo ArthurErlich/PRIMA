@@ -46,6 +46,10 @@ Invested Time: [![wakatime](https://wakatime.com/badge/github/ArthurErlich/PRIMA
 |--------|-----|-----|-----|-----|
 | Grade  | 4.0 | 3.0 | 2.0 | 1.0 |
 
+Some Console Commands (SCC):
++ ConsoleCommands.spawnDestroyer(new FudgeCore.Vector3(0,0,0),new FudgeCore.Vector3(0,0,0))
++ ConsoleCommands.spawnAstroid(new FudgeCore.Vector3(20,20,20),"large")
+
 
 ## GameZone TODO
 - Two screenshots of the running application of the sizes
